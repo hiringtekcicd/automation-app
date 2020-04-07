@@ -1,0 +1,7 @@
+{
+  "name": "Automation-App",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
