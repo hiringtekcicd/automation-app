@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+   <ion-title>Login/SignUp</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form #f='ngForm' (ngSubmit)='onSubmit(f)'>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md='7' offset-md="3">
+        <ion-list>
+          <ion-item>
+            <ion-label position='floating'>E-mail</ion-label>
+            <ion-input type="email" ngModel name='email' pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})" required email #emailCtrl='ngModel'></ion-input>
+          </ion-item><ion-item  *ngIf="!emailCtrl.valid && emailCtrl.touched" lines='none'><ion-label color='medium'>Should be a valid email address.</ion-label></ion-item>
+          <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input type="password" ngModel name='password' required pattern='^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$' minlength='8' #passwordCtrl='ngModel'></ion-input>
+          </ion-item>
+          <ion-item  *ngIf="!passwordCtrl.valid && passwordCtrl.touched" lines='none'><ion-label color='medium'>Password must contain at least one uppercase letter, number, and be longer than six charaters.</ion-label></ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-md='7' offset-md="3">
+        
+        <ion-button type='submit' color="primary" (click)="onLogin()" expand='block' [disabled]='!f.valid'>
+          Login
+        </ion-button>
+        <ion-button type='button' color="primary" fill='clear' expand='block'>
+          Signup
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</form>
+ 
+
+</ion-content>
