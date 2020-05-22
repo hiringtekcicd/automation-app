@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start" color="primary">
+       <ion-icon name="menu-outline"> </ion-icon>   
+    </ion-buttons>
+    <ion-title>
+      Dashboard
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="master">
+<ion-tabs>
+  <ion-tab-bar slot="top">
+    <ion-toolbar>
+      <ion-segment value="all">
+    <ion-tab-button tab="mointer">
+      <ion-segment-button value="all">mointer</ion-segment-button>
+      </ion-tab-button>
+    <ion-tab-button tab="control">
+      <ion-segment-button value="all">control</ion-segment-button>
+    </ion-tab-button>
+    </ion-segment>
+    </ion-toolbar>
+  </ion-tab-bar>
+</ion-tabs>
+</ion-content>
+
