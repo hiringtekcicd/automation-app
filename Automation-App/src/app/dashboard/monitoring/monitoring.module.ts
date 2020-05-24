@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MointerPageRoutingModule } from './mointer-routing.module';
+import { MonitoringPageRoutingModule } from './monitoring-routing.module';
 
-import { MointerPage } from './mointer.page';
+import { MonitoringPage } from './monitoring.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MointerPageRoutingModule
+    MonitoringPageRoutingModule
   ],
-  declarations: [MointerPage]
+  declarations: [MonitoringPage]
 })
-export class MointerPageModule {}
+export class MonitoringPageModule {}

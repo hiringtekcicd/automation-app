@@ -10,8 +10,8 @@ const routes: Routes = [
     children:[
 
   {
-    path: 'mointer',
-    loadChildren: () => import('./mointer/mointer.module').then( m => m.MointerPageModule)
+    path: 'monitoring',
+    loadChildren: () => import('./monitoring/monitoring.module').then( m => m.MonitoringPageModule)
   },
   {
     path: 'control',
@@ -20,16 +20,18 @@ const routes: Routes = [
   
    {
       path: '',
-      redirectTo: '/dashboard/mointer',
+      redirectTo: '/dashboard/monitoring',
       pathMatch: 'full'
    }
  ]
 },
 {
   path: '',
-  redirectTo: '/dashboard/mointer',
+  redirectTo: '/dashboard/monitoring',
   pathMatch: 'full'
-}
+},
+
+  
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],
