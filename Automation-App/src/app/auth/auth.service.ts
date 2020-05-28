@@ -5,16 +5,21 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
 
-    private _userIsAuthenticated = false;
+    private _userIsAuthenticated = false; //set to false as a default.
 
-    get userIsAuthenticated(){
-      return this._userIsAuthenticated;
+    get userIsAuthenticated() //Used to not accidentally overwrite the property from elsewhere.
+    {
+      return this._userIsAuthenticated; 
     }
   constructor() { }
-  login(){
+  signup(){
     this._userIsAuthenticated = true;
+}
+
+  login(){ 
+    this._userIsAuthenticated = true;  //Authenticates user and allows login when called.
   }
   logout(){
-    this._userIsAuthenticated = false;
+    this._userIsAuthenticated = false;  //This method sets user authentication back to false when called.
   }
 }

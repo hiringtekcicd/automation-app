@@ -26,5 +26,5 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 .ion-invalid.ion-touched ion-label{
-    color : var(--ion-color-danger);
+    color : var(--ion-color-danger); //If we have ion-invalid and touched classes, the nested elements will turn red.
 }

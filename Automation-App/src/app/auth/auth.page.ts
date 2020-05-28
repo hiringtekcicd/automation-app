@@ -1,21 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService} from './auth.service';
-import { Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
-import {LoadingController} from '@ionic/angular';
+import {AuthService} from './auth.service'; //used to trigger the onLogin method
+import { Router } from '@angular/router'; //used to navigate through pages
+import {  FormControl } from '@angular/forms';
+import {LoadingController, ModalController} from '@ionic/angular';
+import { Validators, FormBuilder, FormGroup} from '@angular/forms';
+import {PasswordStrengthValidator} from './password';
 
+// var html = require('signup.html').default
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage implements OnInit {
-isLoading = false;
-  constructor( private authService: AuthService, private router : Router, private loadingCtrl: LoadingController) {}
+
+  formgroup: FormGroup;
+  
+isLoading = false; //set to false as a default
+isLogin = true; //set to true as a default
+  constructor( private authService: AuthService, private router : Router, private loadingCtrl: LoadingController,public modalController: ModalController,
+    public formbuilder: FormBuilder) //Parameters injected to trigger the necessary methods
+   {
+    this.formgroup = this.formbuilder.group(
+      {
+        email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+        password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6),PasswordStrengthValidator.isValid]))
+      }
+    );
+   
+   
+   }
 
   ngOnInit() {
   }
-  onLogin(){
+  
+  onLogin()
+  {
     this.isLoading = true;
     this.loadingCtrl.create({keyboardClose:true, message:'Logging in...'})
     .then(loadingEl=>{
@@ -24,13 +44,42 @@ isLoading = false;
       setTimeout(()=>{
         this.isLoading = false;
         loadingEl.dismiss();
-        this.router.navigateByUrl('/mail');
       }, 1000)
-      this.authService.login();
+      // this.authService.login();
     })
    
   }
-  onSubmit(form: NgForm){
-    
-  }
-}
+  
+   signUp(){
+    this.router.navigateByUrl('/register')
+    }  }
+  
+  // onSwitch(){
+  //    this.isLogin = !this.isLogin;
+  //   // !this.isLogin? this.router.navigateByUrl('/signup'): this.isLogin ;
+  // }
+  // onSubmit(form: NgForm){
+  //   if (!form.valid) //Cannot proceed if the form is invalid.
+  //   {
+  //     return;
+  //   }
+  //   //If the form is valid, the email and password properties are extracted.
+  //   const email = form.value.email;
+  //   const password = form.value.password;
+
+  //   if(this.isLogin)
+  //   {
+  //     //Send a request to login servers
+  //     this.authService.login();
+  //   }
+  //   else{
+  //     //Send a request to signup servers
+  //     this.authService.signup();
+  //   }
+  // }
+  //   createAccount(){
+  //     this.router.navigateByUrl('/auth/register');
+  //   }
+ 
+  
+
