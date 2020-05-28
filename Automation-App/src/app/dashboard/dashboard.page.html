@@ -1,36 +1,44 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
     <ion-menu-button ></ion-menu-button>
-
-    </ion-buttons>
-    <ion-title>
-      Dashboard
-    </ion-title>
-  </ion-toolbar>
+     </ion-buttons>
+       <ion-title>
+        Dashboard
+       </ion-title>
+     </ion-toolbar>
 </ion-header>
-<ion-content class="master">
-<ion-tabs>
+<ion-content >
+<ion-tabs >
   <ion-tab-bar slot="top">
-    <ion-toolbar>
-      <ion-segment value="all">
-    <ion-tab-button tab="monitoring">
-      <ion-segment-button value="all">monitoring</ion-segment-button>
+    <ion-toolbar color="primary">
+        <ion-segment value="all" >
+       <ion-tab-button tab="monitoring">
+      <ion-segment-button value="monitoring">monitoring</ion-segment-button>
       </ion-tab-button>
-    <ion-tab-button tab="control">
-      <ion-segment-button value="all">control</ion-segment-button>
+      <ion-tab-button tab="control">
+      <ion-segment-button value="control">control</ion-segment-button>
     </ion-tab-button>
     </ion-segment>
-    </ion-toolbar>
+  </ion-toolbar>
   </ion-tab-bar>
 </ion-tabs>
+<br><br><br>
+  <ion-item  lines="none" color="primary">
+      <ion-icon name="add"></ion-icon>
+    <ion-select value="system1">
+      <ion-select-option value="system1" >system1</ion-select-option>
+      <ion-select-option value="system2">system2</ion-select-option>
+    </ion-select> 
+    <ion-icon slot="end" name="search" > </ion-icon>
+  </ion-item>
 </ion-content>
 <ion-content>
 <ion-tabs>
-<ion-tab-bar slot="bottom">
+<ion-tab-bar slot="bottom" color="primary">
     <ion-tab-button tab="games">
-      <ion-label>dashoard</ion-label>
-      <ion-icon name="heart-outline"></ion-icon>
+      <ion-label>help</ion-label>
+      <ion-icon name="help-circle-outline"></ion-icon>
       </ion-tab-button>
       <ion-tab-button>
         <ion-label>login</ion-label>
