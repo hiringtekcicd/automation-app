@@ -17,11 +17,15 @@ const routes: Routes = [
     path: 'control',
     loadChildren: () => import('./control/control.module').then( m => m.ControlPageModule)
   },
+  {
+    path: 'warnings',
+    loadChildren: () => import('./warnings/warnings.module').then( m => m.WarningsPageModule)
+  },
   
    {
       path: '',
       redirectTo: '/dashboard/monitoring',
-      pathMatch: 'full'
+     pathMatch: 'full'
    }
  ]
 },
@@ -30,6 +34,7 @@ const routes: Routes = [
   redirectTo: '/dashboard/monitoring',
   pathMatch: 'full'
 },
+ 
 
   
 ];
