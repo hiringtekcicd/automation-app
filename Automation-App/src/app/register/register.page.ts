@@ -22,9 +22,10 @@ export class RegisterPage implements OnInit {
       this.form = this.formbuilder.group(
         {
           email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
-          password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6),PasswordStrengthValidator.isValid])),
-          confirmpassword: new FormControl('', Validators.compose([Validators.required,PasswordMatch.MatchPassword ])),
-          
+          passwordGroup: new FormGroup({
+            password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6),PasswordStrengthValidator.isValid])),
+            confirmpassword: new FormControl('', Validators.compose([Validators.required])),
+          }, Validators.compose([PasswordMatch.MatchPassword]))
         }
       ); 
      }
@@ -45,6 +46,7 @@ export class RegisterPage implements OnInit {
     })
   }
   Login(){
+    console.log(this.form);
     this.router.navigateByUrl('/auth')
   }
 
