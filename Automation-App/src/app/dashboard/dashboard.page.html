@@ -4,24 +4,24 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
       <ion-title>Dashboard</ion-title>
-  </ion-toolbar>
-  <!--selecting menu options-->
+  </ion-toolbar> 
   <ion-item color="primary">
-    <ion-select value="system1">
-      <ion-select-option value="system1">System1</ion-select-option>
-      <ion-select-option value="system2">System2</ion-select-option>
-    </ion-select>
-    <ion-select value="grow room1">
-      <ion-select-option value="grow room1">Grow Room1</ion-select-option>
-      <ion-select-option value="grow room2">Grow Room2</ion-select-option>
-    </ion-select>
-    <ion-icon name="add-outline" slot="end"></ion-icon>
-  </ion-item>  
+     <ion-select value="system1"> 
+       <ion-select-option value="system1">System1</ion-select-option>
+       <ion-select-option value="system2">System2</ion-select-option>
+     </ion-select>
+     <ion-select value="grow room1">
+       <ion-select-option value="grow room1">Grow Room1</ion-select-option>
+       <ion-select-option value="grow room2">Grow Room2</ion-select-option>
+     </ion-select>
+   
+   <ion-icon name="add-outline" slot="end"></ion-icon>
+   </ion-item>
+  
 </ion-header>
-<!--navigation from one tab to other tab-->
-<ion-content>
+<ion-content padding>
   <ion-tabs>
-    <ion-tab-bar color="primary" slot="bottom"> 
+    <ion-tab-bar color="primary" slot="top"> 
         <ion-tab-button tab="warnings">
           <ion-label>Warnings</ion-label>
           <ion-icon name="warning-outline"></ion-icon>
@@ -37,4 +37,12 @@
     </ion-tab-bar> 
   </ion-tabs>
 </ion-content>
-  
+
+
+
+
+
+
+
+  <!--selecting menu options-->
+<!--navigation from one tab to other tab-->
