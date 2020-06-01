@@ -1,5 +1,4 @@
-import { FormControl } from '@angular/forms';
-// import {AbstractControl} from '@angular/forms'
+import { FormControl, FormGroup, AbstractControl} from '@angular/forms';
 
 export class PasswordStrengthValidator {
 
@@ -39,19 +38,26 @@ export class PasswordStrengthValidator {
                 message:"Must contain a special character."
             };
         }
+        
         return null;
     }
 
 }
 export class PasswordMatch {
-    static MatchPassword(Control: FormControl) {
-        let password = Control.get('password').value;
-        let confirmpassword = Control.get('confirmpassword').value;
+    static MatchPassword(group: FormGroup) {
+        let password = group.controls.password.value;
+        let confirmpassword = group.controls.confirmpassword.value;;
          if (password != confirmpassword) {
+             console.log('here');
              return{
-                 mismatch: "Passwords donot match"
+                 mismatch: "Passwords do not match"
              }
-             }
+        }
              return null;
         } 
       }
+
+
+ 
+         
+    

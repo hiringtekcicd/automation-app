@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from './auth.service'; //used to trigger the onLogin method
 import { Router } from '@angular/router'; //used to navigate through pages
-import {  FormControl } from '@angular/forms';
+import {  FormControl, NgForm } from '@angular/forms';
 import {LoadingController, ModalController} from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup} from '@angular/forms';
 import {PasswordStrengthValidator} from './password';
@@ -33,7 +33,22 @@ isLogin = true; //set to true as a default
 
   ngOnInit() {
   }
-  
+  onSubmit(form: NgForm){
+    if (!form.valid) //Cannot proceed if the form is invalid.
+    {
+      return;
+    }
+    //If the form is valid, the email and password properties are extracted.
+    const email = form.value.email;
+    const password = form.value.password;
+    
+
+    if(this.isLogin)
+    {
+      //Send a request to login servers
+      this.authService.login();
+    }
+  }
   onLogin()
   {
     this.isLoading = true;
@@ -54,32 +69,11 @@ isLogin = true; //set to true as a default
     this.router.navigateByUrl('/register')
     }  }
   
-  // onSwitch(){
-  //    this.isLogin = !this.isLogin;
-  //   // !this.isLogin? this.router.navigateByUrl('/signup'): this.isLogin ;
-  // }
-  // onSubmit(form: NgForm){
-  //   if (!form.valid) //Cannot proceed if the form is invalid.
-  //   {
-  //     return;
-  //   }
-  //   //If the form is valid, the email and password properties are extracted.
-  //   const email = form.value.email;
-  //   const password = form.value.password;
-
-  //   if(this.isLogin)
-  //   {
-  //     //Send a request to login servers
-  //     this.authService.login();
-  //   }
-  //   else{
-  //     //Send a request to signup servers
-  //     this.authService.signup();
-  //   }
-  // }
-  //   createAccount(){
-  //     this.router.navigateByUrl('/auth/register');
-  //   }
+ 
+ 
+    // createAccount(){
+    //   this.router.navigateByUrl('/auth/register');
+    // }
  
   
 

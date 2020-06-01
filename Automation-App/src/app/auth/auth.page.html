@@ -6,7 +6,7 @@
 
 <ion-content padding> <!--Padding is added to ensure space-->
   <p align="center"> <ion-img style="width: 100px;" src="assets/icon/logo1.jpg"></ion-img></p>
-  <form [formGroup]="formgroup">
+  <form [formGroup]="formgroup" (ngSubmit)=onSubmit()>
     <!--Start of the grid-->
   <ion-grid>
     <ion-row>
@@ -23,7 +23,7 @@
             <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
           <ion-item  *ngIf="formgroup.get('password').hasError('message') && !formgroup.controls.password.valid && formgroup.controls.password.touched" lines='none'>
-           <ion-label color='medium'>{{formgroup.get('password').errors['message']}}</ion-label></ion-item>
+           <ion-label color='danger'>{{formgroup.get('password').errors['message']}}</ion-label></ion-item>
         </ion-list>
       </ion-col>
     </ion-row>
