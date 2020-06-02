@@ -6,9 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./monitoring.page.scss'],
 })
 export class MonitoringPage implements OnInit {
-
+               
   constructor() { }
-
   ngOnInit() {
   }
 

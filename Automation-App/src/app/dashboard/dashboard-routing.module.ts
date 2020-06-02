@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     component: DashboardPage,
     children:[
- //Navigation tab routing or link     
+ //Routing for tabs  
   {
     path: 'monitoring',
     loadChildren: () => import('./monitoring/monitoring.module').then( m => m.MonitoringPageModule)
@@ -22,11 +22,11 @@ const routes: Routes = [
     loadChildren: () => import('./warnings/warnings.module').then( m => m.WarningsPageModule)
   },
   
-   {
-      path: '',
-      redirectTo: '/dashboard/monitoring',
-     pathMatch: 'full'
-   }
+  {
+    path: '',
+    redirectTo: '/dashboard/monitoring',
+    pathMatch: 'full'
+  }
  ]
 },
   {
