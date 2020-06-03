@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService} from './auth.service'; //used to trigger the onLogin method
-import { Router } from '@angular/router'; //used to navigate through pages
-import {  FormControl, NgForm } from '@angular/forms';
-import {LoadingController, ModalController} from '@ionic/angular';
-import { Validators, FormBuilder, FormGroup} from '@angular/forms';
+import {AuthService, AuthResponseData } from './auth.service'; 
+import { Router } from '@angular/router'; 
+import { FormControl} from '@angular/forms'; //Imported to track the value and validation status of an individual form control.
+import {LoadingController, AlertController } from '@ionic/angular'; 
+import { Validators, FormBuilder, FormGroup} from '@angular/forms'; 
 import {PasswordStrengthValidator} from './password';
+import { Observable } from 'rxjs';
 
-// var html = require('signup.html').default
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.page.html',
@@ -16,14 +16,15 @@ export class AuthPage implements OnInit {
 
   formgroup: FormGroup;
   
-isLoading = false; //set to false as a default
-isLogin = true; //set to true as a default
-  constructor( private authService: AuthService, private router : Router, private loadingCtrl: LoadingController,public modalController: ModalController,
-    public formbuilder: FormBuilder) //Parameters injected to trigger the necessary methods
+isLoading = false; //set to false as a default.
+isLogin = true; //set to true as a default.
+  //Parameters injected to trigger the necessary methods.
+  constructor( private authService: AuthService, private router : Router, private loadingCtrl: LoadingController,
+    public formbuilder: FormBuilder, private alertCtrl: AlertController) 
    {
     this.formgroup = this.formbuilder.group(
       {
-        email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
+        email: new FormControl('', Validators.compose([Validators.required, Validators.email])), 
         password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6),PasswordStrengthValidator.isValid]))
       }
     );
@@ -33,47 +34,67 @@ isLogin = true; //set to true as a default
 
   ngOnInit() {
   }
-  onSubmit(form: NgForm){
-    if (!form.valid) //Cannot proceed if the form is invalid.
+  onSubmit(){
+    if (!this.formgroup.valid) //Cannot proceed if the form is invalid.
     {
       return;
     }
     //If the form is valid, the email and password properties are extracted.
-    const email = form.value.email;
-    const password = form.value.password;
-    
-
-    if(this.isLogin)
-    {
-      //Send a request to login servers
-      this.authService.login();
-    }
+    const email = this.formgroup.value['email'];
+    const password = this.formgroup.value.password;
+    this.onLogin(email, password);
   }
-  onLogin()
+  onLogin(email: string, password: string)
   {
     this.isLoading = true;
-    this.loadingCtrl.create({keyboardClose:true, message:'Logging in...'})
-    .then(loadingEl=>{
-      loadingEl.present();
-      
-      setTimeout(()=>{
-        this.isLoading = false;
-        loadingEl.dismiss();
-      }, 1000)
-      // this.authService.login();
-    })
+    this.loadingCtrl
+      .create({ keyboardClose: true, message: 'Logging in...' })
+      .then(loadingEl => {
+        loadingEl.present();
+        //To fetch the AuthResponseData asynchronously, Observable is used here.
+        let authObs: Observable<AuthResponseData>;  
+        if (this.isLogin) {
+          authObs = this.authService.login(email, password);
+        } 
+        //Data is fetched when subscriber function is executed.
+        authObs.subscribe(resData => {
+            console.log(resData);
+            this.isLoading = false;
+            loadingEl.dismiss();
+            console.log('Logged in!!')
+            // this.router.navigateByUrl('/home');
+          },
+          //In case of errors while logging in, custom error messages are displayed.
+          errRes => {
+            loadingEl.dismiss();
+            console.log(errRes);  
+            const code = errRes.error.error.message;
+            let message = 'Could not log you in. Try again.';
+             if (code === 'EMAIL_NOT_FOUND') {
+              message = 'E-Mail address could not be found.';
+            } else if (code === 'INVALID_PASSWORD') {
+              message = 'This password is not correct.';
+            }
+            this.showAlert(message);
+          }
+        );
+      });
    
   }
-  
+  //Alert box display function.
+  private showAlert(message: string) {
+    this.alertCtrl
+      .create({
+        header: 'Authentication failed',
+        message: message,
+        buttons: ['Okay']
+      })
+      .then(alertEl => alertEl.present());
+  }
+    //Navigated to the Signup Page when Sign Up option is selected.
    signUp(){
     this.router.navigateByUrl('/register')
     }  }
-  
- 
- 
-    // createAccount(){
-    //   this.router.navigateByUrl('/auth/register');
-    // }
  
   
 

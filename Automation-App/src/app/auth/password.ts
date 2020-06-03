@@ -1,5 +1,6 @@
-import { FormControl, FormGroup, AbstractControl} from '@angular/forms';
+import { FormControl, FormGroup} from '@angular/forms';
 
+//Password Validator class with custom error messages.
 export class PasswordStrengthValidator {
 
     static isValid(control: FormControl): any {
@@ -43,12 +44,13 @@ export class PasswordStrengthValidator {
     }
 
 }
+
+// Confirm Password Validator class.
 export class PasswordMatch {
     static MatchPassword(group: FormGroup) {
         let password = group.controls.password.value;
         let confirmpassword = group.controls.confirmpassword.value;;
          if (password != confirmpassword) {
-             console.log('here');
              return{
                  mismatch: "Passwords do not match"
              }

@@ -29,8 +29,8 @@ export class AppComponent {
       this.splashScreen.hide();
     });
   }
-  onLogout(){
-    this.authService.logout();
-    this.router.navigateByUrl('/auth');
-  }
+  // onLogout(){
+  //   this.authService.logout();
+  //   this.router.navigateByUrl('/auth');
+  // }
 }

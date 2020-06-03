@@ -14,7 +14,7 @@ import { AuthPage } from './auth.page';
     FormsModule,
     IonicModule,
     AuthPageRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule       //Necessary to use reactive form controls.
   ],
   declarations: [AuthPage]
 })

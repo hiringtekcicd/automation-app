@@ -10,10 +10,6 @@ const routes: Routes = [
     path: '',
     component: AuthPage
   },
-  // {
-  //   path: 'signup',
-  //   component: SignupPage
-  // }
 ];
 
 @NgModule({
