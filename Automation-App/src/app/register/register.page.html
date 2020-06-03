@@ -16,8 +16,6 @@
           <ion-item>
             <ion-label position='floating'>E-mail</ion-label>
             <ion-input type="email" formControlName="email"></ion-input>
-          </ion-item><ion-item  *ngIf="!form.controls.email.valid && form.controls.email.touched" lines='none'>
-            <ion-label color='danger'>Should be a valid email address.</ion-label> 
           </ion-item>
           <div formGroupName="passwordGroup">
             <div class="formGroup">
