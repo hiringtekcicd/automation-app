@@ -10,5 +10,41 @@
   </ion-select>
   <ion-icon name="add-outline" slot="end"></ion-icon>
 </ion-item>
+<ion-content color="primary">
+  <ion-title><h1>System Variables</h1></ion-title>
+    <ion-grid class="no-padding">
+      <ion-row class="no-padding">
+        <ion-col *ngFor ="let system of systems;" size="4" class="no-padding">
+          <ion-card class="circular-monitor">
+            <ion-card-content>
+              <h2>{{system.live}}</h2>
+              <h3>{{system.name}}</h3>
+              <hr color="white">
+              <h4>{{system.value}}</h4>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        </ion-row>
+         <ion-title><h1>GrowRoom Variables</h1></ion-title>
+         <ion-row class="no-padding">
+         <ion-col *ngFor ="let grow of grows" size="4" class="no-padding">
+            <ion-card class="circular-monitor">
+              <ion-card-content>
+              <h2>{{grow.live}}</h2>
+              <h3>{{grow.name}}</h3>
+              <hr color="white">
+              <h4>{{grow.value}}</h4>
+              </ion-card-content>
+            </ion-card>
+         </ion-col>
+         <ion-title><h1>Equipment Status</h1></ion-title>
+         <ion-chip *ngFor ="let specification of specifications">  
+           <ion-icon name="ellipse" color = "danger"></ion-icon>
+           <ion-label>{{specification}}</ion-label>
+          </ion-chip>
+       </ion-row>
+     </ion-grid>
 
+</ion-content>
+  
   

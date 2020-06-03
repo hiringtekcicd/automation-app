@@ -1,0 +1,23 @@
+.circular-monitor {
+    border-radius: 100%;
+	position: relative;
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    background-color: rgba(0, 104, 0, 0.747);
+    margin-top: 5px;
+    color: white;
+    border: 3px solid greenyellow
+}
+
+.circular-monitor:before {
+	content: "";
+	float: left;
+	padding-top: 100%; 	
+}
+
+.no-padding {
+    padding: 0px;
+}
+
+
