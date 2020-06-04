@@ -51,7 +51,6 @@ isLogin = true; //set to true as a default.
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
         loadingEl.present();
-        // console.log('hello');
         //To fetch the AuthResponseData asynchronously, Observable is used here.
         let authObs: Observable<AuthResponseData>;  
         if (this.isLogin) {
@@ -68,7 +67,6 @@ isLogin = true; //set to true as a default.
           //In case of errors while logging in, custom error messages are displayed.
           errRes => {
             loadingEl.dismiss();
-            // console.log(email);
             console.log(errRes);  
             const code = errRes.error.error.message;
             let message = 'Could not log you in. Try again.';
