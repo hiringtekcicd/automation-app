@@ -9,19 +9,23 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   //Lazyloading is used to load pages.
-  {path: 'auth', loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule) }, 
+  {
+    path: 'auth', 
+    loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule) 
+  }, 
   {
     path: 'register',
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
-
-  // {path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule) }
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },
 ];
-
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
