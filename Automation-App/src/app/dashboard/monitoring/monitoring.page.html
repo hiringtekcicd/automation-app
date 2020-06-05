@@ -17,10 +17,10 @@
         <ion-col *ngFor ="let system of systems;" size="4" class="no-padding">
           <ion-card class="circular-monitor">
             <ion-card-content>
-              <h2>{{system.live}}</h2>
-              <h3>{{system.name}}</h3>
+              <h2>{{system.title}}</h2>
+              <h3>{{system.range}}</h3>
               <hr color="white">
-              <h4>{{system.value}}</h4>
+              <h4>{{system.current_val}}</h4>
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -30,10 +30,10 @@
          <ion-col *ngFor ="let grow of grows" size="4" class="no-padding">
             <ion-card class="circular-monitor">
               <ion-card-content>
-              <h2>{{grow.live}}</h2>
-              <h3>{{grow.name}}</h3>
+              <h2>{{grow.title}}</h2>
+              <h3>{{grow.range}}</h3>
               <hr color="white">
-              <h4>{{grow.value}}</h4>
+              <h4>{{grow.current_val}}</h4>
               </ion-card-content>
             </ion-card>
          </ion-col>
