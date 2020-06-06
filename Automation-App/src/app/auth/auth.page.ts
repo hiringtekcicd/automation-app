@@ -62,7 +62,7 @@ isLogin = true; //set to true as a default.
             this.isLoading = false;
             loadingEl.dismiss();
             console.log('Logged in!!')
-            // this.router.navigateByUrl('/home');
+            this.router.navigateByUrl('/dashboard');
           },
           //In case of errors while logging in, custom error messages are displayed.
           errRes => {

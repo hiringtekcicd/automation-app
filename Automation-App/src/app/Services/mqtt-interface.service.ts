@@ -10,8 +10,8 @@ declare const document: any;
 export class MqttInterfaceService {
 
 
-  private status: string[] = ['connecting', 'reconnecting', 'connected', 'disconnected'];
-  public mqttStatus = new BehaviorSubject(status[0]);
+  private status: string[] = ['connecting', 'connected', 'disconnected'];
+  public mqttStatus = new BehaviorSubject(status[2]);
   public client: any;
   private scripts: any = {};
   private ScriptStore: Scripts[] = [
@@ -68,7 +68,6 @@ export class MqttInterfaceService {
   }
 
   public createClient(
-    onConnectFailure,
     onConnectionLost,
     onMessageArrived, 
     TOPIC: string[], 
@@ -86,10 +85,10 @@ export class MqttInterfaceService {
       return this.client.connect(
         {
           onSuccess: this._onConnect.bind(this, TOPIC),
-          onFailure: onConnectFailure.bind(this, TOPIC)
+          onFailure: this._onConnectionFailure.bind(this)
       });
     }).catch(error => {
-      console.log(error);
+   
     })
   };
 
@@ -110,28 +109,21 @@ export class MqttInterfaceService {
     this.client.publish(message);
   }
 
-
-  public sendMessage(topic: string, playload: string, qos?: number, retained?: boolean): void {
-    console.log('msg, topic', topic, playload);
-    var message = new Paho.Message(playload);
-    message.topic = topic;
-    qos ? message.qos = qos : undefined;
-    qos ? message.retained = retained : undefined;
-    this.client.send(message);
-  };
-
-
   private _onConnect(topic: string[]) {
     topic.forEach((tp) => {
       this.client.subscribe(tp);
     });
-    this.mqttStatus.next(this.status[2]);
+    this.mqttStatus.next(this.status[1]);
     return this.client;
   }
 
-  public disconnectClient(){
+  _onConnectionFailure(){
+    console.log("Error");
+  }
+
+  public disconnectClient() {
     this.client.disconnect();
-    this.mqttStatus.next(this.status[3]);
+    this.mqttStatus.next(this.status[2]);
   }
 }
 

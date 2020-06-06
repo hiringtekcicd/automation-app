@@ -55,7 +55,7 @@ export class RegisterPage implements OnInit {
           this.isLoading = false;
           loadingEl.dismiss();
           console.log('Signed in!!')
-          // this.router.navigateByUrl('/home');
+          this.router.navigateByUrl('/dashboard');
         },
         //In case of errors while signing up, custom error messages are displayed.
         errRes => {
