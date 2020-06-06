@@ -66,8 +66,8 @@ export class MqttInterfaceService {
           }
       });
   }
-
-  public createClient(
+  //declaration.
+  public createClient( 
     onConnectFailure,
     onConnectionLost,
     onMessageArrived, 
@@ -78,6 +78,7 @@ export class MqttInterfaceService {
       clientId: string,
       path?: string,
     }): any {
+      //Client connection status
     return this._load('paho_mqtt').then(data => {
       this.mqttStatus.next(this.status[0]);
       this.client = new Paho.Client(MQTT_CONFIG.host, Number(MQTT_CONFIG.port), MQTT_CONFIG.path || "/mqtt", MQTT_CONFIG.clientId);
@@ -92,7 +93,7 @@ export class MqttInterfaceService {
       console.log(error);
     })
   };
-
+  //Message sent from client to broker
   public publishMessage(topic: string, playload: string, qos?: number, retained?: boolean): void {
       console.log('msg, topic', topic, playload);
       var message = new Paho.Message(playload);
@@ -101,7 +102,7 @@ export class MqttInterfaceService {
       qos ? message.retained = retained : false;
       this.client.publish(message);
     };
-
+  //Updated message of the subscribed topic
   public publishUpdate(topic: string, payload: string): void {
     var message = new Paho.Message(payload);
     message.topic = topic;
@@ -110,7 +111,7 @@ export class MqttInterfaceService {
     this.client.publish(message);
   }
 
-
+  //Sends message to clients of  the subscribed topic
   public sendMessage(topic: string, playload: string, qos?: number, retained?: boolean): void {
     console.log('msg, topic', topic, playload);
     var message = new Paho.Message(playload);
@@ -120,7 +121,7 @@ export class MqttInterfaceService {
     this.client.send(message);
   };
 
-
+  //Messages received after connection is established
   private _onConnect(topic: string[]) {
     topic.forEach((tp) => {
       this.client.subscribe(tp);
@@ -128,7 +129,7 @@ export class MqttInterfaceService {
     this.mqttStatus.next(this.status[2]);
     return this.client;
   }
-
+  //Disconnected status
   public disconnectClient(){
     this.client.disconnect();
     this.mqttStatus.next(this.status[3]);
