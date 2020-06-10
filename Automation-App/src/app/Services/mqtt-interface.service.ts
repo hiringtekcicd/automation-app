@@ -10,8 +10,8 @@ declare const document: any;
 export class MqttInterfaceService {
 
 
-  private status: string[] = ['connecting', 'reconnecting', 'connected', 'disconnected'];
-  public mqttStatus = new BehaviorSubject(status[0]);
+  private status: string[] = ['connecting', 'connected', 'disconnected'];
+  public mqttStatus = new BehaviorSubject(status[2]);
   public client: any;
   private scripts: any = {};
   private ScriptStore: Scripts[] = [
@@ -66,9 +66,8 @@ export class MqttInterfaceService {
           }
       });
   }
-  //declaration.
-  public createClient( 
-    onConnectFailure,
+
+  public createClient(
     onConnectionLost,
     onMessageArrived, 
     TOPIC: string[], 
@@ -78,7 +77,6 @@ export class MqttInterfaceService {
       clientId: string,
       path?: string,
     }): any {
-      //Client connection status
     return this._load('paho_mqtt').then(data => {
       this.mqttStatus.next(this.status[0]);
       this.client = new Paho.Client(MQTT_CONFIG.host, Number(MQTT_CONFIG.port), MQTT_CONFIG.path || "/mqtt", MQTT_CONFIG.clientId);
@@ -87,13 +85,13 @@ export class MqttInterfaceService {
       return this.client.connect(
         {
           onSuccess: this._onConnect.bind(this, TOPIC),
-          onFailure: onConnectFailure.bind(this, TOPIC)
+          onFailure: this._onConnectionFailure.bind(this)
       });
     }).catch(error => {
-      console.log(error);
+   
     })
   };
-  //Message sent from client to broker
+
   public publishMessage(topic: string, playload: string, qos?: number, retained?: boolean): void {
       console.log('msg, topic', topic, playload);
       var message = new Paho.Message(playload);
@@ -102,7 +100,7 @@ export class MqttInterfaceService {
       qos ? message.retained = retained : false;
       this.client.publish(message);
     };
-  //Updated message of the subscribed topic
+
   public publishUpdate(topic: string, payload: string): void {
     var message = new Paho.Message(payload);
     message.topic = topic;
@@ -111,28 +109,21 @@ export class MqttInterfaceService {
     this.client.publish(message);
   }
 
-  //Sends message to clients of  the subscribed topic
-  public sendMessage(topic: string, playload: string, qos?: number, retained?: boolean): void {
-    console.log('msg, topic', topic, playload);
-    var message = new Paho.Message(playload);
-    message.topic = topic;
-    qos ? message.qos = qos : undefined;
-    qos ? message.retained = retained : undefined;
-    this.client.send(message);
-  };
-
-  //Messages received after connection is established
   private _onConnect(topic: string[]) {
     topic.forEach((tp) => {
       this.client.subscribe(tp);
     });
-    this.mqttStatus.next(this.status[2]);
+    this.mqttStatus.next(this.status[1]);
     return this.client;
   }
-  //Disconnected status
-  public disconnectClient(){
+
+  _onConnectionFailure(){
+    console.log("Error");
+  }
+
+  public disconnectClient() {
     this.client.disconnect();
-    this.mqttStatus.next(this.status[3]);
+    this.mqttStatus.next(this.status[2]);
   }
 }
 
