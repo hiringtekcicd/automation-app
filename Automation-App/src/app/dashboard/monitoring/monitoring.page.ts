@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Display} from '../display';
+import { MqttInterfaceService } from '/automation/automation-app/Automation-App/src/app/Services/mqtt-interface.service';
+import { skip } from 'rxjs/operators';
 
 @Component({
   selector: 'app-monitoring',
@@ -8,6 +10,7 @@ import {Display} from '../display';
 })
 export class MonitoringPage implements OnInit {
 
+   livereadings :number;
   ph: Display = new Display('pH','5.1-5.9',12);
   Ec: Display = new Display('EC','1.5-2.2',1);
   Water_temp: Display =  new Display('watertemp','22-33',0.5);
@@ -20,41 +23,44 @@ export class MonitoringPage implements OnInit {
 
   public specifications =[ "Humidifier" , "Fan 2" ,"pH Probe","Grow Lights","EC Probe","Water Temp Probe"] ;               
 
-   constructor() { } 
-   ngOnInit() {}
-  // MQTT_CONFIG: {
-  //   host: string,
-  //   port: number,
-  //   clientId: string,
-  //   path?: string,
-  // } =  {
-  //   host: '192.168.1.16',
-  //   port: 9001,
-  //   clientId: 'Test',
-  // }
+  //  constructor() { } 
+   ngOnInit() {};
+  MQTT_CONFIG: {
+    host: string,
+    port: number,
+    clientId: string,
+    path?: string,
+  } =  {
+    host: '70.94.9.135',
+    port: 9001,
+    clientId: 'Test',
+  }
 
-  // TOPIC: string[] = ['esp32(system1)/distance'];
+  TOPIC: string[] = ['pH'];
 
-  // constructor(private mqttService: MqttInterfaceService) {
-  //   this.mqttService.mqttStatus.pipe(skip(1)).subscribe(status => {
-  //     console.log(status);
-  //   })
-  //   this.mqttService.createClient(this.onConnectionLost, this.onMessageArrived, this.TOPIC, this.MQTT_CONFIG);
+  constructor(private mqttService: MqttInterfaceService) {
+    this.mqttService.mqttStatus.pipe(skip(1)).subscribe(status => {
+      console.log(status);
+    })
+    this.mqttService.createClient(this.onConnectionLost, this.onMessageArrived, this.TOPIC, this.MQTT_CONFIG);
     
-  // }
+  }
 
-  // onConnectionLost(ResponseObject){
-  //   console.log(ResponseObject);
-  // }
+  onConnectionLost(ResponseObject){
+    console.log(ResponseObject);
+  }
+   
+  onMessageArrived(ResponseObject){
+     this.livereadings = ResponseObject.payloadString
+     console.log(this.livereadings);
+    // this.mqttService.MessageArrived();
+   }
 
-  // onMessageArrived(ResponseObject){
-  //   console.log(ResponseObject.payloadString);
-  // }
-
-  // onPublishMessage(){
-  //   console.log("hello");
-  //   this.mqttService.publishMessage(this.TOPIC[0], 'Hello');
-  // }
-
+  onPublishMessage(){
+    // var name : number;
+    // console.log('hello');
+    // this.name = ['7']  
+    this.mqttService.publishMessage(this.TOPIC[0], 'hello');    
+  }
 
 }
