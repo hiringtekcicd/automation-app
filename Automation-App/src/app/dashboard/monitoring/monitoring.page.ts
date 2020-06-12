@@ -53,8 +53,9 @@ export class MonitoringPage implements OnInit {
   onMessageArrived( ResponseObject){
      this.livereadings = ResponseObject.payloadString
      console.log(this.livereadings);
-     document.getElementById("ResponseObject").innerHTML  += this.livereadings;
+    document.getElementById("123").innerHTML  += this.livereadings;
    }
+
 
   onPublishMessage(){
     // var name : number;
