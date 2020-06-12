@@ -49,11 +49,11 @@ export class MonitoringPage implements OnInit {
   onConnectionLost(ResponseObject){
     console.log(ResponseObject);
   }
-   
-  onMessageArrived(ResponseObject){
+  
+  onMessageArrived( ResponseObject){
      this.livereadings = ResponseObject.payloadString
      console.log(this.livereadings);
-    // this.mqttService.MessageArrived();
+     
    }
 
   onPublishMessage(){

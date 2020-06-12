@@ -16,11 +16,12 @@
       <ion-row class="no-padding">
         <ion-col *ngFor ="let system of systems;" size="4" class="no-padding">
           <ion-card class="circular-monitor" >
-            <ion-card-content (click)="onPublishMessage()" >
+            <ion-card-content (click)="onMessageArrived()" >
               <h2 >{{system.current_val}}</h2>
               <h2>{{system.title}}</h2>
               <hr color="white">
-               <h6 (click)="onMessageArrived()">{{this.livereadings}}</h6> 
+              <ion-button (click)="onMessageArrived()">{{livereadings}}</ion-button>
+               <!-- <h6 (click)="onPublishMessage(onMessageArrived())"></h6>  -->
               <h4>{{system.range}}</h4>
             </ion-card-content>
           </ion-card>
