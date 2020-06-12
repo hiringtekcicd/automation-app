@@ -10,7 +10,7 @@ import { skip } from 'rxjs/operators';
 })
 export class MonitoringPage implements OnInit {
 
-   livereadings :number;
+   livereadings :string;
   ph: Display = new Display('pH','5.1-5.9',12);
   Ec: Display = new Display('EC','1.5-2.2',1);
   Water_temp: Display =  new Display('watertemp','22-33',0.5);
@@ -49,11 +49,11 @@ export class MonitoringPage implements OnInit {
   onConnectionLost(ResponseObject){
     console.log(ResponseObject);
   }
-  
+ 
   onMessageArrived( ResponseObject){
      this.livereadings = ResponseObject.payloadString
      console.log(this.livereadings);
-     
+     document.getElementById("ResponseObject").innerHTML  += this.livereadings;
    }
 
   onPublishMessage(){
