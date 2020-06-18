@@ -1,41 +1,39 @@
 <!--selecting menu options-->
 <ion-item color="primary">
-  <ion-select value="system1"> 
-    <ion-select-option value="system1">System1</ion-select-option>
-    <ion-select-option value="system2">System2</ion-select-option>
+  <ion-select #systemValue [(ngModel)]="systemID" (ionChange)="changeSystem(systemValue.value)"> 
+    <ion-select-option *ngFor="let systemVariable of variableManagentService.systems" [value]="systemVariable">{{ systemVariable }}</ion-select-option>
   </ion-select>
-  <ion-select value="grow room1">
-    <ion-select-option value="grow room1">Grow Room1</ion-select-option>
-    <ion-select-option value="grow room2">Grow Room2</ion-select-option>
+  <ion-select #growRoomValue [(ngModel)]="growRoomID" (ionChange)="changeGrowRoom(growRoomValue.value)">
+    <ion-select-option *ngFor="let growRoomVariable of variableManagentService.growRooms" [value]="growRoomVariable">{{ growRoomVariable }}</ion-select-option>
   </ion-select>
   <ion-icon name="add-outline" slot="end"></ion-icon>
 </ion-item>
+
 <ion-content color="primary">
   <ion-title><h1>System Variables</h1></ion-title>
     <ion-grid class="no-padding">
       <ion-row class="no-padding">
-        <ion-col *ngFor ="let system of systems;" size="4" class="no-padding">
-          <ion-card class="circular-monitor" >
-            <ion-card-content (click)="onMessageArrived()" >
-              <h2 >{{system.current_val}}</h2>
-              <h2>{{system.title}}</h2>
+        <ion-col *ngFor ="let systemVariable of variableManagentService.systemVariableDisplays" size="4" class="no-padding">
+          <ion-card class="circular-monitor">
+            <ion-card-content class="card_content">
+              <h2 >{{systemVariable.current_val}}</h2>
+              <h2>{{systemVariable.title}}</h2>
               <hr color="white">
               <div id = "123"></div>
-              <!-- <ion-button (click)="onMessageArrived()">{{livereadings}}</ion-button> -->
-              <h4>{{system.range}}</h4>
+              <h4>{{systemVariable.range}}</h4>
             </ion-card-content>
           </ion-card>
         </ion-col>
         </ion-row>
          <ion-title><h1>GrowRoom Variables</h1></ion-title>
          <ion-row class="no-padding">
-         <ion-col *ngFor ="let grow of grows" size="4" class="no-padding">
+         <ion-col *ngFor ="let growRoomVariable of variableManagentService.growRoomVariableDisplays" size="4" class="no-padding">
             <ion-card class="circular-monitor">
-              <ion-card-content>
-              <h2>{{grow.current_val}}</h2>
-              <h3>{{grow.title}}</h3>
+              <ion-card-content class="card_content">
+              <h2>{{growRoomVariable.current_val}}</h2>
+              <h3>{{growRoomVariable.title}}</h3>
               <hr color="white">
-              <h4>{{grow.range}}</h4>
+              <h4>{{growRoomVariable.range}}</h4>
               </ion-card-content>
             </ion-card>
          </ion-col>

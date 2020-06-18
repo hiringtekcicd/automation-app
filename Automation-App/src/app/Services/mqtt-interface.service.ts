@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from 'rxjs';
+import { VariableManagementService } from '../variable-management.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 declare const Paho: any;
@@ -12,6 +14,7 @@ export class MqttInterfaceService {
 
   private status: string[] = ['connecting', 'connected', 'disconnected'];
   public mqttStatus = new BehaviorSubject(status[2]);
+  public sensorLiveData = new BehaviorSubject({topic: "", data: "0"});
   public client: any;
   private scripts: any = {};
   private ScriptStore: Scripts[] = [
@@ -20,7 +23,7 @@ export class MqttInterfaceService {
     }
   ];
 
-  constructor() {
+  constructor(private variableManagementService: VariableManagementService, private router: ActivatedRoute) {
     this.ScriptStore.forEach((script: any) => {
         this.scripts[script.name] = {
             loaded: false,
@@ -69,7 +72,6 @@ export class MqttInterfaceService {
 
   public createClient(
     onConnectionLost,
-    onMessageArrived, 
     TOPIC: string[], 
     MQTT_CONFIG: {
       host: string,
@@ -81,7 +83,7 @@ export class MqttInterfaceService {
       this.mqttStatus.next(this.status[0]);
       this.client = new Paho.Client(MQTT_CONFIG.host, Number(MQTT_CONFIG.port), MQTT_CONFIG.path || "/mqtt", MQTT_CONFIG.clientId);
       this.client.onConnectionLost = onConnectionLost.bind(this);
-      this.client.onMessageArrived = onMessageArrived.bind(this);
+      this.client.onMessageArrived = this.onMessageArrived.bind(this);
       return this.client.connect(
         {
           onSuccess: this._onConnect.bind(this, TOPIC),
@@ -100,6 +102,17 @@ export class MqttInterfaceService {
       qos ? message.retained = retained : false;
       this.client.publish(message);
     };
+
+    onMessageArrived(ResponseObject) {
+      console.log(ResponseObject);
+      var topicParam = ResponseObject.topic.split("/", 3);
+      if(this.router.snapshot.paramMap.get('systemid')){
+         
+      }
+      
+      this.sensorLiveData.next({topic: ResponseObject.topic, data: ResponseObject.payloadString});
+      }
+    
 
   public publishUpdate(topic: string, payload: string): void {
     var message = new Paho.Message(payload);
@@ -132,3 +145,5 @@ interface Scripts {
    name: string;
    src: string;
 }
+
+
