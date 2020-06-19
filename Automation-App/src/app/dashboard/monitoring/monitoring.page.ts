@@ -14,6 +14,8 @@ export class MonitoringPage implements OnInit {
 
   systemID: string;
   growRoomID: string;
+  systemTimeStamp: string;
+  growRoomTimeStamp: string;
 
   public specifications = [
     "Humidifier",
@@ -35,12 +37,15 @@ export class MonitoringPage implements OnInit {
     clientId: "Test",
   };
 
-  TOPIC: string[] = ["system1/sensors/ph"];
+  TOPIC: string[] = ["#"];
 
   constructor(private mqttService: MqttInterfaceService, public variableManagentService: VariableManagementService, public route: ActivatedRoute, private router: Router) {
+    // Log MQTT Status
     this.mqttService.mqttStatus.pipe(skip(1)).subscribe((status) => {
       console.log(status);
     });
+
+    // Create MQTT Client, connect to broker and subscribe to topics
     this.mqttService.createClient(
       this.onConnectionLost,
       this.TOPIC,
@@ -54,19 +59,40 @@ export class MonitoringPage implements OnInit {
   ngOnInit() {
     // Set Default Grow Room and System
     this.variableManagentService.updateVariables(null, null);
-    this.mqttService.sensorLiveData.subscribe(resData => {
-      // TODO: Identify if data is grow room or nft system variable.
-      for(var i = 0; i < this.variableManagentService.systemVariableDisplays.length; i++){
-        if(this.variableManagentService.systemVariableDisplays[i].title == resData.topic){
-          this.variableManagentService.systemVariableDisplays[i].current_val = resData.data;
-          break;
+
+    this.mqttService.systemLiveData.subscribe(resData => {
+      // Try parsing system MQTT string as JSON Data
+      try{
+        var jsonSensorData = JSON.parse(resData);
+        // Store Time Stamp of Message
+        this.systemTimeStamp = Object.keys(jsonSensorData)[0];
+        // Store sensor values into Display Objects to update UI
+        for(var i = 0; i < this.variableManagentService.systemVariableDisplays.length; i++){
+          if(jsonSensorData[this.systemTimeStamp][this.variableManagentService.systemVariableDisplays[i].title]){
+            this.variableManagentService.systemVariableDisplays[i].current_val = jsonSensorData[this.systemTimeStamp][this.variableManagentService.systemVariableDisplays[i].title];
+          }
         }
       }
-      for(var i = 0; i < this.variableManagentService.growRoomVariableDisplays.length; i++){
-        if(this.variableManagentService.growRoomVariableDisplays[i].title == resData.topic){
-          this.variableManagentService.growRoomVariableDisplays[i].current_val = resData.data;
-          break;
+      catch(error){
+        console.log(error);
+      }
+    });
+
+    this.mqttService.growRoomLiveData.subscribe(resData => {
+      // Try parsing growRoom MQTT string as JSON Data
+      try{
+        var jsonSensorData = JSON.parse(resData);
+        // Store Time Stamp of Message
+        this.growRoomTimeStamp = Object.keys(jsonSensorData)[0];
+        // Store sensor values into Display Objects to update UI
+        for(var i = 0; i < this.variableManagentService.growRoomVariableDisplays.length; i++){
+          if(jsonSensorData[this.growRoomTimeStamp][this.variableManagentService.growRoomVariableDisplays[i].title]){
+            this.variableManagentService.growRoomVariableDisplays[i].current_val = jsonSensorData[this.growRoomTimeStamp][this.variableManagentService.growRoomVariableDisplays[i].title];
+          }
         }
+      }
+      catch(error){
+        console.log(error);
       }
     });
 

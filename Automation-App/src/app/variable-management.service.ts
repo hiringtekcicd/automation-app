@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 export class VariableManagementService {
 
   public data: any;
-  
+
   public growRoomVariableDisplays: Display[] = []; 
   public systemVariableDisplays: Display[] = [];
 
@@ -22,8 +22,6 @@ export class VariableManagementService {
 
   public fetchBotData(){
     // Pull Data from Database
-    console.log("here");
-
     //sampe JSON Data for Monitoring Page
     this.data = {
       "GrowRoom1": {
@@ -151,7 +149,6 @@ export class VariableManagementService {
     // Push systemIDs into systems array
     for(var key in this.data[growRoomID].systems){
       this.systems.push(key);
-      console.log(this.systems);
     }
 
     // Push grow room display information into growRoomVariableDisplays Array

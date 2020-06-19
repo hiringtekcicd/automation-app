@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from 'rxjs';
 import { VariableManagementService } from '../variable-management.service';
-import { Router, ActivatedRoute } from '@angular/router';
 
 
 declare const Paho: any;
@@ -11,11 +10,14 @@ declare const document: any;
 
 export class MqttInterfaceService {
 
-
   private status: string[] = ['connecting', 'connected', 'disconnected'];
   public mqttStatus = new BehaviorSubject(status[2]);
-  public sensorLiveData = new BehaviorSubject({topic: "", data: "0"});
+
+  public systemLiveData = new BehaviorSubject<string>(null);
+  public growRoomLiveData = new BehaviorSubject<string>(null);
+
   public client: any;
+
   private scripts: any = {};
   private ScriptStore: Scripts[] = [
     {
@@ -23,7 +25,7 @@ export class MqttInterfaceService {
     }
   ];
 
-  constructor(private variableManagementService: VariableManagementService, private router: ActivatedRoute) {
+  constructor(private variableManagementService: VariableManagementService) {
     this.ScriptStore.forEach((script: any) => {
         this.scripts[script.name] = {
             loaded: false,
@@ -105,12 +107,21 @@ export class MqttInterfaceService {
 
     onMessageArrived(ResponseObject) {
       console.log(ResponseObject);
-      var topicParam = ResponseObject.topic.split("/", 3);
-      if(this.router.snapshot.paramMap.get('systemid')){
-         
+      // Split TOPIC URL to extract IDs
+      var topicParam = ResponseObject.topic.split("/", 4);
+      // Check if incoming data is for selected grow room and system
+      if(topicParam[0] == this.variableManagementService.selectedGrowRoom){
+        if(topicParam[1] == "systems"){
+          if(topicParam[2] == this.variableManagementService.selectedSystem.value){
+            // Update selected system live data
+            this.systemLiveData.next(ResponseObject.payloadString);
+          }
+        }
+        if(topicParam[1] == "grow_room_variables"){
+          // Update selected grow room live data
+          this.growRoomLiveData.next(ResponseObject.payloadString);
+        }
       }
-      
-      this.sensorLiveData.next({topic: ResponseObject.topic, data: ResponseObject.payloadString});
       }
     
 
