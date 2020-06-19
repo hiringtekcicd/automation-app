@@ -16,6 +16,8 @@ export class MqttInterfaceService {
   public systemLiveData = new BehaviorSubject<string>(null);
   public growRoomLiveData = new BehaviorSubject<string>(null);
 
+  private status: string[] = ['connecting', 'connected', 'disconnected'];
+  public mqttStatus = new BehaviorSubject(status[2]);
   public client: any;
 
   private scripts: any = {};

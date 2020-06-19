@@ -1,14 +1,26 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+// import { HomePage } from './home/home.page';
 
 const routes: Routes = [
-{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
- 
+  {
+    path: '',
+    redirectTo: 'auth',
+    pathMatch: 'full'
+  },
+  //Lazyloading is used to load pages.
+  {
+    path: 'auth', 
+    loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule) 
+  }, 
+  {
+    path: 'register',
+    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
+  },
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
   },
-
 ];
 @NgModule({
   imports: [

@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Sign Up</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <p align="center"> <ion-img style="width: 100px;" src="assets/icon/logo1.jpg"></ion-img></p>
+  <!--Start of the form.-->
+  <form [formGroup]="form" (ngSubmit)='onSubmit(form)'>
+    <!--Start of the grid.-->
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md='6' offset-md="3">
+        <ion-list>
+          <ion-item>
+            <ion-label position='floating'>E-mail</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+          <div formGroupName="passwordGroup">
+            <div class="formGroup">
+              <ion-item>
+               <ion-label position="floating">Password</ion-label>
+               <ion-input clearOnEdit="false" type="password" formControlName="password"></ion-input>
+               </ion-item>
+            <ion-item  *ngIf="form.get('passwordGroup.password').hasError('message') && !form.controls.passwordGroup.get('password').valid && form.controls.passwordGroup.get('password').touched" lines='none'>
+              <ion-label color='danger'>{{form.get('passwordGroup.password').errors['message']}}</ion-label>
+             </ion-item>
+            </div>
+
+          <div class="formGroup">
+           <ion-item>
+            <ion-label position="floating">Confirm Password</ion-label>
+            <ion-input clearOnEdit="false" type="password" formControlName="confirmpassword"></ion-input>
+          </ion-item>
+          <ion-item  *ngIf="form.get('passwordGroup.confirmpassword').hasError('message')  && form.get('passwordGroup.confirmpassword').touched && form.controls.passwordGroup.hasError('mismatch')" lines='none'>
+            <!--If Confirm Password is not same as the Password, the custom error message is shown.-->
+            <ion-label color='danger'>{{form.get('passwordGroup').errors['mismatch']}}</ion-label>
+          </ion-item>
+        </div>
+      </div>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-md='6' offset-md="3">
+        <div style="display: flex; justify-content: center;">
+          <ion-button type='submit' color="primary" [disabled]='!form.valid'>
+            Sign Up
+          </ion-button>
+        </div><br/>
+        <ion-label style="display: flex; justify-content: center;">Already have an account?</ion-label>
+        <div style="display: flex; justify-content: center;">
+          <ion-button type='button' color="primary" fill='clear' (click)="onSwitch()">Login</ion-button> 
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</form>
+</ion-content>
