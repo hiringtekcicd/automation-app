@@ -37,6 +37,14 @@ export class MonitoringPage implements OnInit {
     clientId: "Test",
   };
 
+  systemAlertOptions: any = {
+    header: "System Name"
+  }
+
+  growRoomAlertOptions: any = {
+    header: "Grow Room Name"
+  }
+
   TOPIC: string[] = ["#"];
 
   constructor(private mqttService: MqttInterfaceService, public variableManagentService: VariableManagementService, public route: ActivatedRoute, private router: Router) {
