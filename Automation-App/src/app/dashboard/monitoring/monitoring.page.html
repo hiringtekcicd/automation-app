@@ -1,43 +1,33 @@
 <!--selecting menu options-->
 <ion-item color="primary">
-  <ion-select
-    #growRoomValue
-    [interfaceOptions]="growRoomAlertOptions"
-    class="dropdown"
-    [(ngModel)]="growRoomID"
-    (ionChange)="changeGrowRoom(growRoomValue.value)"
-  >
-    <ion-select-option
-      *ngFor="let growRoomVariable of variableManagentService.growRooms"
-      [value]="growRoomVariable"
-      >{{ growRoomVariable }}</ion-select-option
-    >
+  <ion-select #growRoomValue [interfaceOptions]="growRoomAlertOptions" class="dropdown" [(ngModel)]="growRoomID"
+    (ionChange)="changeGrowRoom(growRoomValue.value)">
+    <ion-select-option *ngFor="let growRoomVariable of variableManagentService.growRooms" [value]="growRoomVariable">
+      {{ growRoomVariable }}</ion-select-option>
   </ion-select>
-  <ion-select
-    [interfaceOptions]="systemAlertOptions"
-    class="dropdown"
-    #systemValue
-    [(ngModel)]="systemID"
-    (ionChange)="changeSystem(systemValue.value)"
-  >
-    <ion-select-option
-      *ngFor="let systemVariable of variableManagentService.systems"
-      [value]="systemVariable"
-      >{{ systemVariable }}</ion-select-option
-    >
+  <ion-select [interfaceOptions]="systemAlertOptions" class="dropdown" #systemValue [(ngModel)]="systemID"
+    (ionChange)="changeSystem(systemValue.value)">
+    <ion-select-option *ngFor="let systemVariable of variableManagentService.systems" [value]="systemVariable">
+      {{ systemVariable }}</ion-select-option>
   </ion-select>
   <ion-icon name="add-outline" slot="end"></ion-icon>
 </ion-item>
 
 <ion-content>
-  <ion-title><h3>System Variables</h3></ion-title>
   <ion-grid class="no-padding">
     <ion-row class="no-padding">
-      <ion-col
-        *ngFor="let systemVariable of variableManagentService.systemVariableDisplays"
-        size="4"
-        class="no-padding"
-      >
+      <ion-col size="7">
+        <ion-title class="no-padding">
+          <h2 class="title">System Variables</h2>
+        </ion-title>
+      </ion-col>
+      <ion-col size="5">
+        <h2 class="title">{{ systemTimeStamp }}</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row class="no-padding">
+      <ion-col *ngFor="let systemVariable of variableManagentService.systemVariableDisplays" size="4"
+        class="no-padding">
         <ion-card class="circular-monitor">
           <ion-card-content class="card_content">
             <h2>{{systemVariable.current_val}}</h2>
@@ -48,13 +38,19 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    <ion-title><h3>GrowRoom Variables</h3></ion-title>
     <ion-row class="no-padding">
-      <ion-col
-        *ngFor="let growRoomVariable of variableManagentService.growRoomVariableDisplays"
-        size="4"
-        class="no-padding"
-      >
+      <ion-col size="8">
+        <ion-title class="no-padding">
+          <h2 class="title">Grow Room Variables</h2>
+        </ion-title>
+      </ion-col>
+      <ion-col size="4">
+        <h2 class="title">{{ growRoomTimeStamp }}</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row class="no-padding">
+      <ion-col *ngFor="let growRoomVariable of variableManagentService.growRoomVariableDisplays" size="4"
+        class="no-padding">
         <ion-card class="circular-monitor">
           <ion-card-content class="card_content">
             <h2>{{growRoomVariable.current_val}}</h2>
@@ -65,7 +61,13 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    <ion-title><h3>Equipment Status</h3></ion-title>
+    <ion-row class="no-padding">
+      <ion-col>
+        <ion-title class="no-padding">
+          <h2 class="title">Equipment Status</h2>
+        </ion-title>
+      </ion-col>
+    </ion-row>
     <ion-row class="no-padding">
       <ion-chip *ngFor="let specification of specifications">
         <ion-icon name="ellipse" color="danger"></ion-icon>
