@@ -110,7 +110,7 @@ export class MqttInterfaceService {
       // Split TOPIC URL to extract IDs
       var topicParam = ResponseObject.topic.split("/", 4);
       // Check if incoming data is for selected grow room and system
-      if(topicParam[0] == this.variableManagementService.selectedGrowRoom){
+      if(topicParam[0] == this.variableManagementService.selectedGrowRoom.value){
         if(topicParam[1] == "systems"){
           if(topicParam[2] == this.variableManagementService.selectedSystem.value){
             // Update selected system live data
