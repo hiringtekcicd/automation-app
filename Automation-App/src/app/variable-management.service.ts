@@ -22,19 +22,18 @@ export class VariableManagementService {
   constructor(private http: HttpClient) {}
 
   public fetchBotData() {
-    // Pull Data from Database
-    //sampe JSON Data for Monitoring Page
-
+    // Pull Brief_Info Data from Database
+    // Brief_Info is simply the data required for the dasboard page (number of growrooms, systems, and various sesnors the user has)
     this.http
       .get<brief_info>("http://localhost:3000/brief_info")
       .subscribe((resData) => {
         this.brief_info_array = resData.brief_info;
-
         // Update growRooms Array
         this.growRooms = [];
         this.brief_info_array.forEach((element) => {
           this.growRooms.push(element.name);
         });
+        // Update the active grow room and system to the first one in array
         this.updateVariables(null, null);
       });
   }
@@ -92,6 +91,7 @@ export class VariableManagementService {
   }
 }
 
+// format of breif_info data coming from backend
 interface brief_info {
   brief_info: [grow_room];
 }

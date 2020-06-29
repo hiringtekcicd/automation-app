@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { VariableManagementService } from '../variable-management.service';
 
 
@@ -13,8 +13,8 @@ export class MqttInterfaceService {
   private status: string[] = ['connecting', 'connected', 'disconnected'];
   public mqttStatus = new BehaviorSubject(status[2]);
 
-  public systemLiveData = new BehaviorSubject<string>(null);
-  public growRoomLiveData = new BehaviorSubject<string>(null);
+  public systemLiveData = new Subject<string>();
+  public growRoomLiveData = new Subject<string>();
 
   public client: any;
 
