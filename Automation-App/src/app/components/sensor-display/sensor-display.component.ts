@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Display } from 'src/app/dashboard/display';
 
 @Component({
   selector: 'sensor-display',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SensorDisplayComponent implements OnInit {
 
-  constructor() { }
+  @Input() sensor: Display;
+
+  constructor() {
+    this.sensor = new Display("Untitled", "0", "0");
+   }
 
   ngOnInit() {}
 

@@ -1,29 +1,7 @@
-.circular-monitor {
-    padding: 0px;
-    border-radius: 50%;
-	position: relative;
-    width: 90%;
-    margin: auto;
-    text-align: center;
-    background-color: rgba(0, 104, 0, 0.747);
-    margin-top: 5px;
-    color: white;
-    border: 3px solid greenyellow
-}
 
-.circular-monitor:before {
-	content: "";
-	float: left;
-	padding-top: 100%; 	
-}
 
 .no-padding {
     padding: 0px;
-}
-
-.card_content {
-    padding-left: 5px;
-    padding-right: 5px;
 }
 
 .dropdown {
@@ -34,6 +12,12 @@
 
 ion-content{
     --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
+}
+
+.content {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;;
 }
 
 .title {
@@ -55,6 +39,12 @@ h1 {
     font-weight: 450;
     color: black;
     font-size: 300%;
+}
+
+h2 {
+    color: white;
+    margin-left: 10px;
+    display: inline;
 }
 
 .header-title {

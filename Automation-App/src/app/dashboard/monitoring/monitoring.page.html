@@ -15,6 +15,18 @@
 </ion-item>
 
 <ion-content>
-  <sensor-display></sensor-display>
+  <div class="content">
+    <div>
+      <h2>System Variables</h2>
+      <h2>{{ systemTimeStamp }}</h2>
+    </div>
+    <span *ngFor="let systemVariable of variableManagentService.systemVariableDisplays">
+      <sensor-display [sensor]="systemVariable"></sensor-display>
+    </span>
+    <h2>Grow Room Variables</h2>
+    <span *ngFor="let growRoomVariable of variableManagentService.growRoomVariableDisplays">
+      <sensor-display [sensor]="growRoomVariable"></sensor-display>
+    </span>
+  </div>
 </ion-content>
 
