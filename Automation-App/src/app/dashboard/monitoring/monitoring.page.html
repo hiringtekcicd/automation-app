@@ -1,18 +1,22 @@
 <!--selecting menu options-->
-<ion-item color="primary">
-  <ion-select #growRoomValue slot="start" [interfaceOptions]="growRoomAlertOptions" class="dropdown" [(ngModel)]="growRoomID"
+<ion-toolbar color="primary">
+    <ion-select #growRoomValue slot="start" [interfaceOptions]="growRoomAlertOptions" class="dropdown" [(ngModel)]="growRoomID"
     (ionChange)="changeGrowRoom(growRoomValue.value)">
     <ion-select-option *ngFor="let growRoomVariable of variableManagentService.growRooms" [value]="growRoomVariable">
       {{ growRoomVariable }}</ion-select-option>
   </ion-select>
-  <ion-icon name="add-outline"></ion-icon>
-  <ion-select slot="end" [interfaceOptions]="systemAlertOptions" class="dropdown" #systemValue [(ngModel)]="systemID"
+  <ion-buttons slot="start">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-buttons>
+    <ion-select slot="start" [interfaceOptions]="systemAlertOptions" class="dropdown" #systemValue [(ngModel)]="systemID"
     (ionChange)="changeSystem(systemValue.value)">
     <ion-select-option *ngFor="let systemVariable of variableManagentService.systems" [value]="systemVariable">
       {{ systemVariable }}</ion-select-option>
   </ion-select>
-  <ion-icon slot="end" name="add-outline"></ion-icon>
-</ion-item>
+  <ion-buttons slot="start" >
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-buttons>
+</ion-toolbar>
 
 <ion-content>
   <div class="content">

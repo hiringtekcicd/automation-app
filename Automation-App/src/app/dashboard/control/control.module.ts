@@ -7,12 +7,14 @@ import { IonicModule } from '@ionic/angular';
 import { ControlPageRoutingModule } from './control-routing.module';
 
 import { ControlPage } from './control.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    ComponentsModule,
     ControlPageRoutingModule
   ],
   declarations: [ControlPage]
