@@ -110,7 +110,7 @@ export class MonitoringPage implements OnInit {
     })
     
     // Update GrowRoom ID selection
-    this.growRoomID = this.variableManagentService.selectedGrowRoom;
+    //this.growRoomID = this.variableManagentService.selectedGrowRoom;
   }
 
   // Change System 

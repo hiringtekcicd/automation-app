@@ -5,7 +5,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth',
+    redirectTo: 'visualization',
     pathMatch: 'full'
   },
   //Lazyloading is used to load pages.
@@ -21,6 +21,11 @@ const routes: Routes = [
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
   },
+  {
+    path: 'visualization',
+    loadChildren: () => import('./graphs/visualization/visualization.module').then( m => m.VisualizationPageModule)
+  },
+
 ];
 @NgModule({
   imports: [
