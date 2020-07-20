@@ -1,3 +1,21 @@
-ion-content{
+ion-content {
     --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
+}
+
+h2 {
+    color: white;
+    margin-left: 10px;
+    display: inline;
+}
+
+.content {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;;
+}
+
+.save_button {
+    margin-right: 20px;
+    font-weight: bolder;
+    letter-spacing: 1px;
 }

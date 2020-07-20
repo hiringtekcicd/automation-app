@@ -1,16 +1,31 @@
-<!--selecting menu options-->
-<ion-item color="primary">
-  <ion-select value="system1"> 
-    <ion-select-option value="system1">System1</ion-select-option>
-    <ion-select-option value="system2">System2</ion-select-option>
-  </ion-select>
-  <ion-select value="grow room1">
-    <ion-select-option value="grow room1">Grow Room1</ion-select-option>
-    <ion-select-option value="grow room2">Grow Room2</ion-select-option>
-  </ion-select>
-  <ion-icon name="add-outline" slot="end"></ion-icon>
-</ion-item>
+<ion-toolbar color="primary">
+  <ion-select #growRoomValue slot="start" [interfaceOptions]="growRoomAlertOptions" class="dropdown" [(ngModel)]="growRoomID"
+  (ionChange)="changeGrowRoom(growRoomValue.value)">
+  <ion-select-option *ngFor="let growRoomVariable of variableManagementService.growRooms" [value]="growRoomVariable">
+    {{ growRoomVariable }}</ion-select-option>
+</ion-select>
+  <ion-select slot="start" [interfaceOptions]="systemAlertOptions" class="dropdown" #systemValue [(ngModel)]="systemID"
+  (ionChange)="changeSystem(systemValue.value)">
+  <ion-select-option *ngFor="let systemVariable of variableManagementService.systems" [value]="systemVariable">
+    {{ systemVariable }}</ion-select-option>
+</ion-select>
+<ion-button class="save_button" slot="end" (click)="pushData()" [disabled]="!growRoomForm.dirty && !systemsForm.dirty">Push Changes</ion-button>
+</ion-toolbar>
 
 <ion-content>
-  <ph></ph>
+    <div class="content">
+      <form [formGroup]="settingsForm">
+        <div [formGroup]="systemsForm">
+          <h2>System Settings</h2>
+          <ph *ngIf="ph" [parentForm]="systemsForm"></ph>
+          <ec *ngIf="ec" [parentForm]="systemsForm"></ec>
+          <water-temp *ngIf="water_temperature" [parentForm] ="systemsForm"></water-temp>
+        </div>
+        <div [formGroup]="growRoomForm">
+          <h2>Grow Room Settings</h2>
+          <air-temperature *ngIf="air_temperature" [parentForm]="growRoomForm"></air-temperature>
+          <humidity *ngIf="humidity" [parentForm]="growRoomForm"></humidity>
+        </div>
+      </form>
+    </div>
 </ion-content>

@@ -1,32 +1,24 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { VariableManagementService } from 'src/app/variable-management.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { VariableManagementService } from 'src/app/variable-management.service';
 
 @Component({
-  selector: 'ph',
-  templateUrl: './ph.component.html',
-  styleUrls: ['./ph.component.scss'],
+  selector: 'humidity',
+  templateUrl: './humidity.component.html',
+  styleUrls: ['./humidity.component.scss'],
 })
-export class PhComponent implements OnInit, OnDestroy {
-
+export class HumidityComponent implements OnInit, OnDestroy {
   isOpen: boolean = false;
 
   @Input() parentForm: FormGroup;
-  phForm: FormGroup;
+  humidityForm: FormGroup;
   controlForm: FormGroup;
   day_and_night_targetForm: FormGroup;
   
   constructor(private variableManagementService: VariableManagementService, private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.day_and_night_targetForm = this.fb.group({
-
-    });
-
     this.controlForm = this.fb.group({
-      'ph_up_down': this.fb.control(null),
-      'dosing_time': this.fb.control(null),
-      'dosing_interval': this.fb.control(null),
       'day_and_night': this.fb.control(true),
       'day_target_value': this.fb.control(null),
       'night_target_value': this.fb.control(null),
@@ -35,12 +27,12 @@ export class PhComponent implements OnInit, OnDestroy {
       'alarm_max': this.fb.control(null)
     });
 
-    this.phForm = this.fb.group({
+    this.humidityForm = this.fb.group({
       'monitoring_only': this.fb.control(false),
       'control': this.controlForm
     });
 
-    this.parentForm.addControl('ph', this.phForm);
+    this.parentForm.addControl('humidity', this.humidityForm);
   }
 
   toggleAccordion() {
@@ -48,15 +40,14 @@ export class PhComponent implements OnInit, OnDestroy {
   }
 
   onMonitoringOnly() {
-    if(this.phForm.get("monitoring_only").value == true){
-      this.phForm.removeControl('control');
+    if(this.humidityForm.get("monitoring_only").value == true){
+      this.humidityForm.removeControl('control');
     } else {
-      this.phForm.addControl('control', this.controlForm);
+      this.humidityForm.addControl('control', this.controlForm);
     }
   }
 
   ngOnDestroy(){
-    this.parentForm.removeControl('ph');
+    this.parentForm.removeControl('humidity');
   }
-
 }

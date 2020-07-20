@@ -6,11 +6,11 @@
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">PH</h3>
+          <h3 fill="clear" class="color">Air Temperature</h3>
         </ion-item>
       </ion-row>
       <!--Card Content-->
-      <form [formGroup]="phForm">
+      <form [formGroup]="airTemperatureForm">
         <div *ngIf="isOpen">
           <hr color="grey" />
           <div class="group">
@@ -24,41 +24,13 @@
             </ion-row>
           </div>
   
-          <div *ngIf="!phForm.get('monitoring_only').value" [formGroup]="controlForm">
-            <h3>Dosing Mechanism</h3>
-            <ion-row>
-              <ion-col size="12">
-                <ion-radio-group formControlName="ph_up_down">
-                  <ion-item lines="none">
-                    <ion-radio mode="md" value="ph_down"></ion-radio>
-                    <ion-label>pH down</ion-label>
-                    <ion-radio mode="md" value="ph_up"></ion-radio>
-                    <ion-label>pH up</ion-label>
-                  </ion-item>
-                </ion-radio-group>
-              </ion-col>
-            </ion-row>
-  
-            <ion-row>
-              <ion-col size="5">
-                <ion-item>
-                  <ion-label position="floating">Dosing Time</ion-label>
-                  <ion-input formControlName="dosing_time" type="number"></ion-input>
-                </ion-item>
-              </ion-col>
-              <ion-col offset="1" size="5">
-                <ion-item>
-                  <ion-label position="floating">Dosing Interval</ion-label>
-                  <ion-input formControlName="dosing_interval" type="number"></ion-input>
-                </ion-item>
-              </ion-col>
-            </ion-row>
-  
+          <div *ngIf="!airTemperatureForm.get('monitoring_only').value" [formGroup]="controlForm"> 
+ 
             <h3>Desired Value</h3>
             <ion-row>
               <ion-item lines="none">
                 <ion-checkbox formControlName="day_and_night" mode="md"></ion-checkbox>
-                <ion-label >Different Targets for Day and Night</ion-label>
+                <ion-label>Different Targets for Day and Night</ion-label>
               </ion-item>
             </ion-row>
             <ion-row *ngIf="controlForm.get('day_and_night').value">

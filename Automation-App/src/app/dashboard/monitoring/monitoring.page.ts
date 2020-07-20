@@ -62,7 +62,7 @@ export class MonitoringPage implements OnInit {
     );
 
     // Fetch Display Data from Database
-    this.variableManagentService.fetchBotData();
+    this.variableManagentService.fetchBotData(false);
   }
  
   ngOnInit() {
@@ -108,7 +108,7 @@ export class MonitoringPage implements OnInit {
     // Subscribe to changes in System ID
     this.variableManagentService.selectedSystem.subscribe(resData => {
       this.systemID = resData;
-    })
+    });
     
     // Update GrowRoom ID selection
     this.variableManagentService.selectedGrowRoom.subscribe(resData => {
