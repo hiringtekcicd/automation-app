@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {Chart} from 'chart.js';
+import {ChartDataSets} from 'chart.js';
+
 import { VariableManagementService } from 'src/app/variable-management.service';
+import { Variable } from '@angular/compiler/src/render3/r3_ast';
+import { Label } from 'ng2-charts';
+import { ChartsModule } from 'ng2-charts';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-visualization',
@@ -9,82 +15,334 @@ import { VariableManagementService } from 'src/app/variable-management.service';
 })
 export class VisualizationPage implements OnInit {
 
-  constructor(public variableManagentService: VariableManagementService) { 
+  today: string;
+  startDate:string=new Date().toString();
+  endDate:string=new Date().toString();
+  systemID: string;
+  growRoomID: string;
+  start_date:string;
+  end_date:string;
+  
+  
+  compareWith : any ;
+  DefaultValue:string;
+
+
+  options:any[]=[
+    {
+      id:0,
+      name:'Please Select'
+    },
+    {
+      id:1,
+      name:'Last Week'
+    },
+    {
+      id:2,
+      name:'Last Month'
+    }
+  ];
+
+compareWithFn(o1, o2) {
+  return o1 === o2;
+};
+
+
+dateChanged(date){
+  //console.log(date.detail.value);
+  //console.log('inside date changed: '+this.startDate);
+  
+  //this.start_date = this.startDate;
+  this.start_date=moment(this.startDate).format("YYYY-MM-DDTHH:mm:ss");
+  this.end_date=moment(this.endDate).format("YYYY-MM-DDTHH:mm:ss");
+  //console.log(this.end_date);
+  this.onApply(this.start_date,this.end_date);   
+}
+
+
+onSelectedChange(event:any){
+  console.log(event.target.value);
+
+  if(event.target.value=="1")
+  {
+    //console.log("inside")
+    this.start_date=moment(this.today).subtract(7,"days").format("YYYY-MM-DDTHH:mm:ss");
+    this.today = moment(this.today).format("YYYY-MM-DDTHH:mm:ss");
+    this.onApply(this.start_date,this.today);
+  }
+  else if(event.target.value=="2")
+  {
+    this.start_date=moment(this.today).subtract(1,"month").format("YYYY-MM-DDTHH:mm:ss");
+    this.today = moment(this.today).format("YYYY-MM-DDTHH:mm:ss");
+    //console.log(this.start_date);
+    this.onApply(this.start_date,this.today);
+  }
+}
+
+
+//New piece of code
+chartData:ChartDataSets[]=[
+  {data:[],label:'ph',borderColor: "#3e95cd",fill: false,lineTension:0,yAxisID:'ph-ec'},
+  {data:[],label:'ec',borderColor: "#8e5ea2",fill: false,lineTension:0,yAxisID:'ph-ec'},
+  {data:[],label:'temp',borderColor: "#FF4233",fill: false,lineTension:0,yAxisID:'temp'}];
+
+chartLabels: Label[];
+chartType = 'line';
+
+chartOptions= {
+  responsive: true,
+  title: {
+    display: true,
+    text: 'Sensors Data Visualization'
+  },
+  scales:{
+          yAxes:[
+            {
+              id:'ph-ec',
+              type:'linear',
+              position:'left',
+              scaleLabel: {
+                display: true,
+                labelString: 'ph-ec scale'
+              },
+              //ticks:{beginAtZero:true}
+          },
+          {
+            id:'temp',
+            type:'linear',
+            position:'right',
+            scaleLabel: {
+              display: true,
+              labelString: 'Temperature'
+            },
+            //ticks:{beginAtZero:true}
+
+            ticks: {
+              // Include a dollar sign in the ticks
+              callback: function(value, index, values) {
+                  return  value + '°C';
+              },
+              
+          }
+          }]
+        }, 
+};
+
+
+
+// end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  systemAlertOptions: any = {
+    header: "System Name"
+  }
+
+  growRoomAlertOptions: any = {
+    header: "Grow Room Name"
+  }
+
+  constructor(public variableManagentService: VariableManagementService) {
+    console.log('inside constructor'); 
+
+    
+    // this.radio_option="A";
+    this.today = new Date().toString();
+    
+    // Fetch Display Data from Database
+    this.variableManagentService.fetchBotData();
+
+
+    // this.variableManagentService.on_update.subscribe(resData=>{
+    //   console.log('test');
+    //   this.showChart();
+    // })  
     
   }
 
   
   ngOnInit() {
-    //var time_labels = this.variableManagentService.sensorsTimeData;
-    //var value_data =  this.variableManagentService.sensorsValueData;
-    this.showChart()
+  console.log('inside ngOnInit');
+
+  this.DefaultValue = "0" ;
+  this.compareWith = this.compareWithFn;
+
+
+    //Set Default Grow Room and System
+    //this.variableManagentService.updateVariables(null, null);               uncomment this line
+
+    // Subscribe to changes in System ID
+    this.variableManagentService.selectedSystem.subscribe(resData => {
+      this.systemID = resData;
+      });
+        
+    // Update GrowRoom ID selection
+    this.variableManagentService.selectedGrowRoom.subscribe(resData => {
+      this.growRoomID = resData;
+      });
+    
+    console.log(this.growRoomID);
+    this.getData();
   }
 
-  showChart(){
-    // var values_data = [];
-    // for(var i=0;i<this.variableManagentService.sensorsValueData.length;i++)
-    // {
-    //   values_data.push(this.variableManagentService.sensorsValueData[i]);
-    // }
-    var sensor_data =[];  
-    sensor_data = this.variableManagentService.getSensorData();
-    var ctx = (<any>document.getElementById('lineChart')).getContext('2d');
-    var chart = new Chart(ctx, {
-      type: 'line',
-  data: {
-    labels:sensor_data[1],
-    //labels:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],
-    //labels:this.variableManagentService.sensorsTimeData,
-    datasets: [{ 
-        //data: [86,114,106,106,107,111,133,221,783,2478],
-        //data:[7,7.3,7.5,7.1,7.6,7.9,7.2],
-        data:sensor_data[0],
-        label: "ph",
-        borderColor: "#3e95cd",
-        fill: false
-       },
-    ]
-  },
-  // options: {
-  //   responsive: true,
-  //   title: {
-  //     display: true,
-  //     text: 'World population per region (in millions)'
-  //   }
-  // }
-});
+  getData()
+  {
+    // console.log(this.growRoomID);
+    this.startDate=moment().format("YYYY-MM-DDTHH:mm:ss");
+    this.endDate=moment().format("YYYY-MM-DDTHH:mm:ss");  
+    
+
+    this.start_date = this.startDate+'.000Z';
+    this.end_date=  this.end_date+'.000Z';
+
+    this.chartData[0].data=[];
+    this.chartData[1].data=[];
+    this.chartData[2].data=[];
+    this.chartLabels =[];
+
+    this.variableManagentService.getAllSensorsData(this.growRoomID,this.systemID,this.start_date,this.end_date);
+    this.chartLabels = this.variableManagentService.sensorsTimeData;
+    this.chartData[0].data=this.variableManagentService.phValueData;
+    this.chartData[1].data=this.variableManagentService.ecValueData;
+    this.chartData[2].data=[20,21,23,24,20,26,21,22,21,24,29,27,28,26,28,23,21,20,21,22];
+  }
+
+
+  
+
+    // Change System 
+    changeSystem(systemName : string){
+      this.variableManagentService.updateVariables(this.growRoomID, systemName);
+    }
+  
+    // Change Grow Room
+    changeGrowRoom(growRoomName: string){
+      this.variableManagentService.updateVariables(growRoomName, null);
+    }
+
+    onApply(newstartDate:string,newendDate:string){
+
+      newstartDate = newstartDate+'.000Z';
+      newendDate = newendDate+'.000Z';
+      console.log(newstartDate);
+
+      this.chartData[0].data=[];
+      this.chartData[1].data=[];
+      this.chartData[2].data=[];
+      this.chartLabels =[];
+      
+      this.variableManagentService.getAllSensorsData(this.growRoomID,this.systemID,newstartDate,newendDate);
+      // console.log(this.variableManagentService.phValueData);
+      this.chartLabels = this.variableManagentService.sensorsTimeData;
+      this.chartData[0].data=this.variableManagentService.phValueData;
+      this.chartData[1].data=this.variableManagentService.ecValueData;
+      this.chartData[2].data=[20,21,23,24,20,26,21,22,21,24,29,27,28,26,28,23,21,20,21,22];
+    }
+
+
+    
+    
+    
+
+//     showChart(){
+    
+// //     var ctx = (<any>document.getElementById('lineChart')).getContext('2d');
+// //     var chart = new Chart(ctx, {
+// //       type: 'line',
+// //     data: {
+// //       labels:this.variableManagentService.sensorsTimeData,
+// //     //labels:sensor_data[1],
+// //     //labels:[1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
+    
+// //     datasets: [
+// //       { 
+// //         data:this.variableManagentService.phValueData,     //sensor_data[1],
+// //         label: "ph",
+// //         borderColor: "#3e95cd",
+// //         fill: false,
+// //         lineTension:0,
+// //         yAxisID:'ph-ec'
+// //       },
+// //       { 
+// //         data:this.variableManagentService.ecValueData,
+// //         label: "ec",
+// //         borderColor: "#8e5ea2",
+// //         fill: false,
+// //         lineTension:0,
+// //         yAxisID:'ph-ec'
+// //       },
+// //       {
+// //         data: [20,21,23,24,20,26,21,22,21,24,29,27,28,26,28,23,21,20,21,22],
+// //         label: "temprature",
+// //         borderColor: "#FF4233",
+// //         fill: false,
+// //         lineTension:0,
+// //         yAxisID:'temp'
+// //       }, 
+// //     ]
+// //   },
+
+// //   options: {
+// //     responsive: true,
+// //     title: {
+// //       display: true,
+// //       text: 'Sensors Data Visualization'
+// //     },
+// //     scales:{
+// //       yAxes:[
+// //         {
+// //           id:'ph-ec',
+// //           type:'linear',
+// //           position:'left',
+// //           scaleLabel: {
+// //             display: true,
+// //             labelString: 'ph-ec scale'
+// //           }
+// //       },
+// //       {
+// //         id:'temp',
+// //         type:'linear',
+// //         position:'right',
+// //         scaleLabel: {
+// //           display: true,
+// //           labelString: 'Temperature'
+// //         },
+// //         ticks: {
+// //           // Include a dollar sign in the ticks
+// //           callback: function(value, index, values) {
+// //               return  value + '°C';
+// //           },
+          
+// //       }
+// //       }]
+// //     }
+// //   }
+// // });
+// }
+
+
+
 }
-}
 
-
-// var dataFirst = {
-//   label: "Car A - Speed (mph)",
-//   data: [0, 59, 75, 20, 20, 55, 40],
-//   lineTension: 0.3,
-//   // Set More Options
-// };
-   
-// var dataSecond = {
-//   label: "Car B - Speed (mph)",
-//   data: [20, 15, 60, 60, 65, 30, 70],
-//   // Set More Options
-// };
-
-// var speedData = {
-//   labels: ["0s", "10s", "20s", "30s", "40s", "50s", "60s"],
-//   datasets: [dataFirst]
-// };
-
-
-// var data1 = {
-//   label: 's1',
-//   borderColor: 'blue',
-//   data: [
-//           { x: '2017-01-06 18:39:30', y: 50 },
-//           { x: '2017-01-15 18:39:28', y: 91 },
-//           { x: '2017-03-07 18:39:28', y: 150 },
-//       ]
-// };
 
 
 

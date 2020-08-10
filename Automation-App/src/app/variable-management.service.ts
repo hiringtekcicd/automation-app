@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Display } from "./dashboard/display";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { element } from 'protractor';
+import { DatePipe } from '@angular/common';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: "root",
@@ -12,11 +14,20 @@ export class VariableManagementService {
   public sensor_data_array: sensor_data[];
   public growRoomVariableDisplays: Display[] = [];
   public systemVariableDisplays: Display[] = [];
+  public all_sensor_data_array: sensor_data[];
+  public start_date: string;
+  public end_date: string;
 
+  public labelDate:string;
+
+  public on_update=new Subject();
+  
   public growRooms: string[] = [];
   public systems: string[] = [];
   public sensorsTimeData: string[]=[];
-  public sensorsValueData: number[]=[];
+  public sensorsValueData:number[]=[];
+  public phValueData: number[]=[];
+  public ecValueData: number[]=[];
 
   public selectedGrowRoom = new BehaviorSubject<string>("");
   public selectedSystem = new BehaviorSubject<string>("");
@@ -36,6 +47,8 @@ export class VariableManagementService {
         this.brief_info_array.forEach((element) => {
           this.growRooms.push(element.name);
         });
+        console.log('inside fetchBotData()')
+        console.log(this.growRooms);
         // Update the active grow room and system to the first one in array
         this.updateVariables(null, null);
       });
@@ -48,11 +61,13 @@ export class VariableManagementService {
       .get<sensor_info>("http://localhost:3000/sensors_data/GrowRoom1/system1/ph")
       .subscribe((resData) => {
         
+        //console.log(resData.sensor_info);
         this.sensor_data_array = resData.sensor_info;
 
         //console.log(this.sensor_data_array);
         for(var i=0;i<this.sensor_data_array.length;i++)
         {
+          //this.sensor_data_array[i]._id['name']==
           this.sensorsTimeData.push(this.sensor_data_array[i]._id['time'])
           this.sensorsValueData.push(parseFloat(this.sensor_data_array[i]._id['value']))
         }
@@ -62,6 +77,52 @@ export class VariableManagementService {
       //console.log(this.sensorsValueData);
   }
 
+
+  public getAllSensorsData(growRoomId:string,systemId:string,startdate:string, enddate: string)
+  {
+    console.log(growRoomId,systemId);
+    //console.log(new Date(startdate).toISOString(),new Date(enddate).toISOString());
+    
+    //this.start_date = new Date(startdate).toISOString();
+    //this.end_date= new Date(enddate).toISOString();
+    this.sensorsTimeData=[];
+    this.phValueData=[];
+    this.ecValueData=[];
+    this.http
+      .get<sensor_info>("http://localhost:3000/get_all/GrowRoom1/system1/"+startdate+"/"+enddate+"/")
+      .subscribe((resData) => {
+        
+        this.all_sensor_data_array = resData.sensor_info;
+        //console.log(this.all_sensor_data_array);
+        for(var i=0;i<this.all_sensor_data_array.length;i++)
+        {
+          //this.sensorsTimeData.push();
+          //console.log('Test');
+          this.labelDate = moment(this.all_sensor_data_array[i]['_id']).format("MMM DD, HH:mm:ss")
+          //console.log(this.labelDate);
+          //this.sensorsTimeData.push(new Date(this.all_sensor_data_array[i]['_id']).toUTCString());  
+          this.sensorsTimeData.push(this.labelDate);
+          for(var j=0;j<this.all_sensor_data_array[i].sensors.length;j++)
+          {
+            //console.log(this.all_sensor_data_array[i]['_id']);
+            switch(this.all_sensor_data_array[i].sensors[j]['name']){
+              case 'ph':
+                this.phValueData.push(this.all_sensor_data_array[i].sensors[j]['value']);
+                break;
+              case 'ec':
+                this.ecValueData.push(this.all_sensor_data_array[i].sensors[j]['value']);
+                break;
+            }
+          }
+        }
+        //console.log(this.sensorsTimeData);
+        //return[this.sensorsTimeData,this.phValueData,this.ecValueData]
+
+        this.on_update.next();
+      });
+      //console.log(this.phValueData);
+      //return[this.sensorsTimeData,this.phValueData,this.ecValueData]
+  }
 
   public updateVariables(growRoomID: string, systemID: string) {
     // Reset all arrays
@@ -146,7 +207,8 @@ interface sensor {
 interface sensor_info{
   //time: String,
   //value:Number,
-  sensor_info:[sensor_data]
+  sensor_info:[sensor_data],
+  //all_info:[all_info]
 }
 
 interface Sample{
@@ -155,9 +217,28 @@ interface Sample{
 }
 
 interface sensor_data{
-  _id: [Sample]
+  //_id: [Sample],
+  _id: Date,
+  sensors:[sensor_array]
   //time: String,
   //value:Number
 }
 
 
+interface all_info{
+  //
+  // name:String,
+  // value:Number
+  sensors:[sensor_array]
+}
+
+interface sensor_array{
+  // _id: Date,
+  sensor_array:[sensor_details]
+}
+
+interface sensor_details{
+  //_id:Date,
+  name:String,
+  value:Number
+}

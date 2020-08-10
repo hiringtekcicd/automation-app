@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { VisualizationPageRoutingModule } from './visualization-routing.module';
 
 import { VisualizationPage } from './visualization.page';
-
+import {ChartsModule} from 'ng2-charts'
+ 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    VisualizationPageRoutingModule
+    VisualizationPageRoutingModule,
+    ChartsModule
   ],
   declarations: [VisualizationPage]
 })
