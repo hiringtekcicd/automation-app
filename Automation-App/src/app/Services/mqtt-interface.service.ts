@@ -13,8 +13,7 @@ export class MqttInterfaceService {
   private status: string[] = ['connecting', 'connected', 'disconnected'];
   public mqttStatus = new BehaviorSubject(status[2]);
 
-  public systemLiveData = new Subject<string>();
-  public growRoomLiveData = new Subject<string>();
+  public deviceLiveData = new Subject<string>();
 
   public client: any;
 
@@ -109,17 +108,11 @@ export class MqttInterfaceService {
       console.log(ResponseObject);
       // Split TOPIC URL to extract IDs
       var topicParam = ResponseObject.topic.split("/", 4);
-      // Check if incoming data is for selected grow room and system
-      if(topicParam[0] == this.variableManagementService.selectedGrowRoom.value){
-        if(topicParam[1] == "systems"){
-          if(topicParam[2] == this.variableManagementService.selectedSystem.value){
-            // Update selected system live data
-            this.systemLiveData.next(ResponseObject.payloadString);
-          }
-        }
-        if(topicParam[1] == "grow_room_variables"){
-          // Update selected grow room live data
-          this.growRoomLiveData.next(ResponseObject.payloadString);
+      // Check if incoming data is for selected device
+      if(topicParam[0] == this.variableManagementService.selectedCluster.value){
+        if(topicParam[2] == this.variableManagementService.selectedDevice.value){
+          // Update selected system live data
+          this.deviceLiveData.next(ResponseObject.payloadString);
         }
       }
       }

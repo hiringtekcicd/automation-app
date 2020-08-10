@@ -19,9 +19,7 @@ export class PhComponent implements OnInit, OnDestroy {
   constructor(private variableManagementService: VariableManagementService, private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.day_and_night_targetForm = this.fb.group({
-
-    });
+    this.day_and_night_targetForm = this.fb.group({});
 
     this.controlForm = this.fb.group({
       'ph_up_down': this.fb.control(null),
@@ -30,17 +28,18 @@ export class PhComponent implements OnInit, OnDestroy {
       'day_and_night': this.fb.control(true),
       'day_target_value': this.fb.control(null),
       'night_target_value': this.fb.control(null),
-      'target_value': this.fb.control(null),
-      'alarm_min': this.fb.control(null),
-      'alarm_max': this.fb.control(null)
+      'target_value': this.fb.control(null)
     });
 
     this.phForm = this.fb.group({
       'monitoring_only': this.fb.control(false),
-      'control': this.controlForm
+      'control': this.controlForm,
+      'alarm_min': this.fb.control(null),
+      'alarm_max': this.fb.control(null)
     });
 
     this.parentForm.addControl('ph', this.phForm);
+    console.log(this.parentForm.value);
   }
 
   toggleAccordion() {

@@ -13,7 +13,12 @@ export class SensorDisplayComponent implements OnInit {
   @Input() sensor: Display;
 
   constructor(private variableManagementService: VariableManagementService) {
-    this.sensor = new Display("Untitled", "0", "0");
+    this.sensor = new Display("Untitled", "0 - 0", false, 0, false, 0, 0);
+   }
+
+   getTime(): boolean {
+    var date = new Date()
+    return true;   
    }
 
   ngOnInit() { }

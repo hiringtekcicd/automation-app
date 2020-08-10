@@ -20,7 +20,23 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },  {
+    path: 'add-growroom',
+    loadChildren: () => import('./add-growroom/add-growroom.module').then( m => m.AddGrowroomPageModule)
   },
+  {
+    path: 'add-system',
+    loadChildren: () => import('./add-system/add-system.module').then( m => m.AddSystemPageModule)
+  },
+  {
+    path: 'add-sensor',
+    loadChildren: () => import('./add-sensor/add-sensor.module').then( m => m.AddSensorPageModule)
+  },
+  {
+    path: 'create-cluster',
+    loadChildren: () => import('./create-cluster/create-cluster.module').then( m => m.CreateClusterPageModule)
+  },
+
 ];
 @NgModule({
   imports: [

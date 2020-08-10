@@ -2,6 +2,10 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { VariableManagementService } from 'src/app/variable-management.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { skipWhile } from 'rxjs/operators';
+import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
+import { AddSystemPage } from 'src/app/add-system/add-system.page';
+import { CreateClusterPage } from 'src/app/create-cluster/create-cluster.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-control',
@@ -10,12 +14,12 @@ import { skipWhile } from 'rxjs/operators';
 })
 export class ControlPage implements OnInit {
   
-  settingsForm: FormGroup
-  growRoomForm: FormGroup = new FormGroup({});
-  systemsForm: FormGroup = new FormGroup({});
+  settingsForm: FormGroup;
 
-  systemID: string;
-  growRoomID: string;
+  deviceName: string;
+  clusterName: string;
+  isGrowRoom: boolean;
+  isSystem: boolean;
 
   ph: boolean = false;
   ec: boolean = false;
@@ -25,44 +29,44 @@ export class ControlPage implements OnInit {
   air_temperature: boolean = false;
 
 
-  systemAlertOptions: any = {
-    header: "System Name"
+  clusterAlertOptions: any = {
+    header: "Cluster Name"
   }
 
-  growRoomAlertOptions: any = {
-    header: "Grow Room Name"
+  deviceAlertOptions: any = {
+    header: "Device Name"
   }
 
-  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef) { 
-    this.variableManagementService.fetchBotData(false);
-    this.settingsForm = new FormGroup({
-      systemSettings: this.systemsForm,
-      growRoomSettings: this.growRoomForm
-    });
+  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef, private modalController: ModalController) { 
+    this.variableManagementService.fetchClusters(false);
   }
 
   ngOnInit() {
-    // Respond to grow room settings data fetched from backend
-    this.variableManagementService.growRoomSettings.pipe(skipWhile(arr => arr.length == 0)).subscribe(resData => {
-      //Reset systems Form and populate control fields with settings data
-      this.growRoomForm.reset();
-      this.growRoomForm.patchValue(resData[this.variableManagementService.growRoomSettings.value.length - 1].settings);
-    });
 
-    // Respond to system settings data fetched from backend
-    this.variableManagementService.systemSettings.pipe(skipWhile(arr => arr.length == 0)).subscribe(resData => {
-      //Reset grow room Form and populate control fields with settings data
-      this.systemsForm.reset();
-      this.systemsForm.patchValue(resData[this.variableManagementService.systemSettings.value.length - 1].settings);
-    });
+    this.settingsForm = new FormGroup({});
+    // Respond to grow room settings data fetched from backend
+    this.variableManagementService.deviceSettingsSubject.subscribe(() => {
+      //Reset systems Form and populate control fields with settings data
+      this.settingsForm.reset();
+      if(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'system'){
+        this.isSystem = true;
+        this.isGrowRoom = false;
+      } else if (this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'growroom'){
+        this.isSystem = false;
+        this.isGrowRoom = true;
+      }
+      this.changeDetector.detectChanges();
+      this.settingsForm.patchValue(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings);
+    }); 
 
     // Subscribe to changes in System ID
-    this.variableManagementService.selectedSystem.pipe(skipWhile(str => str == "")).subscribe(resData => {
+    this.variableManagementService.selectedDevice.pipe(skipWhile(str => str == "")).subscribe(resData => {
       // Delete exisiting sensor cards
-      this.resetSystem();
-      this.systemID = resData;
+      this.resetDevice();
+      console.log(resData);
+      this.deviceName = resData;
       // add sensor cards based on sensors for system
-      this.variableManagementService.systemVariableDisplays.forEach((element) => {
+      this.variableManagementService.sensorDisplays.forEach((element) => {
         switch(element.title) {
           case "ph":
             this.ph = true;
@@ -73,93 +77,96 @@ export class ControlPage implements OnInit {
           case "water temp":
             this.water_temperature = true;
             break;
-        }
-      });
-      // Detect and update UI
-      this.changeDetector.detectChanges();
-      // Check if settings data is already stored locally
-      var dataFound = this.variableManagementService.systemSettings.value.some((element, index) => {
-        this.variableManagementService.systemSettingsIndex = index;
-        return this.systemID == element.systemID && this.growRoomID == element.growRoomID;
-      });
-      // If data is stored locally populate systems form with settings data
-      // If data isn't found locally fetch it from backend
-      if(dataFound){
-        this.systemsForm.patchValue(this.variableManagementService.systemSettings.value[this.variableManagementService.systemSettingsIndex].settings);
-      } else {
-        this.variableManagementService.getSystemSettings();
-      }
-    });
-    
-    // Update GrowRoom ID selection
-    this.variableManagementService.selectedGrowRoom.pipe(skipWhile(str => str == "")).subscribe(resData => {
-      // Delete exisiting sensor cards
-      this.resetGrowRoom();
-      this.growRoomID = resData;
-      // add sensor cards based on sensors for grow room
-      this.variableManagementService.growRoomVariableDisplays.forEach((element) => {
-        switch(element.title) {
           case "humidity":
             this.humidity = true;
             break;
-          case "air temp":
+          case "Air Temperature":
             this.air_temperature = true;
             break;
         }
       });
       // Detect and update UI
       this.changeDetector.detectChanges();
-      // Check if settings data is already stored locally   
-      var dataFound = this.variableManagementService.growRoomSettings.value.some((element, index) => {
-        this.variableManagementService.growRoomSettingsIndex = index;
-        return this.growRoomID == element.growRoomID;
+      // Check if settings data is already stored locally
+      var dataFound = this.variableManagementService.deviceSettings.some((element, index) => {
+        this.variableManagementService.deviceSettingsIndex = index;
+        return element.name == (this.deviceName || this.clusterName);
       });
-      // If data is stored locally populate systems form with grow room data
+      // If data is stored locally populate systems form with settings data
       // If data isn't found locally fetch it from backend
       if(dataFound){
-        this.growRoomForm.patchValue(this.variableManagementService.growRoomSettings.value[this.variableManagementService.growRoomSettingsIndex].settings);
-        
+        console.log("data found");
+        if(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'system'){
+          this.isSystem = true;
+          this.isGrowRoom = false;
+        } else if (this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'growroom'){
+          this.isSystem = false;
+          this.isGrowRoom = true;
+        }
+        this.changeDetector.detectChanges();
+        this.settingsForm.patchValue(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings);
       } else {
-        this.variableManagementService.getGrowRoomSettings();
-      }     
+        console.log("Data Not Found");
+        this.variableManagementService.getDeviceSettings();
+      }
+    });
+    
+    // Update GrowRoom ID selection
+    this.variableManagementService.selectedCluster.pipe(skipWhile(str => str == "")).subscribe(resData => {
+      console.log("control page selected cluster")
+      // Delete exisiting sensor cards
+      this.clusterName = resData;
+      // Detect and update UI
+      this.changeDetector.detectChanges();     
     });
   }
 
   // Change System 
-  changeSystem(systemName : string){
-    this.variableManagementService.updateVariables(this.growRoomID, systemName);
+  changeDevice(deviceName : string){
+    this.variableManagementService.updateCurrentCluster(this.clusterName, deviceName);
   }
 
   // Change Grow Room
-  changeGrowRoom(growRoomName: string){
-    this.variableManagementService.updateVariables(growRoomName, null);
+  changeCluster(clusterName: string){
+    this.variableManagementService.updateCurrentCluster(clusterName, null);
   }
   
   // update data in backend
   pushData(){
-    if(this.systemsForm.dirty && !this.growRoomForm.dirty){
-      this.variableManagementService.updateSettings(null, this.systemsForm.value);
-    } else if(!this.systemsForm.dirty && this.growRoomForm.dirty){
-      this.variableManagementService.updateSettings(this.growRoomForm.value, null);
-    } else {
-      this.variableManagementService.updateSettings(this.growRoomForm.value, this.systemsForm.value);
-    }
-  }
-
-  // delete grow room sensor cards 
-  resetGrowRoom(){
-    this.humidity = false;
-    this.air_temperature = false;
-    this.growRoomForm.reset();
-    this.changeDetector.detectChanges();
+    if(this.settingsForm.dirty){
+      this.variableManagementService.updateDeviceSettings(this.settingsForm.value).subscribe(() => {
+        this.settingsForm.markAsPristine();
+      });
+    } 
   }
 
   // delete system sensor cards 
-  resetSystem(){
+  resetDevice(){
     this.ph = false;
     this.ec = false;
     this.water_temperature = false;
-    this.systemsForm.reset();
+    this.settingsForm.reset();
     this.changeDetector.detectChanges();
+  }
+
+  async presentGrowRoomModal() {
+    const modal = await this.modalController.create({
+      component: AddGrowroomPage,
+    });
+    return await modal.present();
+  }
+
+  async presentSystemModal() {
+    const modal = await this.modalController.create({
+      component: AddSystemPage,
+    });
+    return await modal.present();
+  }
+
+  async presentClusterModal() {
+    const modal = await this.modalController.create({
+      component: CreateClusterPage,
+    });
+    return await modal.present();
   }
 }
