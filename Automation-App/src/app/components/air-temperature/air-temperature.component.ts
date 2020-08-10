@@ -22,14 +22,14 @@ export class AirTemperatureComponent implements OnInit, OnDestroy {
       'day_and_night': this.fb.control(true),
       'day_target_value': this.fb.control(null),
       'night_target_value': this.fb.control(null),
-      'target_value': this.fb.control(null),
-      'alarm_min': this.fb.control(null),
-      'alarm_max': this.fb.control(null)
+      'target_value': this.fb.control(null)
     });
 
     this.airTemperatureForm = this.fb.group({
       'monitoring_only': this.fb.control(false),
-      'control': this.controlForm
+      'control': this.controlForm,
+      'alarm_min': this.fb.control(null),
+      'alarm_max': this.fb.control(null)
     });
 
     this.parentForm.addControl('air_temperature', this.airTemperatureForm);

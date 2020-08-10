@@ -1,31 +1,81 @@
 <ion-toolbar color="primary">
-  <ion-select #growRoomValue slot="start" [interfaceOptions]="growRoomAlertOptions" class="dropdown" [(ngModel)]="growRoomID"
-  (ionChange)="changeGrowRoom(growRoomValue.value)">
-  <ion-select-option *ngFor="let growRoomVariable of variableManagementService.growRooms" [value]="growRoomVariable">
-    {{ growRoomVariable }}</ion-select-option>
+  <ion-select #clusterValue slot="start" [interfaceOptions]="clusterAlertOptions" class="dropdown" [(ngModel)]="clusterName"
+  (ionChange)="changeCluster(clusterValue.value)" placeholder='Select a Cluster'>
+  <ion-select-option *ngFor="let cluster of variableManagementService.clusterNames" [value]="cluster">
+    {{ cluster }}</ion-select-option>
 </ion-select>
-  <ion-select slot="start" [interfaceOptions]="systemAlertOptions" class="dropdown" #systemValue [(ngModel)]="systemID"
-  (ionChange)="changeSystem(systemValue.value)">
-  <ion-select-option *ngFor="let systemVariable of variableManagementService.systems" [value]="systemVariable">
-    {{ systemVariable }}</ion-select-option>
+  <ion-select *ngIf="!variableManagementService.noDevices" slot="start" [interfaceOptions]="deviceAlertOptions" class="dropdown" #deviceValue [(ngModel)]="deviceName"
+  (ionChange)="changeDevice(deviceValue.value)" placeholder='Select a Device'>
+  <ion-select-option *ngFor="let device of variableManagementService.devices" [value]="device">
+    {{ device }}</ion-select-option>
 </ion-select>
-<ion-button class="save_button" slot="end" (click)="pushData()" [disabled]="!growRoomForm.dirty && !systemsForm.dirty">Push Changes</ion-button>
+<ion-button *ngIf="!variableManagementService.noDevices" class="save_button" slot="end" (click)="pushData()" [disabled]="!settingsForm.dirty">Push Changes</ion-button>
 </ion-toolbar>
 
 <ion-content>
-    <div class="content">
+  <div class="content">
+    <div *ngIf="!variableManagementService.noDevices && !variableManagementService.noClusters">
       <form [formGroup]="settingsForm">
-        <div [formGroup]="systemsForm">
+        <div *ngIf="isSystem">
           <h2>System Settings</h2>
-          <ph *ngIf="ph" [parentForm]="systemsForm"></ph>
-          <ec *ngIf="ec" [parentForm]="systemsForm"></ec>
-          <water-temp *ngIf="water_temperature" [parentForm] ="systemsForm"></water-temp>
+          <ph *ngIf="ph" [parentForm]="settingsForm"></ph>
+          <ec *ngIf="ec" [parentForm]="settingsForm"></ec>
+          <water-temp *ngIf="water_temperature" [parentForm]="settingsForm"></water-temp>
         </div>
-        <div [formGroup]="growRoomForm">
+        <div *ngIf="isGrowRoom">
           <h2>Grow Room Settings</h2>
-          <air-temperature *ngIf="air_temperature" [parentForm]="growRoomForm"></air-temperature>
-          <humidity *ngIf="humidity" [parentForm]="growRoomForm"></humidity>
+          <air-temperature *ngIf="air_temperature" [parentForm]="settingsForm"></air-temperature>
+          <humidity *ngIf="humidity" [parentForm]="settingsForm"></humidity>
         </div>
       </form>
     </div>
+    <div *ngIf="variableManagementService.noClusters" class="center">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="10" offset="1">
+            <h6>There are no clusters to display</h6>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="10" offset="1">
+            <h6>Click the Create Cluster button to create a new cluster</h6>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button class="add_button" (click)="presentClusterModal()">Create Cluster</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div *ngIf="!variableManagementService.noClusters && variableManagementService.noDevices" class="center">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="10" offset="1">
+            <h6>There are no devices in this cluster</h6>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="10" offset="1">
+            <h6>Click the Create Grow Room button to setup a Grow Room</h6>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button class="add_button" (click)="presentGrowRoomModal()">Create Grow Room</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="10" offset="1">
+            <h6>Click the Create System button to setup a System</h6>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button class="add_button" (click)="presentSystemModal()">Create System</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
 </ion-content>

@@ -1,9 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { Display } from "../display";
-import { skip } from "rxjs/operators";
+import { skip, skipWhile } from "rxjs/operators";
 import { MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
 import { VariableManagementService } from 'src/app/variable-management.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ActionSheetController, ModalController } from '@ionic/angular';
+import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
+import { AddSystemPage } from 'src/app/add-system/add-system.page';
+import { AddSensorPage } from 'src/app/add-sensor/add-sensor.page';
+import { CreateClusterPage } from 'src/app/create-cluster/create-cluster.page';
 
 @Component({
   selector: "app-monitoring",
@@ -12,10 +17,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class MonitoringPage implements OnInit {
 
-  systemID: string;
-  growRoomID: string;
-  systemTimeStamp: string;
-  growRoomTimeStamp: string;
+  deviceName: string;
+  clusterName: string;
+  timeStamp: string;
 
   public specifications = [
     "Humidifier",
@@ -37,17 +41,17 @@ export class MonitoringPage implements OnInit {
     clientId: "Test",
   };
 
-  systemAlertOptions: any = {
-    header: "System Name"
+  deviceAlertOptions: any = {
+    header: "Device Name"
   }
 
-  growRoomAlertOptions: any = {
-    header: "Grow Room Name"
+  clusterAlertOptions: any = {
+    header: "Cluster Name"
   }
 
   TOPIC: string[] = ["#"];
 
-  constructor(private mqttService: MqttInterfaceService, public variableManagentService: VariableManagementService, public route: ActivatedRoute, private router: Router) {
+  constructor(private mqttService: MqttInterfaceService, public variableManagentService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController) {
 
     // Log MQTT Status
     this.mqttService.mqttStatus.pipe(skip(1)).subscribe((status) => {
@@ -62,41 +66,23 @@ export class MonitoringPage implements OnInit {
     );
 
     // Fetch Display Data from Database
-    this.variableManagentService.fetchBotData(false);
+    this.variableManagentService.fetchClusters(false);
   }
  
   ngOnInit() {
     // Set Default Grow Room and System
 
-    this.mqttService.systemLiveData.subscribe(resData => {
+    this.mqttService.deviceLiveData.subscribe(resData => {
       // Try parsing system MQTT string as JSON Data
       try{
         var jsonSensorData = JSON.parse(resData);
         console.log(jsonSensorData);
         // Store Time Stamp of Message
-        this.systemTimeStamp = Object.keys(jsonSensorData)[0];
+        this.timeStamp = Object.keys(jsonSensorData)[0];
         // Store sensor values into Display Objects to update UI
-        for(var i = 0; i < this.variableManagentService.systemVariableDisplays.length; i++){
-          if(jsonSensorData[this.systemTimeStamp][this.variableManagentService.systemVariableDisplays[i].title]){
-            this.variableManagentService.systemVariableDisplays[i].current_val = jsonSensorData[this.systemTimeStamp][this.variableManagentService.systemVariableDisplays[i].title];
-          }
-        }
-      }
-      catch(error){
-        console.log(error);
-      }
-    });
-
-    this.mqttService.growRoomLiveData.subscribe(resData => {
-      // Try parsing growRoom MQTT string as JSON Data
-      try{
-        var jsonSensorData = JSON.parse(resData);
-        // Store Time Stamp of Message
-        this.growRoomTimeStamp = Object.keys(jsonSensorData)[0];
-        // Store sensor values into Display Objects to update UI
-        for(var i = 0; i < this.variableManagentService.growRoomVariableDisplays.length; i++){
-          if(jsonSensorData[this.growRoomTimeStamp][this.variableManagentService.growRoomVariableDisplays[i].title]){
-            this.variableManagentService.growRoomVariableDisplays[i].current_val = jsonSensorData[this.growRoomTimeStamp][this.variableManagentService.growRoomVariableDisplays[i].title];
+        for(var i = 0; i < this.variableManagentService.sensorDisplays.length; i++){
+          if(jsonSensorData[this.timeStamp][this.variableManagentService.sensorDisplays[i].title]){
+            this.variableManagentService.sensorDisplays[i].current_val = jsonSensorData[this.timeStamp][this.variableManagentService.sensorDisplays[i].title];
           }
         }
       }
@@ -106,24 +92,28 @@ export class MonitoringPage implements OnInit {
     });
 
     // Subscribe to changes in System ID
-    this.variableManagentService.selectedSystem.subscribe(resData => {
-      this.systemID = resData;
+    this.variableManagentService.selectedDevice.pipe(skipWhile(str => str == "")).subscribe(resData => {
+      console.log("monitoring page selected device");
+      this.deviceName = resData;
     });
     
     // Update GrowRoom ID selection
-    this.variableManagentService.selectedGrowRoom.subscribe(resData => {
-      this.growRoomID = resData;
+    this.variableManagentService.selectedCluster.pipe(skipWhile(str => str == "")).subscribe(resData => {
+      console.log("monitoring page selected cluster");
+      this.clusterName = resData;
     });
   }
 
   // Change System 
-  changeSystem(systemName : string){
-    this.variableManagentService.updateVariables(this.growRoomID, systemName);
+  changeDevice(deviceName : string){
+    console.log("change device monitoring page");
+    this.variableManagentService.updateCurrentCluster(this.clusterName, deviceName);
   }
 
   // Change Grow Room
-  changeGrowRoom(growRoomName: string){
-    this.variableManagentService.updateVariables(growRoomName, null);
+  changeCluster(clusterName: string){
+    console.log("change cluster monitoring page");
+    this.variableManagentService.updateCurrentCluster(clusterName, null);
   }
 
   onConnectionLost(ResponseObject) {
@@ -135,5 +125,68 @@ export class MonitoringPage implements OnInit {
     // console.log('hello');
     // this.name = ['7']
     this.mqttService.publishMessage(this.TOPIC[0], "hello");
+  }
+
+  async presentActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Setup',
+      buttons: [{
+        text: 'Cluster',
+        handler: () => {
+          this.presentClusterModal();
+        }
+      },{
+        text: 'Grow Room',
+        handler: () => {
+          this.presentGrowRoomModal();
+        }
+      }, {
+        text: 'System',
+        handler: () => {
+          this.presentSystemModal();
+        }
+      }, {
+        text: 'Sensor',
+        handler: () => {
+          this.presentSensorModal();
+        }
+      },{
+        text: 'Cancel',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
+
+  async presentGrowRoomModal() {
+    const modal = await this.modalController.create({
+      component: AddGrowroomPage,
+    });
+    return await modal.present();
+  }
+
+  async presentSystemModal() {
+    const modal = await this.modalController.create({
+      component: AddSystemPage,
+    });
+    return await modal.present();
+  }
+
+  async presentSensorModal() {
+    const modal = await this.modalController.create({
+      component: AddSensorPage,
+    });
+    return await modal.present();
+  }
+
+  async presentClusterModal() {
+    const modal = await this.modalController.create({
+      component: CreateClusterPage,
+    });
+    return await modal.present();
   }
 }

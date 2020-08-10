@@ -2,7 +2,7 @@ ion-content {
     --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
 }
 
-h2 {
+h2, h6 {
     color: white;
     margin-left: 10px;
     display: inline;
@@ -18,4 +18,15 @@ h2 {
     margin-right: 20px;
     font-weight: bolder;
     letter-spacing: 1px;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+  }
+
+  ion-col {
+    text-align: center;
 }
