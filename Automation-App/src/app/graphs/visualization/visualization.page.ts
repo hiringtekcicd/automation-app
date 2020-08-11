@@ -169,7 +169,7 @@ chartOptions= {
     this.today = new Date().toString();
     
     // Fetch Display Data from Database
-    this.variableManagentService.fetchBotData();
+    //this.variableManagentService.fetchBotData();
 
 
     // this.variableManagentService.on_update.subscribe(resData=>{
@@ -191,14 +191,14 @@ chartOptions= {
     //this.variableManagentService.updateVariables(null, null);               uncomment this line
 
     // Subscribe to changes in System ID
-    this.variableManagentService.selectedSystem.subscribe(resData => {
-      this.systemID = resData;
-      });
+    // this.variableManagentService.selectedSystem.subscribe(resData => {
+    //   this.systemID = resData;
+    //   });
         
     // Update GrowRoom ID selection
-    this.variableManagentService.selectedGrowRoom.subscribe(resData => {
-      this.growRoomID = resData;
-      });
+    // this.variableManagentService.selectedGrowRoom.subscribe(resData => {
+    //   this.growRoomID = resData;
+    //   });
     
     console.log(this.growRoomID);
     this.getData();
@@ -229,14 +229,14 @@ chartOptions= {
 
   
 
-    // Change System 
+    // // Change System 
     changeSystem(systemName : string){
-      this.variableManagentService.updateVariables(this.growRoomID, systemName);
+      //this.variableManagentService.updateVariables(this.growRoomID, systemName);
     }
   
-    // Change Grow Room
+    // // Change Grow Room
     changeGrowRoom(growRoomName: string){
-      this.variableManagentService.updateVariables(growRoomName, null);
+      //this.variableManagentService.updateVariables(growRoomName, null);
     }
 
     onApply(newstartDate:string,newendDate:string){

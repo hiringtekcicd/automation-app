@@ -5,13 +5,17 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'visualization',
+    redirectTo: 'auth',
     pathMatch: 'full'
   },
   //Lazyloading is used to load pages.
   {
     path: 'auth', 
     loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule) 
+  },
+  {
+    path: 'analytics',
+    loadChildren:()=> import('./graphs/visualization/visualization.module').then( m => m.VisualizationPageModule)
   }, 
   {
     path: 'register',
@@ -22,8 +26,20 @@ const routes: Routes = [
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
   },
   {
-    path: 'visualization',
-    loadChildren: () => import('./graphs/visualization/visualization.module').then( m => m.VisualizationPageModule)
+    path: 'add-growroom',
+    loadChildren: () => import('./add-growroom/add-growroom.module').then( m => m.AddGrowroomPageModule)
+  },
+  {
+    path: 'add-system',
+    loadChildren: () => import('./add-system/add-system.module').then( m => m.AddSystemPageModule)
+  },
+  {
+    path: 'add-sensor',
+    loadChildren: () => import('./add-sensor/add-sensor.module').then( m => m.AddSensorPageModule)
+  },
+  {
+    path: 'create-cluster',
+    loadChildren: () => import('./create-cluster/create-cluster.module').then( m => m.CreateClusterPageModule)
   },
 
 ];

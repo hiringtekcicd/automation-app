@@ -1,0 +1,13 @@
+<ion-card class="dashboard-card">
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-item tappable (click)="toggleAccordion()" lines="none">
+          <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
+          <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
+          <h3 fill="clear" class="color"></h3>
+        </ion-item>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
