@@ -7,6 +7,9 @@ import { Variable } from '@angular/compiler/src/render3/r3_ast';
 import { Label } from 'ng2-charts';
 import { ChartsModule } from 'ng2-charts';
 import * as moment from 'moment';
+import { ModalController } from '@ionic/angular';
+import { AddSystemPage } from 'src/app/add-system/add-system.page';
+import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
 
 @Component({
   selector: 'app-visualization',
@@ -18,15 +21,21 @@ export class VisualizationPage implements OnInit {
   today: string;
   startDate:string=new Date().toString();
   endDate:string=new Date().toString();
-  systemID: string;
-  growRoomID: string;
+  deviceName: string;
+  clusterName: string;
   start_date:string;
   end_date:string;
-  
   
   compareWith : any ;
   DefaultValue:string;
 
+  deviceAlertOptions: any = {
+    header: "Device Name"
+  }
+
+  clusterAlertOptions: any = {
+    header: "Cluster Name"
+  } 
 
   options:any[]=[
     {
@@ -47,7 +56,6 @@ compareWithFn(o1, o2) {
   return o1 === o2;
 };
 
-
 dateChanged(date){
   //console.log(date.detail.value);
   //console.log('inside date changed: '+this.startDate);
@@ -58,7 +66,6 @@ dateChanged(date){
   //console.log(this.end_date);
   this.onApply(this.start_date,this.end_date);   
 }
-
 
 onSelectedChange(event:any){
   console.log(event.target.value);
@@ -78,7 +85,6 @@ onSelectedChange(event:any){
     this.onApply(this.start_date,this.today);
   }
 }
-
 
 //New piece of code
 chartData:ChartDataSets[]=[
@@ -152,16 +158,7 @@ chartOptions= {
 
 
 
-  
-  systemAlertOptions: any = {
-    header: "System Name"
-  }
-
-  growRoomAlertOptions: any = {
-    header: "Grow Room Name"
-  }
-
-  constructor(public variableManagentService: VariableManagementService) {
+  constructor(public variableManagentService: VariableManagementService, private modalController: ModalController) {
     console.log('inside constructor'); 
 
     
@@ -181,26 +178,11 @@ chartOptions= {
 
   
   ngOnInit() {
-  console.log('inside ngOnInit');
+    console.log('inside ngOnInit');
 
-  this.DefaultValue = "0" ;
-  this.compareWith = this.compareWithFn;
-
-
-    //Set Default Grow Room and System
-    //this.variableManagentService.updateVariables(null, null);               uncomment this line
-
-    // Subscribe to changes in System ID
-    // this.variableManagentService.selectedSystem.subscribe(resData => {
-    //   this.systemID = resData;
-    //   });
-        
-    // Update GrowRoom ID selection
-    // this.variableManagentService.selectedGrowRoom.subscribe(resData => {
-    //   this.growRoomID = resData;
-    //   });
-    
-    console.log(this.growRoomID);
+    this.DefaultValue = "0" ;
+    this.compareWith = this.compareWithFn;
+    this.variableManagentService.fetchClusters(false);
     this.getData();
   }
 
@@ -219,7 +201,7 @@ chartOptions= {
     this.chartData[2].data=[];
     this.chartLabels =[];
 
-    this.variableManagentService.getAllSensorsData(this.growRoomID,this.systemID,this.start_date,this.end_date);
+  //  this.variableManagentService.getAllSensorsData(this.growRoomID,this.systemID,this.start_date,this.end_date);
     this.chartLabels = this.variableManagentService.sensorsTimeData;
     this.chartData[0].data=this.variableManagentService.phValueData;
     this.chartData[1].data=this.variableManagentService.ecValueData;
@@ -229,15 +211,15 @@ chartOptions= {
 
   
 
-    // // Change System 
-    changeSystem(systemName : string){
-      //this.variableManagentService.updateVariables(this.growRoomID, systemName);
-    }
-  
-    // // Change Grow Room
-    changeGrowRoom(growRoomName: string){
-      //this.variableManagentService.updateVariables(growRoomName, null);
-    }
+  // Change Device
+  changeDevice(deviceName : string){
+    this.variableManagentService.updateCurrentCluster(this.clusterName, deviceName);
+  }
+
+  // Change Cluster
+  changeCluster(clusterName: string){
+    this.variableManagentService.updateCurrentCluster(clusterName, null);
+  }
 
     onApply(newstartDate:string,newendDate:string){
 
@@ -250,7 +232,7 @@ chartOptions= {
       this.chartData[2].data=[];
       this.chartLabels =[];
       
-      this.variableManagentService.getAllSensorsData(this.growRoomID,this.systemID,newstartDate,newendDate);
+//      this.variableManagentService.getAllSensorsData(this.growRoomID,this.systemID,newstartDate,newendDate);
       // console.log(this.variableManagentService.phValueData);
       this.chartLabels = this.variableManagentService.sensorsTimeData;
       this.chartData[0].data=this.variableManagentService.phValueData;
@@ -339,7 +321,19 @@ chartOptions= {
 // // });
 // }
 
+async presentGrowRoomModal() {
+  const modal = await this.modalController.create({
+    component: AddGrowroomPage,
+  });
+  return await modal.present();
+}
 
+async presentSystemModal() {
+  const modal = await this.modalController.create({
+    component: AddSystemPage,
+  });
+  return await modal.present();
+}
 
 }
 

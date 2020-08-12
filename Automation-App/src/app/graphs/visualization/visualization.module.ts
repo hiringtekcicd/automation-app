@@ -8,6 +8,8 @@ import { VisualizationPageRoutingModule } from './visualization-routing.module';
 
 import { VisualizationPage } from './visualization.page';
 import {ChartsModule} from 'ng2-charts'
+import { AddGrowroomPageModule } from 'src/app/add-growroom/add-growroom.module';
+import { AddSystemPageModule } from 'src/app/add-system/add-system.module';
  
 @NgModule({
   imports: [
@@ -15,7 +17,9 @@ import {ChartsModule} from 'ng2-charts'
     FormsModule,
     IonicModule,
     VisualizationPageRoutingModule,
-    ChartsModule
+    ChartsModule,
+    AddGrowroomPageModule,
+    AddSystemPageModule
   ],
   declarations: [VisualizationPage]
 })

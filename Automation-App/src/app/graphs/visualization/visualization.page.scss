@@ -1,12 +1,32 @@
 .chart-container {
-    position: relative;
-    margin: auto;
-    height: 80vh;
-    width: 80vw;
-  }
+  position: relative;
+  margin: auto;
+  height: 80vh;
+  width: 80vw;
+}
 
-  canvas {
-    height: 80vh;
-    width: 80vw;
-  }
+canvas {
+  height: 80vh;
+  width: 80vw;
+}
+
+ion-content{
+  --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
+}
+
+header{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dropdown {
+  margin-left: 2px;
+  margin-right: 2px;
+  --ion-color-primary-contrast: #000000;
+}
+
+.toolbar {
+  padding-left: 30px;
+  padding-right: 30px;
+}
   

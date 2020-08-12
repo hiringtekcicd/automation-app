@@ -2,26 +2,26 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/ngx-bootstrap/datepicker/bs-datepicker.css">
-  <ion-toolbar>
-    <ion-title>visualization</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="header">Analytics</ion-title>
   </ion-toolbar>
 </ion-header>
 
-
-<ion-item color="primary">
-  <ion-select #growRoomValue slot="start" [interfaceOptions]="growRoomAlertOptions" class="dropdown" [(ngModel)]="growRoomID"
-    (ionChange)="changeGrowRoom(growRoomValue.value)">
-    <ion-select-option *ngFor="let growRoomVariable of variableManagentService.growRooms" [value]="growRoomVariable">
-      {{ growRoomVariable }}</ion-select-option>
-  </ion-select>
-  <ion-icon name="add-outline"></ion-icon>
-  <ion-select slot="end" [interfaceOptions]="systemAlertOptions" class="dropdown" #systemValue [(ngModel)]="systemID"
-    (ionChange)="changeSystem(systemValue.value)">
-    <ion-select-option *ngFor="let systemVariable of variableManagentService.systems" [value]="systemVariable">
-      {{ systemVariable }}</ion-select-option>
-  </ion-select>
-  <ion-icon slot="end" name="add-outline"></ion-icon>
-</ion-item>
+<ion-toolbar color="primary" *ngIf="!variableManagentService.noClusters" class="toolbar">
+  <ion-select #clusterValue slot="start" [interfaceOptions]="clusterAlertOptions" class="dropdown" [(ngModel)]="clusterName"
+  (ionChange)="changeCluster(clusterValue.value)" placeholder='Select a Cluster'>
+  <ion-select-option *ngFor="let cluster of variableManagentService.clusterNames" [value]="cluster">
+    {{ cluster }}</ion-select-option>
+</ion-select>
+  <ion-select *ngIf="!variableManagentService.noDevices" slot="end" [interfaceOptions]="deviceAlertOptions" class="dropdown" #deviceValue [(ngModel)]="deviceName"
+  (ionChange)="changeDevice(deviceValue.value)" placeholder='Select a Device'>
+  <ion-select-option *ngFor="let device of variableManagentService.devices" [value]="device">
+    {{ device }}</ion-select-option>
+</ion-select>
+</ion-toolbar>
 
 
 <!-- <div class="container">
@@ -42,29 +42,26 @@
 </div> -->
 
 <ion-content>
-  <div class="ion-padding">
-    
-    <ion-item>
-      <ion-label>Start Date</ion-label>
-      <ion-datetime placeholder="Select Date" displayFormat="YYYY-MM-DD HH:mm:ss" pickerFormat="YYYY-MM-DDTHH:mm:ss" [(ngModel)]="startDate" (ionChange)="dateChanged($event)"></ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-label>End Date</ion-label>
-      <ion-datetime placeholder="Select Date" displayFormat="YYYY-MM-DD HH:mm:ss" [(ngModel)]="endDate" (ionChange)="getData()"></ion-datetime>
-    </ion-item>
-
-
-    <ion-item>
-    <ion-label>Quick Views:</ion-label>
-    <ion-select [compareWith]="compareWith" value="{{DefaultValue}}" (ionChange)="onSelectedChange($event)" >
-      <ion-select-option *ngFor="let option of options" value="{{option.id}}">{{option.name}}
-      </ion-select-option>
-    </ion-select>
-    </ion-item>
-
-  </div>
-    
-  <!-- <ion-card class="welcome-card"> -->
+  <div>
+    <div class="ion-padding">
+      <ion-item>
+        <ion-label>Start Date</ion-label>
+        <ion-datetime placeholder="Select Date" displayFormat="YYYY-MM-DD HH:mm:ss" pickerFormat="YYYY-MM-DDTHH:mm:ss" [(ngModel)]="startDate" (ionChange)="dateChanged($event)"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label>End Date</ion-label>
+        <ion-datetime placeholder="Select Date" displayFormat="YYYY-MM-DD HH:mm:ss" [(ngModel)]="endDate" (ionChange)="getData()"></ion-datetime>
+      </ion-item>
+      <ion-item>
+      <ion-label>Quick Views:</ion-label>
+      <ion-select [compareWith]="compareWith" value="{{DefaultValue}}" (ionChange)="onSelectedChange($event)" >
+        <ion-select-option *ngFor="let option of options" value="{{option.id}}">{{option.name}}
+        </ion-select-option>
+      </ion-select>
+      </ion-item>
+    </div>
+      
+    <!-- <ion-card class="welcome-card"> -->
     <div class="chart-container">
         <ion-card-content>
           <canvas baseChart
@@ -74,6 +71,36 @@
             [options]="chartOptions">
           </canvas>
         </ion-card-content>
+    </div>
+  <!-- </ion-card> -->
   </div>
-<!-- </ion-card> -->
+  <div *ngIf="!variableManagentService.noClusters && variableManagentService.noDevices" class="center">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="10" offset="1">
+          <h6>There are no devices in this cluster</h6>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10" offset="1">
+          <h6>Click the Create Grow Room button to setup a Grow Room</h6>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button class="add_button" (click)="presentGrowRoomModal()">Create Grow Room</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10" offset="1">
+          <h6>Click the Create System button to setup a System</h6>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button class="add_button" (click)="presentSystemModal()">Create System</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
