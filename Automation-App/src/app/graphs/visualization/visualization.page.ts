@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { ModalController } from '@ionic/angular';
 import { AddSystemPage } from 'src/app/add-system/add-system.page';
 import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
+import { skipWhile, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-visualization',
@@ -179,7 +180,18 @@ chartOptions= {
   
   ngOnInit() {
     console.log('inside ngOnInit');
-
+    // Subscribe to changes in System ID
+    this.variableManagentService.selectedDevice.pipe(filter(str => str != null)).subscribe(resData => {
+      console.log("monitoring page selected device");
+      this.deviceName = resData;
+    });
+    
+    // Update GrowRoom ID selection
+    this.variableManagentService.selectedCluster.pipe(filter(str => str != null)).subscribe(resData => {
+      console.log("monitoring page selected cluster");
+      this.clusterName = resData;
+    });
+    
     this.DefaultValue = "0" ;
     this.compareWith = this.compareWithFn;
     this.variableManagentService.fetchClusters(false);
@@ -192,7 +204,6 @@ chartOptions= {
     this.startDate=moment().format("YYYY-MM-DDTHH:mm:ss");
     this.endDate=moment().format("YYYY-MM-DDTHH:mm:ss");  
     
-
     this.start_date = this.startDate+'.000Z';
     this.end_date=  this.end_date+'.000Z';
 
@@ -208,16 +219,17 @@ chartOptions= {
     this.chartData[2].data=[20,21,23,24,20,26,21,22,21,24,29,27,28,26,28,23,21,20,21,22];
   }
 
-
-  
-
   // Change Device
   changeDevice(deviceName : string){
-    this.variableManagentService.updateCurrentCluster(this.clusterName, deviceName);
+    console.log("change device");
+    if(this.variableManagentService.selectedDevice.value != deviceName){
+      this.variableManagentService.updateCurrentCluster(this.clusterName, deviceName);
+    }
   }
 
   // Change Cluster
   changeCluster(clusterName: string){
+    console.log("change cluster");
     this.variableManagentService.updateCurrentCluster(clusterName, null);
   }
 
