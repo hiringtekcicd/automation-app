@@ -21,6 +21,8 @@ export class ControlPage implements OnInit {
   isGrowRoom: boolean;
   isSystem: boolean;
 
+  
+
   ph: boolean = false;
   ec: boolean = false;
   water_temperature: boolean = false;
