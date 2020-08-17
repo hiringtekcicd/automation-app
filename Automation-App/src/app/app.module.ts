@@ -11,10 +11,11 @@ import { AppRoutingModule } from './app-routing.module';
 import {HttpClientModule} from '@angular/common/http';
 import { ComponentsModule } from './components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChartsModule } from 'ng2-charts';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule, ComponentsModule, FormsModule, ReactiveFormsModule],
+  imports: [BrowserModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule, ComponentsModule, FormsModule, ReactiveFormsModule,ChartsModule],
   providers: [
     StatusBar,
     SplashScreen,

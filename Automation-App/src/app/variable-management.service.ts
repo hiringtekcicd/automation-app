@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Display } from "./dashboard/display";
+
+import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from 'rxjs/operators';
@@ -8,12 +10,30 @@ import { map } from 'rxjs/operators';
   providedIn: "root",
 })
 export class VariableManagementService {
+ 
+  public sensor_data_array: sensor_data[];
   
+  public all_sensor_data_array: sensor_data[];
+  public start_date: string;
+  public end_date: string;
+
+  public labelDate:string;
+
+  public on_update=new Subject();
+  
+  public growRooms: string[] = [];
+  public systems: string[] = [];
+  public sensorsTimeData: string[]=[];
+  public sensorsValueData:number[]=[];
+  public phValueData: number[]=[];
+  public ecValueData: number[]=[];
+
+
   public clusters: cluster[] = [];
   public clusterNames: string[] = [];
   public sensorDisplays: Display[] = []; 
-  public selectedCluster = new BehaviorSubject<string>("");
-  public selectedDevice = new BehaviorSubject<string>("");
+  public selectedCluster = new BehaviorSubject<string>(null);
+  public selectedDevice = new BehaviorSubject<string>(null);
   public devices: string[] = [];
 
   public deviceSettingsSubject = new Subject();
@@ -26,6 +46,76 @@ export class VariableManagementService {
   public plants: plant[] = [];
 
   constructor(private http: HttpClient) {}
+
+  // public getSensorData(){
+  //   this.sensorsTimeData=[];
+  //   this.sensorsValueData=[];
+  //   this.http
+  //     .get<sensor_info>("http://localhost:3000/sensors_data/GrowRoom1/system1/ph")
+  //     .subscribe((resData) => {
+        
+  //       //console.log(resData.sensor_info);
+  //       this.sensor_data_array = resData.sensor_info;
+
+  //       //console.log(this.sensor_data_array);
+  //       for(var i=0;i<this.sensor_data_array.length;i++)
+  //       {
+  //         //this.sensor_data_array[i]._id['name']==
+  //         this.sensorsTimeData.push(this.sensor_data_array[i]._id['time'])
+  //         this.sensorsValueData.push(parseFloat(this.sensor_data_array[i]._id['value']))
+  //       }
+  //       // return this.sensorsValueData;        
+  //     });
+  //     return [this.sensorsValueData,this.sensorsTimeData];
+  //     //console.log(this.sensorsValueData);
+  // }
+
+
+  public getAllSensorsData(growRoomId:string,systemId:string,startdate:string, enddate: string)
+  {
+    console.log(growRoomId,systemId);
+    //console.log(new Date(startdate).toISOString(),new Date(enddate).toISOString());
+    
+    //this.start_date = new Date(startdate).toISOString();
+    //this.end_date= new Date(enddate).toISOString();
+    this.sensorsTimeData=[];
+    this.phValueData=[];
+    this.ecValueData=[];
+    this.http
+      .get<sensor_info>("http://localhost:3000/get_all/GrowRoom1/system1/"+startdate+"/"+enddate+"/")
+      .subscribe((resData) => {
+        
+        this.all_sensor_data_array = resData.sensor_info;
+        //console.log(this.all_sensor_data_array);
+        for(var i=0;i<this.all_sensor_data_array.length;i++)
+        {
+          //this.sensorsTimeData.push();
+          //console.log('Test');
+          this.labelDate = moment(this.all_sensor_data_array[i]['_id']).format("MMM DD, HH:mm:ss")
+          //console.log(this.labelDate);
+          //this.sensorsTimeData.push(new Date(this.all_sensor_data_array[i]['_id']).toUTCString());  
+          this.sensorsTimeData.push(this.labelDate);
+          for(var j=0;j<this.all_sensor_data_array[i].sensors.length;j++)
+          {
+            //console.log(this.all_sensor_data_array[i]['_id']);
+            switch(this.all_sensor_data_array[i].sensors[j]['name']){
+              case 'ph':
+                this.phValueData.push(this.all_sensor_data_array[i].sensors[j]['value']);
+                break;
+              case 'ec':
+                this.ecValueData.push(this.all_sensor_data_array[i].sensors[j]['value']);
+                break;
+            }
+          }
+        }
+        //console.log(this.sensorsTimeData);
+        //return[this.sensorsTimeData,this.phValueData,this.ecValueData]
+
+        this.on_update.next();
+      })
+      //console.log(this.phValueData);
+      //return[this.sensorsTimeData,this.phValueData,this.ecValueData]
+  }
 
   public fetchClusters(repeat: boolean){
     if(repeat || (!repeat && this.clusters.length == 0)){
@@ -50,7 +140,6 @@ export class VariableManagementService {
   public updateCurrentCluster(clusterName: string, deviceName: string) {
     console.log("Update Cluster")
     this.sensorDisplays = [];
-
     if (clusterName == null) {
       clusterName = this.clusterNames[0];
     }
@@ -60,6 +149,7 @@ export class VariableManagementService {
       console.log("Update Cluster and Device");
       this.noDevices = false;
       if(this.selectedCluster.value != clusterName){
+        this.devices = [];
         this.clusters[clusterIndex].systems.forEach((element) => {
           this.devices.push(element.name);
         });
@@ -101,9 +191,11 @@ export class VariableManagementService {
       }
       this.selectedCluster.next(clusterName);
       this.selectedDevice.next(deviceName);
+
     } else {
       this.noDevices = true;
       this.devices = [];
+      this.selectedDevice.next(null);
       this.selectedCluster.next(clusterName);
     }
   }
@@ -150,7 +242,7 @@ export class VariableManagementService {
         _id: resData._id,
         name: data.name,
         type: "growroom",
-        clusterID: data.cluster_name,
+        clusterName: data.cluster_name,
         settings: data.settings
       });
       this.noDevices = false;
@@ -190,7 +282,7 @@ export class VariableManagementService {
           _id: resData._id,
           name: data.name,
           type: "system",
-          clusterID: data.cluster_name,
+          clusterName: data.cluster_name,
           settings: data.settings
         });
         this.noDevices = false;
@@ -213,6 +305,7 @@ export class VariableManagementService {
   }
 
   public getDeviceSettings(){
+    console.log(this.selectedCluster.value);
     this.http.get<device_settings>("http://localhost:3000/device_settings/" + this.selectedCluster.value + "/" + this.selectedDevice.value).subscribe(resData => {
       this.deviceSettings.push(resData);
       this.deviceSettingsIndex = this.deviceSettings.length - 1;
@@ -226,7 +319,6 @@ export class VariableManagementService {
     }));
   }
 }
-
 
 // format of brief_info data coming from backend
 
@@ -268,7 +360,7 @@ interface device_settings {
   _id: string;
   name: string;
   type: string;
-  clusterID: string;
+  clusterName: string;
   settings: any;
 }
 
@@ -293,3 +385,49 @@ export interface plant {
   }
 }
 
+interface sensor {
+  _id: string;
+  name: string;
+  target_value: number;
+  desired_range_low: number;
+  desired_range_high: number;
+}
+
+interface sensor_info{
+  //time: String,
+  //value:Number,
+  sensor_info:[sensor_data],
+  //all_info:[all_info]
+}
+
+interface Sample{
+  time: String,
+  value: Number
+}
+
+interface sensor_data{
+  //_id: [Sample],
+  _id: Date,
+  sensors:[sensor_array]
+  //time: String,
+  //value:Number
+}
+
+
+interface all_info{
+  //
+  // name:String,
+  // value:Number
+  sensors:[sensor_array]
+}
+
+interface sensor_array{
+  // _id: Date,
+  sensor_array:[sensor_details]
+}
+
+interface sensor_details{
+  //_id:Date,
+  name:String,
+  value:Number
+}

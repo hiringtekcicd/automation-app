@@ -12,6 +12,10 @@ const routes: Routes = [
   {
     path: 'auth', 
     loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule) 
+  },
+  {
+    path: 'analytics',
+    loadChildren:()=> import('./graphs/visualization/visualization.module').then( m => m.VisualizationPageModule)
   }, 
   {
     path: 'register',
@@ -20,7 +24,8 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
-  },  {
+  },
+  {
     path: 'add-growroom',
     loadChildren: () => import('./add-growroom/add-growroom.module').then( m => m.AddGrowroomPageModule)
   },
