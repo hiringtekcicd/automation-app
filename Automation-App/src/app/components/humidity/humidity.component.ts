@@ -22,7 +22,9 @@ export class HumidityComponent implements OnInit, OnDestroy {
       'day_and_night': this.fb.control(true),
       'day_target_value': this.fb.control(null),
       'night_target_value': this.fb.control(null),
-      'target_value': this.fb.control(null)
+      'target_value': this.fb.control(null),
+      'humidifier_enabled': this.fb.control(null),
+      'dehumidifier_enabled': this.fb.control(null)
     });
 
     this.humidityForm = this.fb.group({
