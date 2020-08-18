@@ -301,6 +301,7 @@ export class VariableManagementService {
     return this.http.put("http://localhost:3000/device_settings/" + this.deviceSettings[this.deviceSettingsIndex]._id, deviceForm)
       .pipe(map(() => {
         this.deviceSettings[this.deviceSettingsIndex].settings = deviceForm;
+        this.deviceSettingsSubject.next(true);
       }));
   }
 
@@ -309,7 +310,7 @@ export class VariableManagementService {
     this.http.get<device_settings>("http://localhost:3000/device_settings/" + this.selectedCluster.value + "/" + this.selectedDevice.value).subscribe(resData => {
       this.deviceSettings.push(resData);
       this.deviceSettingsIndex = this.deviceSettings.length - 1;
-      this.deviceSettingsSubject.next();
+      this.deviceSettingsSubject.next(false);
     });
   }
 
@@ -383,14 +384,6 @@ export interface plant {
     ph: plant_settings,
     water_temperature: plant_settings
   }
-}
-
-interface sensor {
-  _id: string;
-  name: string;
-  target_value: number;
-  desired_range_low: number;
-  desired_range_high: number;
 }
 
 interface sensor_info{

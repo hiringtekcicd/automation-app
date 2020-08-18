@@ -35,18 +35,18 @@ export class WaterTempComponent implements OnInit, OnDestroy {
     });
 
     this.parentForm.addControl('water_temperature', this.waterTemperatureForm);
+
+    this.waterTemperatureForm.get('monitoring_only').valueChanges.subscribe(resData => {
+      if(resData) {
+        this.waterTemperatureForm.removeControl('control');
+      } else {
+        this.waterTemperatureForm.addControl('control', this.controlForm);
+      }
+    });
   }
 
   toggleAccordion() {
     this.isOpen = !this.isOpen;
-  }
-
-  onMonitoringOnly() {
-    if(this.waterTemperatureForm.get("monitoring_only").value == true){
-      this.waterTemperatureForm.removeControl('control');
-    } else {
-      this.waterTemperatureForm.addControl('control', this.controlForm);
-    }
   }
 
   ngOnDestroy(){
