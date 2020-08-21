@@ -8,8 +8,7 @@ import { CreateClusterPage } from 'src/app/create-cluster/create-cluster.page';
 import { ModalController } from '@ionic/angular';
 import { Observable, combineLatest } from 'rxjs';
 import * as _ from "lodash";
-
-
+import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
 
 @Component({
   selector: 'app-control',
@@ -18,7 +17,6 @@ import * as _ from "lodash";
 })
 export class ControlPage implements OnInit {
 
-  
   settingsForm: FormGroup = new FormGroup({});
 
   deviceName: string;
@@ -44,13 +42,17 @@ export class ControlPage implements OnInit {
     header: "Device Name"
   }
 
-  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef, private modalController: ModalController) { 
+  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef, private modalController: ModalController, private mqttService: MqttInterfaceService) { 
     this.variableManagementService.fetchClusters(false);
+    this.mqttService.mqttStatus.subscribe((status) => {
+      console.log(status);
+    });
   }
 
   ngOnInit() {
     this.formValue$ = this.settingsForm.valueChanges.pipe(debounceTime(300), filter(() => this.variableManagementService.deviceSettings.length != 0));
     combineLatest(this.formValue$, this.variableManagementService.deviceSettingsSubject).subscribe(([a, b]) => {
+      console.log(a);
       this.isDirty = (_.isEqual(a, this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings) === false);
     });
     // Respond to grow room settings data fetched from backend
@@ -113,23 +115,7 @@ export class ControlPage implements OnInit {
       // Detect and update UI
       this.changeDetector.detectChanges();     
     });
-
-
   }
-
-  // dirtyCheck<U>(source: Observable<U>) {
-  //   return function<T>(valueChanges: Observable<T>): Observable<boolean> {
-  //     const isDirty$ = combineLatest(
-  //       source,
-  //       valueChanges,
-  //     ).pipe(
-  //       debounceTime(300),
-  //       map(([a, b]) => isEqual(a, b) === false),
-  //       startWith(false),
-  //     );
-  //     return isDirty$;
-  //   };
-  // }
 
   // Change System 
   changeDevice(deviceName : string){
@@ -144,8 +130,21 @@ export class ControlPage implements OnInit {
   }
   
   // update data in backend
-  pushData(){
-    this.variableManagementService.updateDeviceSettings(this.settingsForm.value).subscribe(() => {});
+  pushData(deviceForm: any){
+    var changedData = [];
+    for(var key in deviceForm){
+      if(!_.isEqual(deviceForm[key], this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings[key])) {
+        changedData.push({ [key]: deviceForm[key] });
+      }
+    }
+    console.log(changedData);
+    this.mqttService.publishMessage("device_settings", JSON.stringify({ data: changedData}), 1, false).then(() => {
+      console.log("mqttservice published");
+      this.variableManagementService.updateDeviceSettings(this.settingsForm.value).subscribe(() => {}, (error) => {console.log(error)});
+    },
+    (error) => {
+      console.log(error);
+    });
   }
 
   // delete system sensor cards 

@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from 'rxjs/operators';
+import * as _ from "lodash";
 
 @Injectable({
   providedIn: "root",
@@ -294,10 +295,10 @@ export class VariableManagementService {
         this.devices.push(data.name);
         this.updateCurrentCluster(data.cluster_name, data.name);
       }));
-  }
+  } 
 
   // Update grow room and system settings in backend
-  public updateDeviceSettings(deviceForm: any): Observable<any>{
+  public updateDeviceSettings(deviceForm: any): Observable<any> {
     return this.http.put("http://localhost:3000/device_settings/" + this.deviceSettings[this.deviceSettingsIndex]._id, deviceForm)
       .pipe(map(() => {
         this.deviceSettings[this.deviceSettingsIndex].settings = deviceForm;
