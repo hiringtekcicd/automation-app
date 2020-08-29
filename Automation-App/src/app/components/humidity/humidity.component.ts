@@ -15,7 +15,7 @@ export class HumidityComponent implements OnInit, OnDestroy {
   controlForm: FormGroup;
   day_and_night_targetForm: FormGroup;
   
-  constructor(private variableManagementService: VariableManagementService, private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
     this.controlForm = this.fb.group({

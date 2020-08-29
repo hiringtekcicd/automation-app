@@ -23,8 +23,8 @@ export class AirTemperatureComponent implements OnInit, OnDestroy {
       'day_target_value': this.fb.control(null),
       'night_target_value': this.fb.control(null),
       'target_value': this.fb.control(null),
-      'heater_enabled': this.fb.control(null),
-      'cooler_enabled': this.fb.control(null)
+      'heater_enabled': this.fb.control(false),
+      'cooler_enabled': this.fb.control(false)
     });
 
     this.airTemperatureForm = this.fb.group({

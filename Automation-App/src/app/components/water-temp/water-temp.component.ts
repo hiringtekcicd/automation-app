@@ -23,8 +23,8 @@ export class WaterTempComponent implements OnInit, OnDestroy {
       'day_target_value': this.fb.control(null),
       'night_target_value': this.fb.control(null),
       'target_value': this.fb.control(null),
-      'heater_enabled': this.fb.control(null),
-      'cooler_enabled': this.fb.control(null)
+      'heater_enabled': this.fb.control(false),
+      'cooler_enabled': this.fb.control(false)
     });
 
     this.waterTemperatureForm = this.fb.group({
