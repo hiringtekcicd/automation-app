@@ -27,7 +27,7 @@ export class MqttInterfaceService {
     clientId: string;
     path?: string;
   } = {
-    host: "192.168.86.55",
+    host: "136.37.190.205",
     port: 9001,
     clientId: "User122",
   };
@@ -130,7 +130,6 @@ export class MqttInterfaceService {
           resolve();
         },
         (error) => {
-          console.log("heee");
           reject(error);
         });
       });
@@ -150,7 +149,7 @@ export class MqttInterfaceService {
   }
 
   onMessageArrived(ResponseObject) {
-    console.log(ResponseObject);
+    console.log(ResponseObject.payloadString);
     // Split TOPIC URL to extract IDs
     var topicParam = ResponseObject.topic.split("/", 3);
     // Check if incoming data is for selected device

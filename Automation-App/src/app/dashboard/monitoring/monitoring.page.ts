@@ -9,6 +9,7 @@ import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
 import { AddSystemPage } from 'src/app/add-system/add-system.page';
 import { AddSensorPage } from 'src/app/add-sensor/add-sensor.page';
 import { CreateClusterPage } from 'src/app/create-cluster/create-cluster.page';
+import { SensorDisplayComponent } from 'src/app/components/sensor-display/sensor-display.component';
 
 @Component({
   selector: "app-monitoring",
@@ -47,13 +48,14 @@ export class MonitoringPage implements OnInit {
       // Try parsing system MQTT string as JSON Data
       try{
         var jsonSensorData = JSON.parse(resData);
-        console.log(jsonSensorData);
         // Store Time Stamp of Message
-        this.timeStamp = Object.keys(jsonSensorData)[0];
+        this.timeStamp = jsonSensorData["time"];
         // Store sensor values into Display Objects to update UI
         for(var i = 0; i < this.variableManagentService.sensorDisplays.length; i++){
-          if(jsonSensorData[this.timeStamp][this.variableManagentService.sensorDisplays[i].title]){
-            this.variableManagentService.sensorDisplays[i].current_val = jsonSensorData[this.timeStamp][this.variableManagentService.sensorDisplays[i].title];
+          for(var j = 0; j < jsonSensorData["sensors"].length; j++){
+            if(jsonSensorData["sensors"][j].name == this.variableManagentService.sensorDisplays[i].title){
+              this.variableManagentService.sensorDisplays[i].current_val = jsonSensorData["sensors"][j].value;
+            }
           }
         }
       }
