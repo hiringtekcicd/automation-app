@@ -12,6 +12,7 @@ import { AddGrowroomPageModule } from 'src/app/add-growroom/add-growroom.module'
 import { AddSystemPageModule } from 'src/app/add-system/add-system.module';
 import { AddSensorPageModule } from 'src/app/add-sensor/add-sensor.module';
 import { CreateClusterPageModule } from 'src/app/create-cluster/create-cluster.module';
+import { IdentifyDevicePageModule } from 'src/app/add-device/identify-device/identify-device.module';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { CreateClusterPageModule } from 'src/app/create-cluster/create-cluster.m
     AddGrowroomPageModule,
     AddSystemPageModule,
     AddSensorPageModule,
-    CreateClusterPageModule
+    CreateClusterPageModule,
+    IdentifyDevicePageModule
   ],
   declarations: [MonitoringPage]
 })

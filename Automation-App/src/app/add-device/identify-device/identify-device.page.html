@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Identify Device</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click)="dismiss()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="!isConnected">
+    <ion-card-content>
+      <h1>Follow these steps to connect to your Hydrotek Device</h1>
+      <ul>
+        <li>Disconnect from your current WiFi Connection</li>
+        <li>Search for Hydrotek Device Network in your WiFi Manager</li>
+        <li>Connect to Hydrotek Device and once connection is successful click the connect button</li>
+      </ul>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4" offset="4">
+            <ion-label color="danger">{{ status }}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="isLoading">
+          <ion-col size="2" offset="5">
+            <ion-spinner></ion-spinner>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="4" offset="4">
+            <ion-button class="button" (click)="pingDevice()" style="float: right;">Connect</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="isConnected">
+    <ion-card-content>
+      <form [formGroup]="wifiSettingsForm" (ngSubmit)="onWiFiSettingsSubmit()">
+        <h2>Enter your Router WiFi SSID and Password</h2>
+        <ion-list>
+          <ion-item>
+            <ion-label position='floating'>WiFi SSID</ion-label>
+            <ion-input type="username" formControlName="wifi_ssid"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">WiFi Password</ion-label>
+            <ion-input type="password" formControlName="wifi_password"></ion-input>
+          </ion-item>
+          <ion-button type="submit" style="float: right;">Setup</ion-button>
+        </ion-list>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content *ngIf="isWifiSettingsTransferred">
+      <h1>WiFi Settings have been transferred</h1>
+      <h1>Connect back to your original WiFi Network and press the next button</h1>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4" offset="4">
+            <ion-button class="button" (click)="onWiFiChangeClick()" style="float: right;">Next</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

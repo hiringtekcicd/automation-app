@@ -40,7 +40,11 @@ const routes: Routes = [
   {
     path: 'create-cluster',
     loadChildren: () => import('./create-cluster/create-cluster.module').then( m => m.CreateClusterPageModule)
+  },  {
+    path: 'identify-device',
+    loadChildren: () => import('./add-device/identify-device/identify-device.module').then( m => m.IdentifyDevicePageModule)
   },
+
 
 ];
 @NgModule({

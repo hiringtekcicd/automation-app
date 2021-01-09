@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { VariableManagementService } from '../variable-management.service';
 import { plant } from '../variable-management.service';
+import { Router } from '@angular/router';
+import { MqttInterfaceService } from '../Services/mqtt-interface.service';
 
 @Component({
   selector: 'add-growroom',
@@ -25,7 +26,7 @@ export class AddGrowroomPage implements OnInit {
 
   isLoading: boolean = false;
 
-  constructor(private modalController: ModalController, public variableManagementService: VariableManagementService, private fb: FormBuilder) { 
+  constructor(private router: Router, public variableManagementService: VariableManagementService, private fb: FormBuilder, private mqttInterfaceService: MqttInterfaceService) { 
     if(this.variableManagementService.plants.length == 0){
       this.isLoading = true;
       this.variableManagementService.getPlants().subscribe(() => {
@@ -47,7 +48,8 @@ export class AddGrowroomPage implements OnInit {
   onSubmit(){
     console.log(this.growRoomForm.value);
     this.variableManagementService.createGrowRoom(this.growRoomForm.value).subscribe(() => {
-      this.dismiss();
+  //    this.mqttInterfaceService.publishMessage()
+//      this.dismiss();
     }, error => {
       console.log(error);
     });
@@ -75,6 +77,6 @@ export class AddGrowroomPage implements OnInit {
   }
 
   dismiss(){
-    this.modalController.dismiss();
+    this.router.navigate(['/dashboard']);
   }
 }

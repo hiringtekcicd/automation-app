@@ -10,7 +10,7 @@
     <ion-select-option *ngFor="let device of variableManagentService.devices" [value]="device">
       {{ device }}</ion-select-option>
   </ion-select>
-  <ion-button slot="end" class="add_button" (click)="presentActionSheet()">Setup</ion-button>
+  <ion-button slot="end" class="add_button" (click)="presentModalIdentifyDevice()">Setup</ion-button>
 </ion-toolbar>
 
 <ion-content>

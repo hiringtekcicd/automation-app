@@ -138,7 +138,7 @@ export class ControlPage implements OnInit {
       }
     }
     console.log(changedData);
-    this.mqttService.publishMessage("device_settings", JSON.stringify({ data: changedData}), 1, false).then(() => {
+    this.mqttService.publishMessage("D1000/device_settings", JSON.stringify({ data: changedData}), 1, false).then(() => {
       console.log("mqttservice published");
       this.variableManagementService.updateDeviceSettings(this.settingsForm.value).subscribe(() => {}, (error) => {console.log(error)});
     },

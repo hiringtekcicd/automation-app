@@ -10,6 +10,7 @@ import { AddSystemPage } from 'src/app/add-system/add-system.page';
 import { AddSensorPage } from 'src/app/add-sensor/add-sensor.page';
 import { CreateClusterPage } from 'src/app/create-cluster/create-cluster.page';
 import { SensorDisplayComponent } from 'src/app/components/sensor-display/sensor-display.component';
+import { IdentifyDevicePage } from 'src/app/add-device/identify-device/identify-device.page';
 
 @Component({
   selector: "app-monitoring",
@@ -91,6 +92,12 @@ export class MonitoringPage implements OnInit {
     this.variableManagentService.updateCurrentCluster(clusterName, null);
   }
 
+  async presentModalIdentifyDevice() {
+    const modal = await this.modalController.create({
+      component: IdentifyDevicePage,
+    });
+    return await modal.present();
+  }
 
   async presentActionSheet() {
     const actionSheet = await this.actionSheetController.create({

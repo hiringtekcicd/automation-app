@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { VariableManagementService, plant } from '../variable-management.service';
 
 @Component({
@@ -27,7 +27,7 @@ export class AddSystemPage implements OnInit {
 
   isLoading: boolean = false;
 
-  constructor(private modalController: ModalController, public variableManagementService: VariableManagementService, private fb: FormBuilder) { 
+  constructor(private router: Router, public variableManagementService: VariableManagementService, private fb: FormBuilder) { 
     if(this.variableManagementService.plants.length == 0){
       this.isLoading = true;
       this.variableManagementService.getPlants().subscribe(() => {
@@ -75,6 +75,6 @@ export class AddSystemPage implements OnInit {
   }
 
   dismiss(){
-    this.modalController.dismiss();
+    this.router.navigate(['/dashboard']);
   }
 }

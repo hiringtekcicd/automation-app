@@ -15,6 +15,7 @@ export class MqttInterfaceService {
   public mqttStatus = new BehaviorSubject(status[0]);
 
   public deviceLiveData = new Subject<string>();
+  public wifiConnectStatus = new Subject<boolean>();
 
   public client: any;
   private topics: string[] = ['#'];
@@ -46,6 +47,14 @@ export class MqttInterfaceService {
             src: script.src
         };
     });
+    this.createClient(
+      this.onConnectionLost,
+      this.topics,
+      this.MQTT_CONFIG
+    );
+  }
+
+  public connectToBroker() {
     this.createClient(
       this.onConnectionLost,
       this.topics,
@@ -124,7 +133,7 @@ export class MqttInterfaceService {
       qos ? message.retained = retained : false;
       this.client.publish(message);
       var messageConfirmationSubscribtion;
-      let messageConfirmationPromise = new Promise((resolve, reject) => {
+      let messageConfirmationPromise = new Promise<void>((resolve, reject) => {
         messageConfirmationSubscribtion = this.messageConfirmation.pipe(filter((message) => message == payload), take(1)).subscribe(() => {
           console.log("resolved");
           resolve();
@@ -160,6 +169,10 @@ export class MqttInterfaceService {
           this.deviceLiveData.next(ResponseObject.payloadString);
           break;
         }
+        case 'wifi_connect_status': {
+          this.wifiConnectStatus.next(true);
+          break;
+        }
       }
     }
   }
@@ -175,6 +188,14 @@ export class MqttInterfaceService {
     message.qos = 2;
     message.retained = true;
     this.client.publish(message);
+  }
+
+  public subscribeToTopic(topic: string) {
+    this.client.subscribe(topic);
+  }
+
+  public unsubscribeToTopic(topic: string) {
+    this.client.unsubscribe(topic);
   }
 
   private _onConnect(topic: string[]) {
