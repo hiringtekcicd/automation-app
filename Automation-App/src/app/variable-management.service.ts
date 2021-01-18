@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from 'rxjs/operators';
 import * as _ from "lodash";
+import { type } from "os";
 
 @Injectable({
   providedIn: "root",
@@ -72,7 +73,7 @@ export class VariableManagementService {
   // }
 
 
-  public getAllSensorsData(growRoomId:string,systemId:string,startdate:string, enddate: string)
+  public getAllSensorsData(growRoomId:string, systemId:string, startdate:string, enddate: string)
   {
     console.log(growRoomId,systemId);
     //console.log(new Date(startdate).toISOString(),new Date(enddate).toISOString());
@@ -118,34 +119,30 @@ export class VariableManagementService {
       //return[this.sensorsTimeData,this.phValueData,this.ecValueData]
   }
 
-  public fetchClusters(repeat: boolean){
-    if(repeat || (!repeat && this.clusters.length == 0)){
-      this.http
-      .get<clusters>("http://localhost:3000/clusters")
-      .subscribe(resData => {
-        this.clusters = resData.brief_info;
-        this.clusters.forEach(element => {
-          this.clusterNames.push(element.name);
-        });
-        if(this.clusterNames.length != 0){
-          this.noClusters = false;
-          this.updateCurrentCluster(null, null);
-        } else {
-          this.noClusters = true;
-        } 
-        console.log("Clusters Fetched");       
-      });  
-    }
-  }
+  // public fetchClusters(repeat: boolean){
+  //   if(repeat || (!repeat && this.clusters.length == 0)){
+  //     this.http
+  //     .get<clusters>("http://localhost:3000/clusters")
+  //     .subscribe(resData => {
+  //       this.clusters = resData.brief_info;
+  //       this.clusters.forEach(element => {
+  //         this.clusterNames.push(element.name);
+  //       });
+  //       if(this.clusterNames.length != 0){
+  //         this.noClusters = false;
+  //         this.updateCurrentCluster(null, null);
+  //       } else {
+  //         this.noClusters = true;
+  //       } 
+  //       console.log("Clusters Fetched");       
+  //     });  
+  //   }
+  // }
 
-  public updateCurrentCluster(clusterName: string, deviceName: string) {
-    console.log("Update Cluster")
+  public updateCurrentCluster(deviceName: string) {
+    console.log("Update Current Device");
     this.sensorDisplays = [];
-    if (clusterName == null) {
-      clusterName = this.clusterNames[0];
-    }
 
-    const clusterIndex = this.clusters.findIndex(({name}) => name === clusterName);
     if(this.clusters[clusterIndex].systems.length != 0 || this.clusters[clusterIndex].growRoom != null){
       console.log("Update Cluster and Device");
       this.noDevices = false;
@@ -201,20 +198,20 @@ export class VariableManagementService {
     }
   }
 
-  public createCluster(clusterForm: any): Observable<any> {
-    return this.http.post("http://localhost:3000/create_cluster", { name: clusterForm.cluster_name })
-    .pipe(map((resData: any) => {
-      this.clusters.push({
-        _id: resData._id,
-        name: clusterForm.cluster_name,
-        growRoom: null,
-        systems: []
-      });
-      this.noClusters = false;
-      this.clusterNames.push(clusterForm.cluster_name);
-      this.updateCurrentCluster(clusterForm.cluster_name, null);
-    }));
-  }
+  // public createCluster(clusterForm: any): Observable<any> {
+  //   return this.http.post("http://localhost:3000/create_cluster", { name: clusterForm.cluster_name })
+  //   .pipe(map((resData: any) => {
+  //     this.clusters.push({
+  //       _id: resData._id,
+  //       name: clusterForm.cluster_name,
+  //       growRoom: null,
+  //       systems: []
+  //     });
+  //     this.noClusters = false;
+  //     this.clusterNames.push(clusterForm.cluster_name);
+  //     this.updateCurrentCluster(clusterForm.cluster_name, null);
+  //   }));
+  // }
 
   // Post grow room and system settings to backend
   public createGrowRoom(growRoomForm: any): Observable<any> {
@@ -323,38 +320,109 @@ export class VariableManagementService {
 }
 
 // format of brief_info data coming from backend
-
-interface sensor {
-  name: string;
-  monitoring_only: boolean;
-  day_and_night: boolean;
-  target_value: number;
-  day_target_value: number;
-  night_target_value: number;
-  desired_range_low: number;
-  desired_range_high: number;
-}
-
-interface grow_room_brief_info {
-  name: string;
-  growRoomVariables: sensor[];
-}
-
-interface system_brief_info {
-  name: string;
-  systemVariables: sensor[];
-}
-
-interface clusters {
-  brief_info: [cluster];
-} 
-
-interface cluster {
+interface Device {
   _id: string;
   name: string;
-  growRoom: grow_room_brief_info;
-  systems: system_brief_info[];
+  type: string;
 }
+
+interface FertigationSystem extends Device {
+  settings: {
+    ph?: PhSensor;
+    ec?: EcSensor;
+    water_temp?: WaterTempSensor;
+  }
+}
+
+interface ClimateController extends Device {
+  settings: {
+    air_temp?: AirTempSensor;
+    humidity?: HumiditySensor;
+  }
+}
+
+interface Sensor {
+  monit_only: boolean;
+  control: ControlSettings;
+  alarm_min: number;
+  alarm_max: number;
+}
+
+interface ControlSettings {
+  up_ctrl: boolean;
+  down_ctrl: boolean;
+  d_n_enabled: boolean;
+  day_tgt: number;
+  night_tgt: number;
+  tgt: number;
+}
+
+interface PhSensor extends Sensor {
+  control: PhControlSettings;
+}
+
+interface EcSensor {
+  control: EcControlSettings;
+}
+
+interface WaterTempSensor {
+  control: WaterTempControlSettings;
+}
+
+interface AirTempSensor {
+  control: AirTempControlSettings;
+}
+
+interface HumiditySensor {
+  control: HumidityControlSettings;
+}
+
+interface PhControlSettings extends ControlSettings {
+  dose_time: number;
+  dose_interv: number;
+  pumps: {
+    pump_1: {
+      enabled: boolean;
+    }
+    pump_2: {
+      enabled: boolean;
+    }
+  }
+}
+
+interface EcControlSettings extends ControlSettings {
+  dose_time: number;
+  dose_interv: number;
+  pumps: {
+    pump_1: {
+      enabled: boolean;
+      value: number;
+    }
+    pump_2: {
+      enabled: boolean;
+      value: number;
+    }
+    pump_3: {
+      enabled: boolean;
+      value: number;
+    }
+    pump_4: {
+      enabled: boolean;
+      value: number;
+    }
+    pump_5: {
+      enabled: boolean;
+      value: number;
+    }
+  }
+}
+
+interface WaterTempControlSettings extends ControlSettings {}
+
+interface AirTempControlSettings extends ControlSettings {}
+
+interface HumidityControlSettings extends ControlSettings {}
+
 
 // Format of settings data coming from backend
 
