@@ -194,7 +194,7 @@ chartOptions= {
     
     this.DefaultValue = "0" ;
     this.compareWith = this.compareWithFn;
-    this.variableManagentService.fetchClusters(false);
+   // this.variableManagentService.fetchClusters(false);
     this.getData();
   }
 
@@ -223,14 +223,14 @@ chartOptions= {
   changeDevice(deviceName : string){
     console.log("change device");
     if(this.variableManagentService.selectedDevice.value != deviceName){
-      this.variableManagentService.updateCurrentCluster(this.clusterName, deviceName);
+    //  this.variableManagentService.updateCurrentCluster(this.clusterName, deviceName);
     }
   }
 
   // Change Cluster
   changeCluster(clusterName: string){
     console.log("change cluster");
-    this.variableManagentService.updateCurrentCluster(clusterName, null);
+  //  this.variableManagentService.updateCurrentCluster(clusterName, null);
   }
 
     onApply(newstartDate:string,newendDate:string){

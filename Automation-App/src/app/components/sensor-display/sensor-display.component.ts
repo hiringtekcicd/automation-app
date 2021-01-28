@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Display } from 'src/app/dashboard/display';
 import { VariableManagementService } from 'src/app/variable-management.service';
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
+import { Devices } from 'src/app/variable-management.service';
 
 @Component({
   selector: 'sensor-display',
@@ -10,10 +11,17 @@ import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
 })
 export class SensorDisplayComponent implements OnInit {
 
-  @Input() sensor: Display;
+  @Input() sensor: SensorMonitoringWidget;
 
-  constructor(private variableManagementService: VariableManagementService) {
-    this.sensor = new Display("Untitled", "0 - 0", false, 0, false, 0, 0);
+  constructor() {
+    this.sensor = {
+      current_val: 0,
+      title: 'untitled',
+      monit_only: false,
+      tgt: 0,
+      alarm_min: 0,
+      alarm_max: 1
+    };
    }
 
    getTime(): boolean {
@@ -22,5 +30,13 @@ export class SensorDisplayComponent implements OnInit {
    }
 
   ngOnInit() { }
+}
 
+interface SensorMonitoringWidget {
+  current_val?: number;
+  title: string;
+  monit_only: boolean;
+  tgt: number;
+  alarm_min: number;
+  alarm_max: number;
 }

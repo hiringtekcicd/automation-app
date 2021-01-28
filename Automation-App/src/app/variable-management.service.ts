@@ -2,16 +2,21 @@ import { Injectable } from "@angular/core";
 import { Display } from "./dashboard/display";
 
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from 'rxjs/operators';
 import * as _ from "lodash";
-import { type } from "os";
 
 @Injectable({
   providedIn: "root",
 })
+
 export class VariableManagementService {
+
+  private dbURL = "http://localhost:3000";
+
+  public fertigationSystemSettings = new BehaviorSubject<FertigationSystem[]>(null);
+  public climateControllerSettings = new BehaviorSubject<ClimateController[]>(null);
  
   public sensor_data_array: sensor_data[];
   
@@ -31,7 +36,7 @@ export class VariableManagementService {
   public ecValueData: number[]=[];
 
 
-  public clusters: cluster[] = [];
+  // public clusters: cluster[] = [];
   public clusterNames: string[] = [];
   public sensorDisplays: Display[] = []; 
   public selectedCluster = new BehaviorSubject<string>(null);
@@ -140,62 +145,62 @@ export class VariableManagementService {
   // }
 
   public updateCurrentCluster(deviceName: string) {
-    console.log("Update Current Device");
-    this.sensorDisplays = [];
+    // console.log("Update Current Device");
+    // this.sensorDisplays = [];
 
-    if(this.clusters[clusterIndex].systems.length != 0 || this.clusters[clusterIndex].growRoom != null){
-      console.log("Update Cluster and Device");
-      this.noDevices = false;
-      if(this.selectedCluster.value != clusterName){
-        this.devices = [];
-        this.clusters[clusterIndex].systems.forEach((element) => {
-          this.devices.push(element.name);
-        });
-        if(this.clusters[clusterIndex].growRoom != null){
-          this.devices.push(this.clusters[clusterIndex].growRoom.name);
-        }
-      }
+    // if(this.clusters[clusterIndex].systems.length != 0 || this.clusters[clusterIndex].growRoom != null){
+    //   console.log("Update Cluster and Device");
+    //   this.noDevices = false;
+    //   if(this.selectedCluster.value != clusterName){
+    //     this.devices = [];
+    //     this.clusters[clusterIndex].systems.forEach((element) => {
+    //       this.devices.push(element.name);
+    //     });
+    //     if(this.clusters[clusterIndex].growRoom != null){
+    //       this.devices.push(this.clusters[clusterIndex].growRoom.name);
+    //     }
+    //   }
   
-      if(deviceName == null){
-        deviceName = this.devices[0];
-      }
+    //   if(deviceName == null){
+    //     deviceName = this.devices[0];
+    //   }
   
-      const deviceIndex = this.clusters[clusterIndex].systems.findIndex(({name}) => name === deviceName);
+    //   const deviceIndex = this.clusters[clusterIndex].systems.findIndex(({name}) => name === deviceName);
   
-      if(deviceIndex != -1){
-        this.clusters[clusterIndex].systems[deviceIndex].systemVariables.forEach((element) => {
-          this.sensorDisplays.push(new Display(
-            element.name,
-            element.desired_range_low.toString() + " - " + element.desired_range_high.toString(),
-            element.monitoring_only,
-            element.target_value,
-            element.day_and_night,
-            element.day_target_value,
-            element.night_target_value
-          ));
-        });
-      } else {
-        this.clusters[clusterIndex].growRoom.growRoomVariables.forEach((element) => {
-          this.sensorDisplays.push(new Display(
-            element.name,
-            element.desired_range_low.toString() + " - " + element.desired_range_high.toString(),
-            element.monitoring_only,
-            element.target_value,
-            element.day_and_night,
-            element.day_target_value,
-            element.night_target_value
-          ));
-        });
-      }
-      this.selectedCluster.next(clusterName);
-      this.selectedDevice.next(deviceName);
+    //   if(deviceIndex != -1){
+    //     this.clusters[clusterIndex].systems[deviceIndex].systemVariables.forEach((element) => {
+    //       this.sensorDisplays.push(new Display(
+    //         element.name,
+    //         element.desired_range_low.toString() + " - " + element.desired_range_high.toString(),
+    //         element.monitoring_only,
+    //         element.target_value,
+    //         element.day_and_night,
+    //         element.day_target_value,
+    //         element.night_target_value
+    //       ));
+    //     });
+    //   } else {
+    //     this.clusters[clusterIndex].growRoom.growRoomVariables.forEach((element) => {
+    //       this.sensorDisplays.push(new Display(
+    //         element.name,
+    //         element.desired_range_low.toString() + " - " + element.desired_range_high.toString(),
+    //         element.monitoring_only,
+    //         element.target_value,
+    //         element.day_and_night,
+    //         element.day_target_value,
+    //         element.night_target_value
+    //       ));
+    //     });
+    //   }
+    //   this.selectedCluster.next(clusterName);
+    //   this.selectedDevice.next(deviceName);
 
-    } else {
-      this.noDevices = true;
-      this.devices = [];
-      this.selectedDevice.next(null);
-      this.selectedCluster.next(clusterName);
-    }
+    // } else {
+    //   this.noDevices = true;
+    //   this.devices = [];
+    //   this.selectedDevice.next(null);
+    //   this.selectedCluster.next(clusterName);
+    // }
   }
 
   // public createCluster(clusterForm: any): Observable<any> {
@@ -244,13 +249,13 @@ export class VariableManagementService {
         settings: data.settings
       });
       this.noDevices = false;
-      const clusterIndex = this.clusters.findIndex(({name}) => name === data.cluster_name);
-      this.clusters[clusterIndex].growRoom = {
-        name: data.name,
-        growRoomVariables: data.brief_info
-      };
-      this.devices.push(data.name);
-      this.updateCurrentCluster(data.cluster_name, data.name);
+      // const clusterIndex = this.clusters.findIndex(({name}) => name === data.cluster_name);
+      // this.clusters[clusterIndex].growRoom = {
+      //   name: data.name,
+      //   growRoomVariables: data.brief_info
+      // };
+      // this.devices.push(data.name);
+      // this.updateCurrentCluster(data.cluster_name, data.name);
     }));
   }
 
@@ -276,21 +281,21 @@ export class VariableManagementService {
     }
     return this.http.post("http://localhost:3000/create_system/", data)
       .pipe(map((resData: {_id: string}) => {
-        this.deviceSettings.push({
-          _id: resData._id,
-          name: data.name,
-          type: "system",
-          clusterName: data.cluster_name,
-          settings: data.settings
-        });
-        this.noDevices = false;
-        const clusterIndex = this.clusters.findIndex(({name}) => name === data.cluster_name);
-        this.clusters[clusterIndex].systems.push({
-          name: data.name,
-          systemVariables: data.brief_info
-        });
-        this.devices.push(data.name);
-        this.updateCurrentCluster(data.cluster_name, data.name);
+        // this.deviceSettings.push({
+        //   _id: resData._id,
+        //   name: data.name,
+        //   type: "system",
+        //   clusterName: data.cluster_name,
+        //   settings: data.settings
+        // });
+        // this.noDevices = false;
+        // const clusterIndex = this.clusters.findIndex(({name}) => name === data.cluster_name);
+        // this.clusters[clusterIndex].systems.push({
+        //   name: data.name,
+        //   systemVariables: data.brief_info
+        // });
+        // this.devices.push(data.name);
+        // this.updateCurrentCluster(data.cluster_name, data.name);
       }));
   } 
 
@@ -312,6 +317,28 @@ export class VariableManagementService {
     });
   }
 
+  public fetchDevices() {
+    let $fertigationSystemSettings = this.http.get<FertigationSystem[]>(this.dbURL + '/fertigation-system-settings/find');
+    let $climateControllerSettings = this.http.get<ClimateController[]>(this.dbURL + '/climate-controller-settings/find');
+
+    return forkJoin([$fertigationSystemSettings, $climateControllerSettings]).pipe(map(settings => {
+      this.fertigationSystemSettings.next(settings[0]);
+      console.log(this.fertigationSystemSettings.value);
+      this.climateControllerSettings.next(settings[1]);
+    }));
+  }
+
+  public getCurrentDeviceSettings(currentDeviceType: string, currentDeviceIndex: number) {
+    switch(currentDeviceType) {
+      case 'fertigation-system':
+        return { ...this.fertigationSystemSettings.value[currentDeviceIndex] };
+      case 'climate-controller':
+        return { ...this.climateControllerSettings.value[currentDeviceIndex] };
+      default:  // TODO add error handling code
+        return null;
+    }
+  }
+
   public getPlants(){
     return this.http.get<plant[]>("http://localhost:3000/get_plants").pipe(map(plants => {
       this.plants = plants;
@@ -320,6 +347,9 @@ export class VariableManagementService {
 }
 
 // format of brief_info data coming from backend
+
+export type Devices = FertigationSystem | ClimateController;
+
 interface Device {
   _id: string;
   name: string;

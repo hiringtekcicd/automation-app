@@ -43,7 +43,7 @@ export class ControlPage implements OnInit {
   }
 
   constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef, private modalController: ModalController, private mqttService: MqttInterfaceService) { 
-    this.variableManagementService.fetchClusters(false);
+  //  this.variableManagementService.fetchClusters(false);
     this.mqttService.mqttStatus.subscribe((status) => {
       console.log(status);
     });
@@ -120,13 +120,13 @@ export class ControlPage implements OnInit {
   // Change System 
   changeDevice(deviceName : string){
     if(this.variableManagementService.selectedDevice.value != deviceName){
-      this.variableManagementService.updateCurrentCluster(this.clusterName, deviceName);
+    //  this.variableManagementService.updateCurrentCluster(this.clusterName, deviceName);
     }
   }
 
   // Change Grow Room
   changeCluster(clusterName: string){
-    this.variableManagementService.updateCurrentCluster(clusterName, null);
+   // this.variableManagementService.updateCurrentCluster(clusterName, null);
   }
   
   // update data in backend

@@ -23,11 +23,11 @@ export class CreateClusterPage implements OnInit {
 
   onSubmit(){
     console.log(this.clusterForm.value);
-    this.variableManagementService.createCluster(this.clusterForm.value).subscribe(() => {
-      this.dismiss();
-    }, error => {
-      console.log(error);
-    });
+    //this.variableManagementService.createCluster(this.clusterForm.value).subscribe(() => {
+    //   this.dismiss();
+    // }, error => {
+    //   console.log(error);
+    // });
   }
 
   dismiss(){
