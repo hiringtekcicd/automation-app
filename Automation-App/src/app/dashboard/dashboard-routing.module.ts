@@ -22,6 +22,10 @@ const routes: Routes = [
     loadChildren: () => import('./control/control.module').then( m => m.ControlPageModule)
   },
   {
+    path: 'control/:deviceType/:deviceIndex',
+    loadChildren: () => import('./control/control.module').then( m => m.ControlPageModule)
+  },
+  {
     path: 'warnings',
     loadChildren: () => import('./warnings/warnings.module').then( m => m.WarningsPageModule)
   },

@@ -330,9 +330,9 @@ export class VariableManagementService {
 
   public getCurrentDeviceSettings(currentDeviceType: string, currentDeviceIndex: number) {
     switch(currentDeviceType) {
-      case 'fertigation-system':
+      case FertigationSystemString:
         return { ...this.fertigationSystemSettings.value[currentDeviceIndex] };
-      case 'climate-controller':
+      case ClimateControllerString:
         return { ...this.climateControllerSettings.value[currentDeviceIndex] };
       default:  // TODO add error handling code
         return null;
@@ -347,6 +347,9 @@ export class VariableManagementService {
 }
 
 // format of brief_info data coming from backend
+
+export const FertigationSystemString = 'fertigation-system';
+export const ClimateControllerString = 'climate-controller';
 
 export type Devices = FertigationSystem | ClimateController;
 

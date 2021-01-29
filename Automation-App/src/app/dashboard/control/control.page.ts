@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { VariableManagementService } from 'src/app/variable-management.service';
+import { Devices, FertigationSystemString, ClimateControllerString, VariableManagementService } from 'src/app/variable-management.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { skipWhile, map, filter, debounceTime, startWith, skip } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
 import { AddSystemPage } from 'src/app/add-system/add-system.page';
 import { CreateClusterPage } from 'src/app/create-cluster/create-cluster.page';
@@ -9,13 +9,22 @@ import { ModalController } from '@ionic/angular';
 import { Observable, combineLatest } from 'rxjs';
 import * as _ from "lodash";
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-control',
   templateUrl: './control.page.html',
   styleUrls: ['./control.page.scss'],
 })
+
 export class ControlPage implements OnInit {
+
+  FertigationSystemString = FertigationSystemString;
+  ClimateControllerString = ClimateControllerString;
+
+  currentDeviceSettings: Devices;
+  noDevices: boolean;
+  currentDeviceType: string;
 
   settingsForm: FormGroup = new FormGroup({});
 
@@ -24,25 +33,17 @@ export class ControlPage implements OnInit {
   isGrowRoom: boolean;
   isSystem: boolean;
 
-  ph: boolean = false;
-  ec: boolean = false;
-  water_temperature: boolean = false;
+  ph: boolean = true;
+  ec: boolean = true;
+  water_temperature: boolean = true;
 
-  humidity: boolean = false;
-  air_temperature: boolean = false;
+  humidity: boolean = true;
+  air_temperature: boolean = true;
 
   formValue$: Observable<any>;
   isDirty: boolean = false;
 
-  clusterAlertOptions: any = {
-    header: "Cluster Name"
-  }
-
-  deviceAlertOptions: any = {
-    header: "Device Name"
-  }
-
-  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef, private modalController: ModalController, private mqttService: MqttInterfaceService) { 
+  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef, private modalController: ModalController, private mqttService: MqttInterfaceService, private route: ActivatedRoute) { 
   //  this.variableManagementService.fetchClusters(false);
     this.mqttService.mqttStatus.subscribe((status) => {
       console.log(status);
@@ -50,83 +51,80 @@ export class ControlPage implements OnInit {
   }
 
   ngOnInit() {
-    this.formValue$ = this.settingsForm.valueChanges.pipe(debounceTime(300), filter(() => this.variableManagementService.deviceSettings.length != 0));
-    combineLatest(this.formValue$, this.variableManagementService.deviceSettingsSubject).subscribe(([a, b]) => {
-      console.log(a);
-      this.isDirty = (_.isEqual(a, this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings) === false);
-    });
-    // Respond to grow room settings data fetched from backend
-    this.variableManagementService.deviceSettingsSubject.pipe(filter((sameData) => sameData === false)).subscribe(() => {
-      //Reset systems Form and populate control fields with settings data
-      this.settingsForm.reset();
-      if(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'system'){
-        this.isSystem = true;
-        this.isGrowRoom = false;
-      } else if (this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'growroom'){
-        this.isSystem = false;
-        this.isGrowRoom = true;
-      }
-      this.changeDetector.detectChanges();
-      this.settingsForm.patchValue(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings);
-    }); 
+    this.route.queryParams.subscribe(params => {
+      this.currentDeviceType = params['deviceType'];
+      let currentDeviceIndex = params['deviceIndex'];
 
-    // Subscribe to changes in System ID
-    this.variableManagementService.selectedDevice.pipe(filter((str) => str != null)).subscribe(resData => {
-      // Delete exisiting sensor cards
-      this.resetDevice();
-      this.deviceName = resData;
-      // add sensor cards based on sensors for system
-      this.variableManagementService.sensorDisplays.forEach((element) => {
-        switch(element.title) {
-          case "ph":
-            this.ph = true;
-            break;
-          case "ec":
-            this.ec = true;
-            break;
-          case "water temp":
-            this.water_temperature = true;
-            break;
-          case "humidity":
-            this.humidity = true;
-            break;
-          case "air_temperature":
-            this.air_temperature = true;
-            break;
-        }
-      });
-      // Detect and update UI
-      this.changeDetector.detectChanges();
-      // Check if settings data is already stored locally
-      var dataIndex = this.variableManagementService.deviceSettings.findIndex(({clusterName, name}) => clusterName === this.clusterName && name === this.deviceName);
-      // If data is stored locally populate systems form with settings data
-      // If data isn't found locally fetch it from backend
-      if(dataIndex != -1){
-        this.variableManagementService.deviceSettingsIndex = dataIndex;
-        this.variableManagementService.deviceSettingsSubject.next(false);
+      if((this.currentDeviceType && currentDeviceIndex) != null) {
+        this.currentDeviceSettings = this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, currentDeviceIndex);
+        this.settingsForm.patchValue(this.currentDeviceSettings);
       } else {
-        this.variableManagementService.getDeviceSettings();
+        let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
+        let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length
+        if((fertigationSystemCount && climateControllerCount) == 0) {
+          this.noDevices = true;
+        } 
       }
     });
 
-    // Update GrowRoom ID selection
-    this.variableManagementService.selectedCluster.pipe(filter(str => str != null)).subscribe(resData => {
-      this.clusterName = resData;
-      // Detect and update UI
-      this.changeDetector.detectChanges();     
-    });
-  }
+    // this.formValue$ = this.settingsForm.valueChanges.pipe(debounceTime(300), filter(() => this.variableManagementService.deviceSettings.length != 0));
+    // combineLatest(this.formValue$, this.variableManagementService.deviceSettingsSubject).subscribe(([a, b]) => {
+    //   console.log(a);
+    //   this.isDirty = (_.isEqual(a, this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings) === false);
+    // });
+    // // Respond to grow room settings data fetched from backend
+    // this.variableManagementService.deviceSettingsSubject.pipe(filter((sameData) => sameData === false)).subscribe(() => {
+    //   //Reset systems Form and populate control fields with settings data
+    //   this.settingsForm.reset();
+    //   if(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'system'){
+    //     this.isSystem = true;
+    //     this.isGrowRoom = false;
+    //   } else if (this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].type == 'growroom'){
+    //     this.isSystem = false;
+    //     this.isGrowRoom = true;
+    //   }
+    //   this.changeDetector.detectChanges();
+    //   this.settingsForm.patchValue(this.variableManagementService.deviceSettings[this.variableManagementService.deviceSettingsIndex].settings);
+    // }); 
 
-  // Change System 
-  changeDevice(deviceName : string){
-    if(this.variableManagementService.selectedDevice.value != deviceName){
-    //  this.variableManagementService.updateCurrentCluster(this.clusterName, deviceName);
-    }
-  }
-
-  // Change Grow Room
-  changeCluster(clusterName: string){
-   // this.variableManagementService.updateCurrentCluster(clusterName, null);
+    // // Subscribe to changes in System ID
+    // this.variableManagementService.selectedDevice.pipe(filter((str) => str != null)).subscribe(resData => {
+    //   // Delete exisiting sensor cards
+    //   this.resetDevice();
+    //   this.deviceName = resData;
+    //   // add sensor cards based on sensors for system
+    //   this.variableManagementService.sensorDisplays.forEach((element) => {
+    //     switch(element.title) {
+    //       case "ph":
+    //         this.ph = true;
+    //         break;
+    //       case "ec":
+    //         this.ec = true;
+    //         break;
+    //       case "water temp":
+    //         this.water_temperature = true;
+    //         break;
+    //       case "humidity":
+    //         this.humidity = true;
+    //         break;
+    //       case "air_temperature":
+    //         this.air_temperature = true;
+    //         break;
+    //     }
+    //   });
+    //   // Detect and update UI
+    //   this.changeDetector.detectChanges();
+    //   // Check if settings data is already stored locally
+    //   var dataIndex = this.variableManagementService.deviceSettings.findIndex(({clusterName, name}) => clusterName === this.clusterName && name === this.deviceName);
+    //   // If data is stored locally populate systems form with settings data
+    //   // If data isn't found locally fetch it from backend
+    //   if(dataIndex != -1){
+    //     this.variableManagementService.deviceSettingsIndex = dataIndex;
+    //     this.variableManagementService.deviceSettingsSubject.next(false);
+    //   } else {
+    //     this.variableManagementService.getDeviceSettings();
+    //   }
+    // });
   }
   
   // update data in backend
