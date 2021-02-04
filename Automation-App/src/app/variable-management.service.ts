@@ -6,6 +6,7 @@ import { BehaviorSubject, forkJoin, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from 'rxjs/operators';
 import * as _ from "lodash";
+import { error } from "@angular/compiler/src/util";
 
 @Injectable({
   providedIn: "root",
@@ -300,21 +301,27 @@ export class VariableManagementService {
   } 
 
   // Update grow room and system settings in backend
-  public updateDeviceSettings(deviceForm: any): Observable<any> {
-    return this.http.put("http://localhost:3000/device_settings/" + this.deviceSettings[this.deviceSettingsIndex]._id, deviceForm)
+  public updateDeviceSettings(device: Devices, deviceType: string, deviceID: string, deviceIndex: number): Observable<any> {
+    let endPointURL = "";
+    let deviceSubject: BehaviorSubject<Devices[]>;
+    console.log(deviceType);
+    switch(deviceType){
+      case FertigationSystemString:
+        endPointURL = FertigationSystemString;
+        deviceSubject = this.fertigationSystemSettings;
+        break;
+      case ClimateControllerString:
+        endPointURL = ClimateControllerString;
+        deviceSubject = this.climateControllerSettings;
+        break;
+      // TODO Add error checking
+    }
+    return this.http.put("http://localhost:3000/" + endPointURL + "-settings/update/" + deviceID, device)
       .pipe(map(() => {
-        this.deviceSettings[this.deviceSettingsIndex].settings = deviceForm;
-        this.deviceSettingsSubject.next(true);
+        let updatedDeviceValue = deviceSubject.value;
+        updatedDeviceValue[deviceIndex] = device;
+        deviceSubject.next(updatedDeviceValue);
       }));
-  }
-
-  public getDeviceSettings(){
-    console.log(this.selectedCluster.value);
-    this.http.get<device_settings>("http://localhost:3000/device_settings/" + this.selectedCluster.value + "/" + this.selectedDevice.value).subscribe(resData => {
-      this.deviceSettings.push(resData);
-      this.deviceSettingsIndex = this.deviceSettings.length - 1;
-      this.deviceSettingsSubject.next(false);
-    });
   }
 
   public fetchDevices() {
@@ -357,6 +364,7 @@ interface Device {
   _id: string;
   name: string;
   type: string;
+  device_started: boolean;
 }
 
 interface FertigationSystem extends Device {
@@ -382,8 +390,6 @@ interface Sensor {
 }
 
 interface ControlSettings {
-  up_ctrl: boolean;
-  down_ctrl: boolean;
   d_n_enabled: boolean;
   day_tgt: number;
   night_tgt: number;
@@ -450,11 +456,20 @@ interface EcControlSettings extends ControlSettings {
   }
 }
 
-interface WaterTempControlSettings extends ControlSettings {}
+interface WaterTempControlSettings extends ControlSettings {
+  up_ctrl: boolean;
+  down_ctrl: boolean;
+}
 
-interface AirTempControlSettings extends ControlSettings {}
+interface AirTempControlSettings extends ControlSettings {
+  up_ctrl: boolean;
+  down_ctrl: boolean;
+}
 
-interface HumidityControlSettings extends ControlSettings {}
+interface HumidityControlSettings extends ControlSettings {
+  up_ctrl: boolean;
+  down_ctrl: boolean;
+}
 
 
 // Format of settings data coming from backend

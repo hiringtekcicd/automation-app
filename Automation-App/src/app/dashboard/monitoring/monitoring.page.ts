@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { skip } from "rxjs/operators";
 import { MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/variable-management.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
 import { AddSystemPage } from 'src/app/add-system/add-system.page';
@@ -22,7 +22,7 @@ export class MonitoringPage implements OnInit {
   timeStamp: string;
   noDevices: boolean;
 
-  constructor(private mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController) {
+  constructor(private mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController, private router: Router) {
     // Log MQTT Status
     this.mqttService.mqttStatus.pipe(skip(1)).subscribe((status) => {
       console.log(status);
@@ -39,9 +39,9 @@ export class MonitoringPage implements OnInit {
       } else {
         console.log(this.variableManagementService.fertigationSystemSettings.value);
         if(this.variableManagementService.fertigationSystemSettings.value.length != 0) {
-          this.currentDeviceSettings = this.variableManagementService.getCurrentDeviceSettings(FertigationSystemString, 0);
+          this.router.navigate(['/dashboard/monitoring'], {queryParams: {deviceType: FertigationSystemString, deviceIndex: 0}});
         } else if(this.variableManagementService.climateControllerSettings.value.length != 0) {
-          this.currentDeviceSettings = this.variableManagementService.getCurrentDeviceSettings(ClimateControllerString, 0);
+          this.router.navigate(['/dashboard/monitoring'], {queryParams: {deviceType: ClimateControllerString, deviceIndex: 0}});
         } else {
           this.noDevices = true;
         }

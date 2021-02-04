@@ -40,6 +40,6 @@ export class AirTemperatureComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    this.parentForm.removeControl('air_temperature');
+    this.parentForm.removeControl('air_temp');
   }
 }

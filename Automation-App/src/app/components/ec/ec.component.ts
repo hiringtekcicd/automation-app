@@ -58,14 +58,6 @@ export class EcComponent implements OnInit, OnDestroy {
     });
 
     this.parentForm.addControl('ec', this.ecForm);
-
-    this.ecForm.get('monit_only').valueChanges.subscribe(resData => {
-      if(resData) {
-        this.ecForm.removeControl('control');
-      } else {
-        this.ecForm.addControl('control', this.controlForm);
-      }
-    });
   }
 
   toggleAccordion() {

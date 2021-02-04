@@ -1,16 +1,20 @@
 <ion-content>
   <div class="content">
 
-    <div *ngIf="currentDeviceSettings != null">
+    <div *ngIf="currentDevice != null">
       <form [formGroup]="settingsForm">
-        <div *ngIf="currentDeviceType == FertigationSystemString">
-          <h2>Fertigation System Settings</h2>
+        <div>
+          <h2 class="inline-heading">{{ currentDevice.name }}</h2>
+          <ion-button class="inline-button" (click)="onSettingsFormSubmit()" [disabled]="!isDirty">Save</ion-button>
+          <ion-button class="start-button" (click)="onBootButtonClick()">{{ currentDevice.device_started? stopDeviceString: startDeviceString }}</ion-button>
+        </div>
+
+        <div *ngIf="currentDeviceType == FertigationSystemString">  
           <ph *ngIf="ph" [parentForm]="settingsForm"></ph>
           <ec *ngIf="ec" [parentForm]="settingsForm"></ec>
           <water-temp *ngIf="water_temperature" [parentForm]="settingsForm"></water-temp>
         </div>
         <div *ngIf="currentDeviceType == ClimateControllerString">
-          <h2>Climate Controller Settings</h2>
           <air-temperature *ngIf="air_temperature" [parentForm]="settingsForm"></air-temperature>
           <humidity *ngIf="humidity" [parentForm]="settingsForm"></humidity>
         </div>
