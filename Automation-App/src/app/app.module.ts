@@ -13,10 +13,12 @@ import { ComponentsModule } from './components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
 import { VariableManagementService } from './variable-management.service';
+import { IdentifyDevicePage } from './add-device/identify-device/identify-device.page';
+import { IdentifyDevicePageModule } from './add-device/identify-device/identify-device.module';
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
-  imports: [BrowserModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule, ComponentsModule, FormsModule, ReactiveFormsModule,ChartsModule],
+  entryComponents: [IdentifyDevicePage],
+  imports: [BrowserModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule, ComponentsModule, FormsModule, ReactiveFormsModule,ChartsModule, IdentifyDevicePageModule],
   providers: [
     VariableManagementService,
     StatusBar,

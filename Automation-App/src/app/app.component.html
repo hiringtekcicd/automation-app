@@ -11,6 +11,9 @@
       <ion-list>
         <ion-item>
           <ion-title>Fertigation Systems</ion-title>
+          <ion-button (click)="newDevice()" fill="clear" size="large">
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </ion-button>
         </ion-item>
         <ion-menu-toggle *ngFor="let device of (variableManagementService.fertigationSystemSettings | async); let i = index">
           <ion-item lines="none" routerLink="/dashboard/monitoring" [queryParams]="{ deviceType: device.type, deviceIndex: i }">
@@ -22,6 +25,9 @@
       <ion-list>
         <ion-item>
           <ion-title>Climate Controllers</ion-title>
+          <ion-button (click)="newDevice()" fill="clear" size="large">
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </ion-button>
         </ion-item>
         <ion-menu-toggle *ngFor="let device of (variableManagementService.climateControllerSettings | async); let i = index">
           <ion-item lines="none" routerLink="/dashboard/monitoring" [queryParams]="{ deviceType: device.type, deviceIndex: i }">

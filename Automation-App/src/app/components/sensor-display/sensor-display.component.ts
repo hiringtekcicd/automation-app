@@ -12,17 +12,9 @@ import { Devices } from 'src/app/variable-management.service';
 export class SensorDisplayComponent implements OnInit {
 
   @Input() sensor: SensorMonitoringWidget;
+  @Input() currentValue = 0;
 
-  constructor() {
-    this.sensor = {
-      current_val: 0,
-      title: 'untitled',
-      monit_only: false,
-      tgt: 0,
-      alarm_min: 0,
-      alarm_max: 1
-    };
-   }
+  constructor() {}
 
    getTime(): boolean {
     var date = new Date()

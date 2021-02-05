@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { MenuController, ModalController, Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {AuthService} from './auth/auth.service';
 import { Router } from '@angular/router';
 import { VariableManagementService } from './variable-management.service';
+import { IdentifyDevicePage } from './add-device/identify-device/identify-device.page';
 
 @Component({
   selector: 'app-root',
@@ -18,9 +19,23 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    public variableManagementService: VariableManagementService
+    public variableManagementService: VariableManagementService,
+    private menuController: MenuController,
+    private modalController: ModalController
   ) {
     this.initializeApp();
+  }
+
+  newDevice() {
+    this.menuController.close();
+    this.presentIdentifyDeviceModal();
+  }
+
+  async presentIdentifyDeviceModal() {
+    const modal = await this.modalController.create({
+      component: IdentifyDevicePage
+    });
+    return await modal.present();
   }
 
   initializeApp() {
