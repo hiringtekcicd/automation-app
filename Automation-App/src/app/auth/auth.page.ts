@@ -6,7 +6,7 @@ import {LoadingController, AlertController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup} from '@angular/forms'; 
 import {PasswordStrengthValidator} from './password';
 import { Observable } from 'rxjs';
-import { VariableManagementService } from '../variable-management.service';
+import { VariableManagementService } from '../Services/variable-management.service';
 
 @Component({
   selector: 'app-auth',

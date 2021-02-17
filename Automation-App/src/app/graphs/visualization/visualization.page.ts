@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import {Chart} from 'chart.js';
 import {ChartDataSets} from 'chart.js';
 
-import { VariableManagementService } from 'src/app/variable-management.service';
+import { VariableManagementService } from 'src/app/Services/variable-management.service';
 import { Variable } from '@angular/compiler/src/render3/r3_ast';
 import { Label } from 'ng2-charts';
 import { ChartsModule } from 'ng2-charts';

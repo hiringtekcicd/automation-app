@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { VariableManagementService } from 'src/app/variable-management.service';
+import { VariableManagementService } from 'src/app/Services/variable-management.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({

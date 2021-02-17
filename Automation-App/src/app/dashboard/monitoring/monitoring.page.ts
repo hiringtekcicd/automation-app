@@ -1,13 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { skip } from "rxjs/operators";
 import { MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
-import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/variable-management.service';
+import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
 import { AddSystemPage } from 'src/app/add-system/add-system.page';
 import { IdentifyDevicePage } from 'src/app/add-device/identify-device/identify-device.page';
-import { Devices } from 'src/app/variable-management.service';
+import { Devices } from 'src/app/Services/variable-management.service';
 
 @Component({
   selector: "app-monitoring",

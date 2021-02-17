@@ -12,7 +12,7 @@ import {HttpClientModule} from '@angular/common/http';
 import { ComponentsModule } from './components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
-import { VariableManagementService } from './variable-management.service';
+import { VariableManagementService } from './Services/variable-management.service';
 import { IdentifyDevicePage } from './add-device/identify-device/identify-device.page';
 import { IdentifyDevicePageModule } from './add-device/identify-device/identify-device.module';
 @NgModule({

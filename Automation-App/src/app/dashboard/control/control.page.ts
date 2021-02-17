@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Devices, FertigationSystemString, ClimateControllerString, VariableManagementService } from 'src/app/variable-management.service';
+import { Devices, FertigationSystemString, ClimateControllerString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';

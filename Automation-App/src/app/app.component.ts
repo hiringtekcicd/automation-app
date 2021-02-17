@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import {AuthService} from './auth/auth.service';
 import { Router } from '@angular/router';
-import { VariableManagementService } from './variable-management.service';
+import { VariableManagementService } from './Services/variable-management.service';
 import { IdentifyDevicePage } from './add-device/identify-device/identify-device.page';
 
 @Component({

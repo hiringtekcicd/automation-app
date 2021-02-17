@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Display } from 'src/app/dashboard/display';
-import { VariableManagementService } from 'src/app/variable-management.service';
+import { VariableManagementService } from 'src/app/Services/variable-management.service';
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
-import { Devices } from 'src/app/variable-management.service';
+import { Devices } from 'src/app/Services/variable-management.service';
 
 @Component({
   selector: 'sensor-display',

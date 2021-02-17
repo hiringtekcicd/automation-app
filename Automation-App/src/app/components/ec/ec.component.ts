@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { VariableManagementService } from 'src/app/variable-management.service';
+import { VariableManagementService } from 'src/app/Services/variable-management.service';
 
 @Component({
   selector: 'ec',
