@@ -191,6 +191,7 @@ export class VariableManagementService {
       this.fertigationSystemSettings.next(settings[0]);
       console.log(this.fertigationSystemSettings.value);
       this.climateControllerSettings.next(settings[1]);
+      return settings;
     }));
   }
 
@@ -223,6 +224,7 @@ interface Device {
   _id: string;
   name: string;
   type: string;
+  topicID: string;
   device_started: boolean;
 }
 

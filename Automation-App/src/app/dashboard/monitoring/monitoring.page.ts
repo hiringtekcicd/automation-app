@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { skip } from "rxjs/operators";
 import { MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
@@ -14,20 +14,16 @@ import { Devices } from 'src/app/Services/variable-management.service';
   templateUrl: "./monitoring.page.html",
   styleUrls: ["./monitoring.page.scss"],
 })
-export class MonitoringPage implements OnInit {
+export class MonitoringPage implements OnInit, OnDestroy {
 
   currentDeviceSettings: Devices;
 
   deviceName: string;
   timeStamp: string;
   noDevices: boolean;
+  noMqttConnection: boolean;
 
-  constructor(private mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController, private router: Router) {
-    // Log MQTT Status
-    this.mqttService.mqttStatus.pipe(skip(1)).subscribe((status) => {
-      console.log(status);
-    });
-  }
+  constructor(private mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController, private router: Router) { }
  
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -36,6 +32,7 @@ export class MonitoringPage implements OnInit {
 
       if((currentDeviceType && currentDeviceIndex) != null) {
         this.currentDeviceSettings = this.variableManagementService.getCurrentDeviceSettings(currentDeviceType, currentDeviceIndex);
+        this.startMqttProcessing();
       } else {
         console.log(this.variableManagementService.fertigationSystemSettings.value);
         if(this.variableManagementService.fertigationSystemSettings.value.length != 0) {
@@ -55,10 +52,11 @@ export class MonitoringPage implements OnInit {
         // Store Time Stamp of Message
         this.timeStamp = jsonSensorData["time"];
         // Store sensor values into Display Objects to update UI
-        for(var i = 0; i < this.variableManagementService.sensorDisplays.length; i++){
+        for(const sensorName in this.currentDeviceSettings.settings){
           for(var j = 0; j < jsonSensorData["sensors"].length; j++){
-            if(jsonSensorData["sensors"][j].name == this.variableManagementService.sensorDisplays[i].title){
-              this.variableManagementService.sensorDisplays[i].current_val = jsonSensorData["sensors"][j].value;
+            if(sensorName == jsonSensorData["sensors"][j].name){
+              this.currentDeviceSettings.settings[sensorName]["current_val"] = jsonSensorData["sensors"][j].value;
+              break;
             }
           }
         }
@@ -67,6 +65,26 @@ export class MonitoringPage implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  startMqttProcessing() {
+    this.mqttService.mqttStatus.pipe(skip(1)).subscribe(status => {
+      console.log(status);
+      switch(status) {
+        case "connected": {
+          this.mqttService.subscribeToTopic("live_data/" + this.currentDeviceSettings.topicID + '/#');
+          break;
+        }
+        case "disconnected": {
+          this.noMqttConnection = true;
+          break;
+        }
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.mqttService.unsubscribeToTopic("live_data/" + this.currentDeviceSettings.topicID + '/#');
   }
 
   async presentModalIdentifyDevice() {

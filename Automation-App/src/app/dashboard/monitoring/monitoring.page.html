@@ -12,7 +12,8 @@
                       monit_only: sensor.value.monit_only,
                       tgt: sensor.value.control.tgt,
                       alarm_min: sensor.value.alarm_min,
-                      alarm_max: sensor.value.alarm_max }">
+                      alarm_max: sensor.value.alarm_max,
+                      current_val: sensor.value.current_val || 0 }">
           </sensor-display>
       </span>
     </div>
