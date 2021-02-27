@@ -6,7 +6,6 @@ import { BehaviorSubject, forkJoin, Observable, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from 'rxjs/operators';
 import * as _ from "lodash";
-import { error } from "@angular/compiler/src/util";
 
 @Injectable({
   providedIn: "root",
@@ -244,6 +243,7 @@ interface ClimateController extends Device {
 }
 
 interface Sensor {
+  name: string;
   monit_only: boolean;
   control: ControlSettings;
   alarm_min: number;

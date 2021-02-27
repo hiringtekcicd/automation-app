@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
 
 @Component({
   selector: 'sensor-display',
@@ -15,9 +14,10 @@ export class SensorDisplayComponent implements OnInit {
   ngOnInit() { }
 }
 
-interface SensorMonitoringWidget {
+export interface SensorMonitoringWidget {
+  name: string,
   current_val: number;
-  title: string;
+  display_name: string;
   monit_only: boolean;
   tgt: number;
   alarm_min: number;

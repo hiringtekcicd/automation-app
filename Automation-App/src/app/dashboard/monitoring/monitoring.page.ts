@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { skip } from "rxjs/operators";
 import { MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
@@ -8,15 +8,18 @@ import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
 import { AddSystemPage } from 'src/app/add-system/add-system.page';
 import { IdentifyDevicePage } from 'src/app/add-device/identify-device/identify-device.page';
 import { Devices } from 'src/app/Services/variable-management.service';
+import { SensorMonitoringWidget } from 'src/app/components/sensor-display/sensor-display.component';
 
 @Component({
   selector: "app-monitoring",
   templateUrl: "./monitoring.page.html",
   styleUrls: ["./monitoring.page.scss"],
 })
-export class MonitoringPage implements OnInit, OnDestroy {
+export class MonitoringPage implements OnInit {
 
-  currentDeviceSettings: Devices;
+  currentDevice: Devices;
+  currentDeviceSettings: SensorMonitoringWidget[];
+  liveData: string[];
 
   deviceName: string;
   timeStamp: string;
@@ -26,12 +29,29 @@ export class MonitoringPage implements OnInit, OnDestroy {
   constructor(private mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController, private router: Router) { }
  
   ngOnInit() {
+    this.variableManagementService.fertigationSystemSettings.subscribe(resData =>{
+      console.log(resData);
+  })
+
     this.route.queryParams.subscribe(params => {
       let currentDeviceType = params['deviceType'];
       let currentDeviceIndex = params['deviceIndex'];
 
       if((currentDeviceType && currentDeviceIndex) != null) {
-        this.currentDeviceSettings = this.variableManagementService.getCurrentDeviceSettings(currentDeviceType, currentDeviceIndex);
+        this.currentDevice = this.variableManagementService.getCurrentDeviceSettings(currentDeviceType, currentDeviceIndex);
+        this.currentDeviceSettings = [];
+        for(let sensor in this.currentDevice.settings) {
+          console.log(this.currentDevice.settings[sensor]);
+          this.currentDeviceSettings.push({ 
+            name: sensor,
+            display_name: sensor,
+            monit_only: this.currentDevice.settings[sensor].monit_only,
+            tgt: this.currentDevice.settings[sensor].control.tgt,
+            alarm_min: this.currentDevice.settings[sensor].alarm_min,
+            alarm_max: this.currentDevice.settings[sensor].alarm_max, 
+            current_val: 0 });
+        }
+        console.log(this.currentDeviceSettings[0].display_name);
         this.startMqttProcessing();
       } else {
         console.log(this.variableManagementService.fertigationSystemSettings.value);
@@ -52,10 +72,10 @@ export class MonitoringPage implements OnInit, OnDestroy {
         // Store Time Stamp of Message
         this.timeStamp = jsonSensorData["time"];
         // Store sensor values into Display Objects to update UI
-        for(const sensorName in this.currentDeviceSettings.settings){
+        for(const sensor of this.currentDeviceSettings){
           for(var j = 0; j < jsonSensorData["sensors"].length; j++){
-            if(sensorName == jsonSensorData["sensors"][j].name){
-              this.currentDeviceSettings.settings[sensorName]["current_val"] = jsonSensorData["sensors"][j].value;
+            if(sensor.name == jsonSensorData["sensors"][j].name){
+              sensor.current_val = jsonSensorData["sensors"][j].value;
               break;
             }
           }
@@ -72,7 +92,8 @@ export class MonitoringPage implements OnInit, OnDestroy {
       console.log(status);
       switch(status) {
         case "connected": {
-          this.mqttService.subscribeToTopic("live_data/" + this.currentDeviceSettings.topicID + '/#');
+          this.mqttService.unsubscribeToTopic('live_data/#');
+          this.mqttService.subscribeToTopic('live_data/' + this.currentDevice.topicID + '/#');
           break;
         }
         case "disconnected": {
@@ -81,10 +102,6 @@ export class MonitoringPage implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  ngOnDestroy() {
-    this.mqttService.unsubscribeToTopic("live_data/" + this.currentDeviceSettings.topicID + '/#');
   }
 
   async presentModalIdentifyDevice() {

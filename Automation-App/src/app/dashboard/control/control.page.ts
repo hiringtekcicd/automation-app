@@ -53,6 +53,7 @@ export class ControlPage implements OnInit {
       if((this.currentDeviceType && this.currentDeviceIndex) != null) {
         console.log(this.variableManagementService.fertigationSystemSettings.value);
         this.currentDevice = this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
+        console.log(this.currentDevice);
         this.changeDetector.detectChanges();
         this.settingsForm.patchValue(this.currentDevice.settings);
         console.log(this.settingsForm.value);
@@ -80,14 +81,19 @@ export class ControlPage implements OnInit {
   
   // update data in backend
   onSettingsFormSubmit(currentDevice?: Devices){
+    console.log(this.currentDevice);
      var changedData = [];
      for(var key in this.settingsForm.value){
+       console.log(key);
        if(!_.isEqual(this.settingsForm.value[key], this.currentDevice.settings[key])) {
+         console.log(this.settingsForm.value[key]);
+         console.log(this.currentDevice.settings[key]);
+        console.log("h");
         changedData.push({ [key]: this.settingsForm.value[key] });
       }
     }
     console.log(changedData);
-    // this.mqttService.publishMessage("D1000/device_settings", JSON.stringify({ data: changedData}), 1, false).then(() => {
+    this.mqttService.publishMessage("device_settings/" + this.currentDevice.topicID, JSON.stringify({ data: changedData}), 1, false).then(() => {
     let device;
     if(currentDevice) {
         device = currentDevice
@@ -95,16 +101,16 @@ export class ControlPage implements OnInit {
       device = {...this.currentDevice}
       device.settings = this.settingsForm.value;
     }
-      
+    console.log("pushed changes");
     this.variableManagementService
       .updateDeviceSettings(device, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex)
         .subscribe(() => {
           this.currentDevice = device;
           this.isDirty = false;
         }, (error) => {console.log(error)});
-    // },
-    // (error) => {
-    //   console.log(error);
-    // });
+    },
+    (error) => {
+      console.log(error);
+    });
   }
 }

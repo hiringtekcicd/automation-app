@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService, AuthResponseData } from './auth.service'; 
+import { AuthService, AuthResponseData } from './auth.service'; 
 import { Router } from '@angular/router'; 
 import { FormControl} from '@angular/forms'; //Imported to track the value and validation status of an individual form control.
-import {LoadingController, AlertController } from '@ionic/angular'; 
-import { Validators, FormBuilder, FormGroup} from '@angular/forms'; 
-import {PasswordStrengthValidator} from './password';
+import { LoadingController, AlertController } from '@ionic/angular'; 
+import { Validators, FormBuilder, FormGroup } from '@angular/forms'; 
+import { PasswordStrengthValidator } from './password';
 import { Observable } from 'rxjs';
 import { VariableManagementService, Devices } from '../Services/variable-management.service';
 import { MqttInterfaceService } from '../Services/mqtt-interface.service';
