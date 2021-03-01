@@ -9,14 +9,27 @@ export class SensorDisplayComponent implements OnInit {
 
   @Input() sensor: SensorMonitoringWidget;
 
-  constructor() {}
+  @Input() 
+  set allLiveData(allLiveData: string[]) {
+    if (allLiveData) {
+      for(let i = 0; i < allLiveData.length; i++) {
+        if(allLiveData[i]["name"] == this.sensor.name) {
+          this.currentVal = allLiveData[i]["value"];
+          break;
+        }
+      }
+    }
+  }
+
+  currentVal: number = 0;
+
+  constructor() { }
 
   ngOnInit() { }
 }
 
 export interface SensorMonitoringWidget {
   name: string,
-  current_val: number;
   display_name: string;
   monit_only: boolean;
   tgt: number;

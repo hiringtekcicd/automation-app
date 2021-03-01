@@ -3,5 +3,4 @@ export class Sensor{
     monit_only: boolean;
     alarm_min: number;
     alarm_max: number;
-    current_val: number;
 }

@@ -59,7 +59,7 @@ export class AuthPage implements OnInit {
             this.isLoading = false;
             loadingEl.dismiss();
             console.log('Logged in!');
-            this.variableManagementService.fetchDevices().subscribe((deviceGroups) => {
+            this.variableManagementService.fetchDevices().subscribe(() => {
               let mqttHost = "broker.hivemq.com";
               let topics: string[] = [];
               this.mqttService.createClient(topics, { host: mqttHost, port: 8000 });

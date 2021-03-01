@@ -9,7 +9,7 @@ export class FertigationSystem extends Device implements Deserializable {
     settings: {
         ph?: PhSensor,
         ec?: EcSensor,
-        waterTemp?: WaterTempSensor
+        water_temp?: WaterTempSensor
     }
 
     deserialize(input: any): this {
@@ -20,11 +20,11 @@ export class FertigationSystem extends Device implements Deserializable {
         }
 
         if(input.settings.ec !== undefined) {
-            this.settings.ec = new EcSensor().deserialize(input.settings.ph);
+            this.settings.ec = new EcSensor().deserialize(input.settings.ec);
         }
 
         if(input.settings.water_temp !== undefined) {
-            this.settings.waterTemp = new WaterTempSensor().deserialize(input.settings.water_temp);
+            this.settings.water_temp = new WaterTempSensor().deserialize(input.settings.water_temp);
         }
         
         return this;

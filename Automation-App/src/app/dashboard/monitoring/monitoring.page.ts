@@ -48,8 +48,7 @@ export class MonitoringPage implements OnInit {
             monit_only: this.currentDevice.settings[sensor].monit_only,
             tgt: this.currentDevice.settings[sensor].control.tgt,
             alarm_min: this.currentDevice.settings[sensor].alarm_min,
-            alarm_max: this.currentDevice.settings[sensor].alarm_max, 
-            current_val: 0 });
+            alarm_max: this.currentDevice.settings[sensor].alarm_max });
         }
         console.log(this.currentDeviceSettings[0].display_name);
         this.startMqttProcessing();
@@ -72,14 +71,7 @@ export class MonitoringPage implements OnInit {
         // Store Time Stamp of Message
         this.timeStamp = jsonSensorData["time"];
         // Store sensor values into Display Objects to update UI
-        for(const sensor of this.currentDeviceSettings){
-          for(var j = 0; j < jsonSensorData["sensors"].length; j++){
-            if(sensor.name == jsonSensorData["sensors"][j].name){
-              sensor.current_val = jsonSensorData["sensors"][j].value;
-              break;
-            }
-          }
-        }
+        this.liveData = jsonSensorData["sensors"];
       }
       catch(error){
         console.log(error);
