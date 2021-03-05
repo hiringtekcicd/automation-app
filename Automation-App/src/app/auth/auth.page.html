@@ -1,51 +1,58 @@
 <ion-header>
-  <ion-toolbar color="primary">   
-   <ion-title >Login</ion-title>  
+  <ion-toolbar color="primary">
+    <ion-title>Login</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding> 
-  <p align="center"> <ion-img style="width: 100px;" src="assets/icon/logo1.jpg"></ion-img></p>
+<ion-content padding>
+  <p align="center">
+    <ion-img style="width: 100px;" src="assets/icon/logo1.jpg"></ion-img>
+  </p>
   <!--Start of the form.-->
   <form [formGroup]="formgroup" (ngSubmit)=onSubmit()>
     <!--Start of the grid.-->
-  <ion-grid>
-    <ion-row>
-      <ion-col size-md='6' offset-md="3" size-sm='3'>
-        <ion-list>
-          <ion-item>
-            <ion-label position='floating'>E-mail</ion-label>
-            <ion-input type="email" formControlName="email"></ion-input>
-          </ion-item><ion-item  *ngIf="!formgroup.controls.email.valid && formgroup.controls.email.touched" lines='none'>
-            <!--If the email property is touched or is invalid, the following error message is shown.-->
-            <ion-label color='danger'>Should be a valid email address.</ion-label> 
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Password</ion-label>
-            <ion-input type="password" formControlName="password"></ion-input>
-          </ion-item>
-          <ion-item  *ngIf="formgroup.get('password').hasError('message') && !formgroup.controls.password.valid && formgroup.controls.password.touched" lines='none'>
-           <!--If the password property is touched, is invalid or has custom errors, custom error messages are shown.-->
-            <ion-label color='danger'>{{formgroup.get('password').errors['message']}}</ion-label></ion-item>
-        </ion-list>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-md='6' offset-md="3">
-        <div style="display: flex; justify-content: center;">
-          <ion-button type='submit' color="primary" [disabled]='!formgroup.valid'>
-            <!--The login button is disabled if the form is invalid.-->
-            Login
-          </ion-button>
-        </div><br/>
-        <!--The styling is done to display the content at the center of the page.-->
-        <ion-label style="display: flex; justify-content: center;">Don't have an account?</ion-label>
-        <div style="display: flex; justify-content: center;">
-          <ion-button type='button' color="primary" fill='clear' (click)="signUp()">Sign Up</ion-button> 
-        </div>
-        
-      </ion-col>
-    </ion-row>
-  </ion-grid><!--End of the grid.-->
-</form>
-<!--End of the form.-->
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md='6' offset-md="3" size-sm='3'>
+          <ion-list>
+            <ion-item>
+              <ion-label position='floating'>E-mail</ion-label>
+              <ion-input type="email" formControlName="email"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="!formgroup.controls.email.valid && formgroup.controls.email.touched" lines='none'>
+              <!--If the email property is touched or is invalid, the following error message is shown.-->
+              <ion-label color='danger'>Should be a valid email address.</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Password</ion-label>
+              <ion-input type="password" formControlName="password"></ion-input>
+            </ion-item>
+            <ion-item
+              *ngIf="formgroup.get('password').hasError('message') && !formgroup.controls.password.valid && formgroup.controls.password.touched"
+              lines='none'>
+              <!--If the password property is touched, is invalid or has custom errors, custom error messages are shown.-->
+              <ion-label color='danger'>{{formgroup.get('password').errors['message']}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-md='6' offset-md="3">
+          <div style="display: flex; justify-content: center;">
+            <ion-button type='submit' color="primary" [disabled]='!formgroup.valid'>
+              <!--The login button is disabled if the form is invalid.-->
+              Login
+            </ion-button>
+          </div><br />
+          <!--The styling is done to display the content at the center of the page.-->
+          <ion-label style="display: flex; justify-content: center;">Don't have an account?</ion-label>
+          <div style="display: flex; justify-content: center;">
+            <ion-button type='button' color="primary" fill='clear' (click)="signUp()">Sign Up</ion-button>
+          </div>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <!--End of the grid.-->
+  </form>
+  <!--End of the form.-->
