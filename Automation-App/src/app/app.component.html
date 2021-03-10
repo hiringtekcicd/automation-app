@@ -6,6 +6,7 @@
           <ion-title>Hydrotek Farms</ion-title>
         </ion-toolbar>
       </ion-header>
+
       <!--side menu options-->
       <ion-content>
         <ion-list>
@@ -39,6 +40,14 @@
               <ion-label>{{ device.name }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
+        </ion-list>
+        <ion-list>
+          <ion-item (click)="logout()">
+            <ion-title>Logout</ion-title>
+            <ion-button fill="clear" size="large">
+              <ion-icon name="power-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
         </ion-list>
       </ion-content>
     </ion-menu>

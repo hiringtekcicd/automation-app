@@ -35,6 +35,7 @@ export class AuthPage implements OnInit {
 
   }
   ionViewDidEnter() {
+    localStorage.setItem("isLogin", 'false')
     this.menu.enable(false);
   }
 
