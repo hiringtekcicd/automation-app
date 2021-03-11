@@ -9,6 +9,21 @@
       <span *ngFor="let sensorSettings of currentDeviceSettings">
         <sensor-display [sensor]="sensorSettings" [allLiveData]="liveData"></sensor-display>
       </span>
+
+      <div>
+        <h2>Power Outlets</h2>
+      </div>
+      <ion-card>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-icon name="sunny-outline"></ion-icon>
+              <ion-text style="margin-left: 20px;">Grow Light 1</ion-text>
+              <ion-toggle slot="end"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
     </div>
    
     <div *ngIf="noDevices" class="center">

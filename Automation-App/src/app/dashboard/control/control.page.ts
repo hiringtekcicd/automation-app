@@ -31,7 +31,10 @@ export class ControlPage implements OnInit {
 
   ph: boolean = true;
   ec: boolean = true;
-  water_temperature: boolean = true;
+  waterTemperature: boolean = true;
+  reservoir: boolean = true;
+  growLights: boolean = true;
+  irrigation: boolean = true;
 
   humidity: boolean = true;
   air_temperature: boolean = true;
@@ -51,12 +54,9 @@ export class ControlPage implements OnInit {
       this.currentDeviceIndex = params['deviceIndex'];
 
       if((this.currentDeviceType && this.currentDeviceIndex) != null) {
-        console.log(this.variableManagementService.fertigationSystemSettings.value);
         this.currentDevice = this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
-        console.log(this.currentDevice);
         this.changeDetector.detectChanges();
         this.settingsForm.patchValue(this.currentDevice.settings);
-        console.log(this.settingsForm.value);
       } else {
         let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
         let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length
@@ -66,14 +66,8 @@ export class ControlPage implements OnInit {
       }
     });
     this.formValue$ = this.settingsForm.valueChanges.pipe(debounceTime(300), filter(() => this.noDevices != true));
-    this.formValue$.subscribe((formValue) => {
-      console.log(formValue);
-      console.log(this.currentDevice.settings);
-      console.log(this.currentDevice.settings["ph"]);
-      
+    this.formValue$.subscribe((formValue) => {      
       this.isDirty = (_.isEqual(formValue, JSON.parse(JSON.stringify(this.currentDevice.settings))) == false);
-      console.log(formValue);
-      console.log(JSON.parse(JSON.stringify(this.currentDevice.settings)));
     });
   }
 
@@ -103,7 +97,6 @@ export class ControlPage implements OnInit {
   onSettingsFormSubmit(){
      var changedData = [];
      for(var key in this.settingsForm.value){
-       console.log(key);
        if(!_.isEqual(this.settingsForm.value[key], this.currentDevice.settings[key])) {
         changedData.push({ [key]: this.settingsForm.value[key] });
       }

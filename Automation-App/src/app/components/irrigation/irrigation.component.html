@@ -6,34 +6,27 @@
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">Reservoir Control</h3>
+          <h3 fill="clear" class="color">Irrigation</h3>
         </ion-item>
       </ion-row>
       <!--Card Content-->
-      <form [formGroup]="reservoirForm">
+      <form [formGroup]="irrigationForm">
         <div *ngIf="isOpen">
         <hr color="grey" />
-          <ion-row>
+          <h3>Irrigation Schedule</h3>
+          <ion-row> 
             <ion-col size="12">
               <ion-item>
-                <ion-label position="floating">Reservoir Size</ion-label>
-                <ion-input formControlName="reservoir_size" type="number"></ion-input>
+                <ion-label position="floating">Irrigation On</ion-label>
+                <ion-input type="number" placeholder="On Interval" formControlName="on_interval"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
-          <ion-row>
+          <ion-row> 
             <ion-col size="12">
               <ion-item>
-                <ion-checkbox formControlName="is_control" mode="md" slot="end"></ion-checkbox>
-                <ion-label>Controllable</ion-label>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="12">
-              <ion-item>
-                <ion-label position="floating">Water Replacement Schedule</ion-label>
-                <ion-input formControlName="water_replacement_interval" type="number"></ion-input>
+                <ion-label position="floating">Irrigation Off</ion-label>
+                <ion-input type="number" placeholder="Off Interval" formControlName="off_interval"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>

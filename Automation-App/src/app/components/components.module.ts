@@ -11,11 +11,12 @@ import { WaterTempComponent } from './water-temp/water-temp.component';
 import { ReservoirComponent } from './reservoir/reservoir.component';
 import { GrowLightsComponent } from './grow-lights/grow-lights.component';
 import { GeneralSettingsComponent } from './general-settings/general-settings.component';
+import { IrrigationComponent } from './irrigation/irrigation.component';
 
 @NgModule({
-    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent],
+    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent],
     imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule],
-    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent]
+    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent]
 })
 
 export class ComponentsModule {}

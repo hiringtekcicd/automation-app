@@ -1,0 +1,2 @@
+export class IrrigationSettings.Model {
+}

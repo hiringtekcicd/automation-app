@@ -17,7 +17,8 @@ export class ReservoirComponent implements OnInit {
   ngOnInit() {
     this.reservoirForm = this.fb.group({
       'reservoir_size': this.fb.control(null),
-      'solenoid_valve_1': this.fb.control(false)
+      'is_control': this.fb.control(true),
+      'water_replacement_interval': this.fb.control(null)
     });
 
     this.parentForm.addControl('reservoir_control', this.reservoirForm);
