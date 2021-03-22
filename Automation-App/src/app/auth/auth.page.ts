@@ -110,19 +110,22 @@ export class AuthPage implements OnInit {
   }
 
   private getUserSetting(user: any) {
-    console.log("user................", user)
     console.log("userid................", user.localId)
-
     // key : GM5XvPFoUbc2JRFjbrpiOXKqGws1
     return this.afs.collection("usersettings", (ref) =>
       ref.where("userid", "==", user.localId)).get().subscribe(data => {
-        if (data) {
+        console.log(data)
+        if (!data.empty) {
+          console.log(data.length)
           data.forEach(data => {
             console.log("@@@@@@@@@@@@@@@@@", data.data())
+
             return data.data()
           })
+        } else {
+          console.log("data not found")
         }
-      })
+      }, err => console.log(err))
   }
   //Alert box display function.
   private showAlert(message: string) {
