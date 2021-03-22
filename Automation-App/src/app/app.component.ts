@@ -7,6 +7,8 @@ import { AuthService } from './auth/auth.service';
 import { Router } from '@angular/router';
 import { VariableManagementService } from './Services/variable-management.service';
 import { IdentifyDevicePage } from './add-device/identify-device/identify-device.page';
+import { MqttInterfaceService } from './Services/mqtt-interface.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
@@ -23,8 +25,28 @@ export class AppComponent {
     private menuController: MenuController,
     private modalController: ModalController,
     private router: Router,
-    private menu: MenuController
+    private menu: MenuController,
+    private mqttService: MqttInterfaceService,
+    private afs: AngularFirestore
   ) {
+    this.variableManagementService.fetchDevices().subscribe(
+      () => {
+        let mqttHost = "broker.hivemq.com";
+        let topics: string[] = [];
+        this.mqttService.createClient(topics, {
+          host: mqttHost,
+          port: 8000,
+        });
+        // this.menu.enable(true);
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
+    console.log(
+      "variableManagementService....",
+      this.variableManagementService
+    );
     this.initializeApp();
   }
 

@@ -5,10 +5,12 @@ import { FormControl } from '@angular/forms'; //Imported to track the value and 
 import { LoadingController, AlertController, MenuController } from '@ionic/angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { PasswordStrengthValidator } from './password';
-import { Observable } from 'rxjs';
 import { VariableManagementService, Devices } from '../Services/variable-management.service';
 import { MqttInterfaceService } from '../Services/mqtt-interface.service';
 import { HttpClient } from '@angular/common/http';
+import { AngularFirestore } from "@angular/fire/firestore";
+import { Observable, of } from "rxjs";
+
 
 @Component({
   selector: 'app-auth',
@@ -25,7 +27,8 @@ export class AuthPage implements OnInit {
   constructor(private authService: AuthService, private mqttService: MqttInterfaceService, private router: Router, private loadingCtrl: LoadingController,
     public formbuilder: FormBuilder, private alertCtrl: AlertController, private variableManagementService: VariableManagementService,
     private menu: MenuController,
-    private http: HttpClient) {
+    private http: HttpClient,
+    private afs: AngularFirestore) {
     this.formgroup = this.formbuilder.group(
       {
         email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
@@ -63,7 +66,7 @@ export class AuthPage implements OnInit {
           authObs = this.authService.login(email, password);
         }
         //Data is fetched when subscriber function is executed.
-        authObs.subscribe(resData => {
+        authObs.subscribe((resData: any) => {
           console.log(resData);
           this.isLoading = false;
           loadingEl.dismiss();
@@ -73,8 +76,17 @@ export class AuthPage implements OnInit {
             let topics: string[] = [];
             this.mqttService.createClient(topics, { host: mqttHost, port: 8000 });
             this.menu.enable(true);
+            // { userid: resData.userid }
+            // this.http.get<AuthResponseData>(`https://firestore.googleapis.com/v1/hydroteck/hydrotek-286213/dato/usersetting?key=${environment.firebaseAPIKey}&userid=` + resData.localId,
+            // ).subscribe(resData1 => {
+            //   console.log(resData1)
+            // })
+
+            let user_settting = this.getUserSetting(resData);
+            // user_settting.subscribe((setting: any) => {
+            //   console.log("$$$$$$$$$$$$$$$$$$$$$$", setting)
+            // })
             localStorage.setItem('isLogin', 'true');
-            console.log("$$$$$$$$$$$$$$")
             this.router.navigateByUrl('/dashboard/monitoring');
           }, (error: any) => {
             console.log(error);
@@ -97,6 +109,21 @@ export class AuthPage implements OnInit {
       });
   }
 
+  private getUserSetting(user: any) {
+    console.log("user................", user)
+    console.log("userid................", user.localId)
+
+    // key : GM5XvPFoUbc2JRFjbrpiOXKqGws1
+    return this.afs.collection("usersettings", (ref) =>
+      ref.where("userid", "==", user.localId)).get().subscribe(data => {
+        if (data) {
+          data.forEach(data => {
+            console.log("@@@@@@@@@@@@@@@@@", data.data())
+            return data.data()
+          })
+        }
+      })
+  }
   //Alert box display function.
   private showAlert(message: string) {
     this.alertCtrl

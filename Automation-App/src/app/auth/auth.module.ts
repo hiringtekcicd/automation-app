@@ -8,6 +8,7 @@ import { AuthPageRoutingModule } from './auth-routing.module';
 
 import { AuthPage } from './auth.page';
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -18,4 +19,4 @@ import { AuthPage } from './auth.page';
   ],
   declarations: [AuthPage]
 })
-export class AuthPageModule {}
+export class AuthPageModule { }

@@ -4,7 +4,17 @@
 
 export const environment = {
   production: false,
-  firebaseAPIKey: 'AIzaSyAQyvK51Xp962XH85g968_puzuBNzo1YMc'
+  firebaseAPIKey: 'AIzaSyAAuHtYCybcodBAzgAQpMxE37U52Cdbjso',
+  // AIzaSyAQyvK51Xp962XH85g968_puzuBNzo1YMc
+  fbConfig: {
+    apiKey: "AIzaSyAAuHtYCybcodBAzgAQpMxE37U52Cdbjso",
+    authDomain: "virtuworxio.firebaseapp.com",
+    databaseURL: "https://virtuworxio-default-rtdb.firebaseio.com",
+    projectId: "hydrotek-286213",
+    storageBucket: "hydrotek-286213.appspot.com",
+    messagingSenderId: "464480010563",
+    appId: "1:464480010563:web:a98699354663a0f285aff6"
+  },
 };
 
 /*
