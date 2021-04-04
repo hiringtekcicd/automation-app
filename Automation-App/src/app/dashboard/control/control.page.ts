@@ -1,12 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Devices, FertigationSystemString, ClimateControllerString, VariableManagementService } from 'src/app/Services/variable-management.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import * as _ from "lodash";
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
 import { ActivatedRoute } from '@angular/router';
+import { FertigationSystem } from 'src/app/models/fertigation-system.model';
+import { ClimateController } from 'src/app/models/climate-controller.model';
 
 @Component({
   selector: 'app-control',
@@ -42,7 +44,7 @@ export class ControlPage implements OnInit {
   formValue$: Observable<any>;
   isDirty: boolean = false;
 
-  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private changeDetector: ChangeDetectorRef, private modalController: ModalController, private mqttService: MqttInterfaceService, private route: ActivatedRoute) { 
+  constructor(public variableManagementService: VariableManagementService, private changeDetector: ChangeDetectorRef, private modalController: ModalController, private mqttService: MqttInterfaceService, private route: ActivatedRoute) { 
     this.mqttService.mqttStatus.subscribe((status) => {
       console.log(status);
     });
@@ -67,25 +69,9 @@ export class ControlPage implements OnInit {
     });
     this.formValue$ = this.settingsForm.valueChanges.pipe(debounceTime(300), filter(() => this.noDevices != true));
     this.formValue$.subscribe((formValue) => {      
-      this.isDirty = (_.isEqual(formValue, JSON.parse(JSON.stringify(this.currentDevice.settings))) == false);
+      this.isDirty = (_.isMatch(formValue, this.currentDevice.settings) == false);
     });
   }
-
-//   getObjectDiff(obj1, obj2) {
-//     const diff = Object.keys(obj1).reduce((result, key) => {
-//         if (!obj2.hasOwnProperty(key)) {
-//             console.log(key);
-//             result.push(key);
-//         } else if (_.isEqual(obj1[key], obj2[key])) {
-//             const resultKeyIndex = result.indexOf(key);
-//             console.log(key);
-//             result.splice(resultKeyIndex, 1);
-//         }
-//         return result;
-//     }, Object.keys(obj2));
-
-//     return diff;
-// }
 
   onBootButtonClick() {
     this.currentDevice.device_started = !this.currentDevice.device_started;
@@ -94,19 +80,25 @@ export class ControlPage implements OnInit {
   }
   
   // update data in backend
-  onSettingsFormSubmit(){
+  onSettingsFormSubmit() {
      var changedData = [];
      for(var key in this.settingsForm.value){
-       if(!_.isEqual(this.settingsForm.value[key], this.currentDevice.settings[key])) {
+       if(!_.isMatch(this.settingsForm.value[key], this.currentDevice.settings[key])) {
         changedData.push({ [key]: this.settingsForm.value[key] });
       }
     }
     console.log(changedData);
     this.mqttService.publishMessage("device_settings/" + this.currentDevice.topicID, JSON.stringify({ data: changedData}), 1, false).then(() => {
     let device;
-    device = {...this.currentDevice};
+    device = { ...this.currentDevice };
     device.settings = this.settingsForm.value;
-    
+    if(this.currentDeviceType == FertigationSystemString) {
+      device = new FertigationSystem().deserialize(device);
+    } 
+    else if(this.currentDeviceType == ClimateControllerString) {
+      device = new ClimateController().deserialize(device);
+    }
+
     console.log("pushed changes");
     this.variableManagementService
       .updateDeviceSettings(device, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex)

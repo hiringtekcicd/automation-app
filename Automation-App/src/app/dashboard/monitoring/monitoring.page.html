@@ -3,8 +3,7 @@
  
     <div *ngIf="currentDevice != null">
       <div>
-        <h2>Live Sensor Data</h2>
-        <h2>{{ timeStamp }}</h2>
+        <h6>Last Updated: {{ timestamp }}</h6>
       </div>
       <span *ngFor="let sensorSettings of currentDeviceSettings">
         <sensor-display [sensor]="sensorSettings" [allLiveData]="liveData"></sensor-display>
@@ -15,12 +14,8 @@
       </div>
       <ion-card>
         <ion-card-content>
-          <ion-list>
-            <ion-item>
-              <ion-icon name="sunny-outline"></ion-icon>
-              <ion-text style="margin-left: 20px;">Grow Light 1</ion-text>
-              <ion-toggle slot="end"></ion-toggle>
-            </ion-item>
+          <ion-list *ngFor="let powerOutlet of currentDevice.power_outlets">
+            <power-outlet [data]="powerOutlet"></power-outlet>
           </ion-list>
         </ion-card-content>
       </ion-card>

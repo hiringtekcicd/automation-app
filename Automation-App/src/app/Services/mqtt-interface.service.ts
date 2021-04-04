@@ -17,6 +17,8 @@ export class MqttInterfaceService {
   public deviceLiveData = new Subject<string>();
   public wifiConnectStatus = new Subject<boolean>();
 
+  public equipmentStatus = new BehaviorSubject<EquipmentStatus>(null);
+
   public client: any;
 
   private messageConfirmation = new Subject<string>();
@@ -145,6 +147,11 @@ export class MqttInterfaceService {
         this.wifiConnectStatus.next(true);
         break;
       }
+      case 'equipment_status': {
+        var equipmentStatusObject = JSON.parse(ResponseObject.payloadString);
+        this.equipmentStatus.next(equipmentStatusObject);
+        break;
+      }
       default: {
         console.log("Unkown Level 0 Case for MQTT Topic");
         break;
@@ -208,6 +215,11 @@ export class MqttInterfaceService {
 interface Scripts {
    name: string;
    src: string;
+}
+
+interface EquipmentStatus {
+  rf: any,
+  control: any
 }
 
 

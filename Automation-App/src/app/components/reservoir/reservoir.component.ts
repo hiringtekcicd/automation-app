@@ -21,7 +21,7 @@ export class ReservoirComponent implements OnInit {
       'water_replacement_interval': this.fb.control(null)
     });
 
-    this.parentForm.addControl('reservoir_control', this.reservoirForm);
+    this.parentForm.addControl('reservoir', this.reservoirForm);
   }
 
   toggleAccordion() {
@@ -29,6 +29,6 @@ export class ReservoirComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.parentForm.removeControl('reservoir_control');
+    this.parentForm.removeControl('reservoir');
   }
 }

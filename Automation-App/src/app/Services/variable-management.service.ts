@@ -179,8 +179,10 @@ export class VariableManagementService {
     return this.http.put("http://localhost:3000/" + endPointURL + "-settings/update/" + deviceID, device)
       .pipe(map(() => {
         let updatedDeviceValue = deviceSubject.value;
+        console.log(device);
         updatedDeviceValue[deviceIndex] = device;
         deviceSubject.next(updatedDeviceValue);
+        console.log(deviceSubject.value);
       }));
   }
 
@@ -189,6 +191,7 @@ export class VariableManagementService {
     let $climateControllers = this.http.get<ClimateController[]>(this.dbURL + '/climate-controller-settings/find');
 
     return forkJoin([$fertigationSystems, $climateControllers]).pipe(map(settings => {
+      console.log(settings[0]);
       const fertigationSystemsDeserialized = settings[0].map(fertigationSystemJSON => new FertigationSystem().deserialize(fertigationSystemJSON));
       const climateControllerDeserialized = settings[1].map(climateControllerJSON => new ClimateController().deserialize(climateControllerJSON));
 
