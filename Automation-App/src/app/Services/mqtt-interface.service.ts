@@ -90,15 +90,19 @@ export class MqttInterfaceService {
       this.client.onConnectionLost = this.onConnectionLost.bind(this);
       this.client.onMessageArrived = this.onMessageArrived.bind(this);
       this.client.onMessageDelivered = this.onMessageDelivered.bind(this);
-      return this.client.connect(
-        {
-          onSuccess: this._onConnect.bind(this, TOPIC),
-          onFailure: this._onConnectionFailure.bind(this)
-      });
+      return this.connectToBroker(TOPIC);
     }).catch(error => {
       console.log(error);
     })
   };
+
+  public connectToBroker(topic: string[]) {
+    return this.client.connect(
+      {
+        onSuccess: this._onConnect.bind(this, topic),
+        onFailure: this._onConnectionFailure.bind(this)
+    });
+  } 
 
   public publishMessage(topic: string, payload: string, qos?: number, retained?: boolean): Promise<any> {
       console.log('msg, topic', topic, payload);

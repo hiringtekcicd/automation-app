@@ -9,6 +9,7 @@ import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
 import { ActivatedRoute } from '@angular/router';
 import { FertigationSystem } from 'src/app/models/fertigation-system.model';
 import { ClimateController } from 'src/app/models/climate-controller.model';
+import { PowerOutlet } from 'src/app/models/power-outlet.model';
 
 @Component({
   selector: 'app-control',
@@ -30,6 +31,7 @@ export class ControlPage implements OnInit {
   currentDeviceIndex: number;
 
   settingsForm: FormGroup = new FormGroup({});
+  powerOutlets: PowerOutlet[] = [];
 
   ph: boolean = true;
   ec: boolean = true;
@@ -59,6 +61,7 @@ export class ControlPage implements OnInit {
         this.currentDevice = this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
         this.changeDetector.detectChanges();
         this.settingsForm.patchValue(this.currentDevice.settings);
+        this.powerOutlets = this.currentDevice.power_outlets
       } else {
         let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
         let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length
@@ -73,12 +76,17 @@ export class ControlPage implements OnInit {
     });
   }
 
+  onAddPowerOutlet(newPowerOutlet: PowerOutlet) {
+    this.currentDevice.power_outlets.push(newPowerOutlet);
+    this.onSettingsFormSubmit();
+  }
+
   onBootButtonClick() {
     this.currentDevice.device_started = !this.currentDevice.device_started;
-    this.mqttService.publishMessage("device_status", this.currentDevice.device_started? "1" : "0");
+    this.mqttService.publishMessage("device_status/" + this.currentDevice.topicID, this.currentDevice.device_started? "1" : "0");
     this.onSettingsFormSubmit();    
   }
-  
+   
   // update data in backend
   onSettingsFormSubmit() {
      var changedData = [];

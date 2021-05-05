@@ -12,7 +12,7 @@
         <div *ngIf="currentDeviceType == FertigationSystemString">  
           <ph *ngIf="ph" [parentForm]="settingsForm"></ph>
           <ec *ngIf="ec" [parentForm]="settingsForm"></ec>
-          <water-temp *ngIf="waterTemperature" [parentForm]="settingsForm"></water-temp>
+          <water-temp *ngIf="waterTemperature" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></water-temp>
           <grow-lights *ngIf="growLights" [parentForm]="settingsForm"></grow-lights>
           <irrigation *ngIf="irrigation" [parentForm]="settingsForm"></irrigation>
           <reservoir *ngIf="reservoir" [parentForm]="settingsForm"></reservoir>

@@ -57,11 +57,11 @@
             <ion-row>
               <ion-list>
                 <ion-item>
-                  <ion-toggle slot="start" formControlName="up_ctrl"></ion-toggle>
+                  <ion-toggle slot="start" formControlName="up_ctrl" (ionChange)="onOutletToggleChange('Water Heater', 'up_ctrl')"></ion-toggle>
                   <ion-label>Heater</ion-label>
                 </ion-item>
                 <ion-item>
-                  <ion-toggle slot="start" formControlName="down_ctrl"></ion-toggle>
+                  <ion-toggle slot="start" formControlName="down_ctrl" (click)="onOutletToggleChange('Water Cooler', 'down_ctrl')"></ion-toggle>
                   <ion-label>Cooler</ion-label>
                 </ion-item>
               </ion-list>
