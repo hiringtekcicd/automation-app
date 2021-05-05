@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AddPowerOutletPage } from 'src/app/add-power-outlet/add-power-outlet.page';
@@ -20,7 +20,7 @@ export class WaterTempComponent implements OnInit, OnDestroy {
   controlForm: FormGroup;
   day_and_night_targetForm: FormGroup;
   
-  constructor(private fb: FormBuilder, private modalController: ModalController, private changeDetector: ChangeDetectorRef) { }
+  constructor(private fb: FormBuilder, private modalController: ModalController) { }
 
   ngOnInit() {
     this.controlForm = this.fb.group({

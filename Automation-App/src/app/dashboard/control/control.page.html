@@ -14,7 +14,7 @@
           <ec *ngIf="ec" [parentForm]="settingsForm"></ec>
           <water-temp *ngIf="waterTemperature" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></water-temp>
           <grow-lights *ngIf="growLights" [parentForm]="settingsForm"></grow-lights>
-          <irrigation *ngIf="irrigation" [parentForm]="settingsForm"></irrigation>
+          <irrigation *ngIf="irrigation" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></irrigation>
           <reservoir *ngIf="reservoir" [parentForm]="settingsForm"></reservoir>
         </div>
         <div *ngIf="currentDeviceType == ClimateControllerString">

@@ -13,6 +13,12 @@
       <form [formGroup]="irrigationForm">
         <div *ngIf="isOpen">
         <hr color="grey" />
+          <ion-list>
+            <ion-item>
+              <ion-toggle slot="start" formControlName="is_control" (click)="onOutletToggleChange('Irrigation', 'is_control')"></ion-toggle>
+              <ion-label>Irrigation Pump</ion-label>
+            </ion-item>
+          </ion-list>
           <h3>Irrigation Schedule</h3>
           <ion-row> 
             <ion-col size="12">
