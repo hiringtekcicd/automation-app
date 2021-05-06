@@ -14,8 +14,10 @@
       </div>
       <ion-card>
         <ion-card-content>
-          <ion-list *ngFor="let powerOutlet of currentDevice.power_outlets">
-            <power-outlet [data]="powerOutlet"></power-outlet>
+          <ion-list>
+            <div *ngFor="let powerOutlet of currentDevice.power_outlets">
+              <power-outlet [data]="powerOutlet"></power-outlet>
+            </div>
           </ion-list>
         </ion-card-content>
       </ion-card>

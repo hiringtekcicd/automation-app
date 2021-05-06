@@ -1,7 +1,7 @@
 <ion-card class="dashboard-card">
   <ion-card-content>
     <ion-grid>
-      <!--Card Header-->
+      
       <ion-row>
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
@@ -9,7 +9,7 @@
           <h3 fill="clear" class="color">Grow Lights</h3>
         </ion-item>
       </ion-row>
-      <!--Card Content-->
+
       <form [formGroup]="growLightsForm">
         <div *ngIf="isOpen">
           <hr color="grey" />
@@ -36,15 +36,18 @@
           </ion-item>
           <div formArrayName="power_outlets">
             <ion-list lines="none">
-              <div *ngFor="let powerOutlet of powerOutletsArray.value; let i = index">
+              <div *ngFor="let powerOutlet of growLightsForm.get('power_outlets')['controls']; let i = index">
                 <ion-item [formGroupName]="i">
-                  <ion-toggle slot="start" [formControlName]="'grow_light_' + (i + 1)" (click)="onOutletToggleChange('Grow Light ' + (i + 1), 'grow_light_' + (i + 1))"></ion-toggle>
+                  <ion-toggle slot="start" formControlName="is_control" (click)="onOutletToggleChange('Grow Light ' + (i + 1), i)"></ion-toggle>
                   <ion-icon name="sunny-outline"></ion-icon>
                   <ion-label>Grow Light {{ (i + 1) }}</ion-label>
                   <ion-button slot="end" (click)="presentAddPowerOutletModal('Grow Light ' + (i + 1))">{{ isPowerOutletSetup('Grow Light ' + (i + 1))? "Edit": "Setup"}}</ion-button>
                 </ion-item>
               </div>
             </ion-list>
+            <div *ngIf="powerOutletsArray.length == 0">
+              <ion-label>Click the Add button to Setup a New Power Outlet</ion-label>
+            </div>
           </div>
         </div>
       </form>

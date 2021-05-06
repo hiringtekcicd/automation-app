@@ -32,6 +32,7 @@ export class ControlPage implements OnInit {
 
   settingsForm: FormGroup = new FormGroup({});
   powerOutlets: PowerOutlet[] = [];
+  growLightArray = [];
 
   ph: boolean = true;
   ec: boolean = true;
@@ -61,6 +62,7 @@ export class ControlPage implements OnInit {
         this.currentDevice = this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
         this.changeDetector.detectChanges();
         this.settingsForm.patchValue(this.currentDevice.settings);
+        this.growLightArray = this.currentDevice.settings['grow_lights']['power_outlets'];
         this.powerOutlets = this.currentDevice.power_outlets
       } else {
         let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
@@ -71,14 +73,17 @@ export class ControlPage implements OnInit {
       }
     });
     this.formValue$ = this.settingsForm.valueChanges.pipe(debounceTime(300), filter(() => this.noDevices != true));
-    this.formValue$.subscribe((formValue) => {      
-      this.isDirty = (_.isMatch(formValue, this.currentDevice.settings) == false);
+    this.formValue$.subscribe((formValue) => {   
+      let a = JSON.parse(JSON.stringify(formValue));
+      let b = JSON.parse(JSON.stringify(this.currentDevice.settings));
+      this.isDirty = (_.isEqual(a, b) == false);
     });
   }
 
   onAddPowerOutlet(newPowerOutlet: PowerOutlet) {
     this.currentDevice.power_outlets.push(newPowerOutlet);
     this.onSettingsFormSubmit();
+    this.changeDetector.detectChanges();
   }
 
   onBootButtonClick() {
@@ -107,7 +112,6 @@ export class ControlPage implements OnInit {
       device = new ClimateController().deserialize(device);
     }
 
-    console.log("pushed changes");
     this.variableManagementService
       .updateDeviceSettings(device, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex)
         .subscribe(() => {

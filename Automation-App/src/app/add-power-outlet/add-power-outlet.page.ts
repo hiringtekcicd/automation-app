@@ -46,7 +46,6 @@ export class AddPowerOutletPage implements OnInit {
       }
       let outletJsonString = JSON.stringify(outletObj);
       this.mqttService.publishMessage("manual_rf_control/a23b5", outletJsonString, 1, false);
-      console.log(this.powerOutletIndex);
     } else {
       console.log("Power Outlet Name Not Found. Current Index: " + this.powerOutletIndex);
     }
@@ -54,7 +53,6 @@ export class AddPowerOutletPage implements OnInit {
   }
 
   addPowerOutlet() {
-    console.log(this.powerOutletStructure[this.powerOutletIndex]);
     this.modalController.dismiss(this.powerOutletStructure[this.powerOutletIndex]);
   }
 

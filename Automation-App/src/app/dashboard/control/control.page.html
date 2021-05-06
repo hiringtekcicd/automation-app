@@ -13,7 +13,7 @@
           <ph *ngIf="ph" [parentForm]="settingsForm"></ph>
           <ec *ngIf="ec" [parentForm]="settingsForm"></ec>
           <water-temp *ngIf="waterTemperature" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></water-temp>
-          <grow-lights *ngIf="growLights" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></grow-lights>
+          <grow-lights *ngIf="growLights" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)" [powerOutletArray]="growLightArray"></grow-lights>
           <irrigation *ngIf="irrigation" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></irrigation>
           <reservoir *ngIf="reservoir" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></reservoir>
         </div>

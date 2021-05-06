@@ -1,7 +1,7 @@
 <ion-card class="dashboard-card">
   <ion-card-content>
     <ion-grid>
-      <!--Card Header-->
+
       <ion-row>
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
@@ -9,7 +9,7 @@
           <h3 fill="clear" class="color">Water Temperature</h3>
         </ion-item>
       </ion-row>
-      <!--Card Content-->
+
       <form [formGroup]="waterTemperatureForm">
         <div *ngIf="isOpen">
           <hr color="grey" />
