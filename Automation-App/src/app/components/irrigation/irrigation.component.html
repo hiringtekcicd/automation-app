@@ -13,10 +13,12 @@
       <form [formGroup]="irrigationForm">
         <div *ngIf="isOpen">
         <hr color="grey" />
+        <h3>Power Outlets</h3>
           <ion-list>
-            <ion-item>
-              <ion-toggle slot="start" formControlName="is_control" (click)="onOutletToggleChange('Irrigation', 'is_control')"></ion-toggle>
+            <ion-item lines="none">
+              <ion-icon name="water-outline"></ion-icon>
               <ion-label>Irrigation Pump</ion-label>
+              <ion-button slot="end" (click)="presentAddPowerOutletModal('Irrigation')">{{ isPowerOutletSetup('Irrigation')? "Edit": "Setup"}}</ion-button>
             </ion-item>
           </ion-list>
           <h3>Irrigation Schedule</h3>

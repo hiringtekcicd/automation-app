@@ -50,6 +50,15 @@ export class WaterTempComponent implements OnInit, OnDestroy {
     this.parentForm.removeControl('water_temp');
   }
 
+  isPowerOutletSetup(name: string): boolean {
+    for(var i = 0; i < this.powerOutlets.length; i++) {
+      if(this.powerOutlets[i].name == name) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   onOutletToggleChange(name: string, formKey: string) {
       let isPowerOutletConfigured;
       this.powerOutlets.forEach(powerOutlet => {
@@ -60,7 +69,6 @@ export class WaterTempComponent implements OnInit, OnDestroy {
       if(!isPowerOutletConfigured) {
         this.presentAddPowerOutletModal(name, formKey);
       }
-    
   }
 
   async presentAddPowerOutletModal(powerOutletName: string, formKey: string) {
@@ -73,7 +81,9 @@ export class WaterTempComponent implements OnInit, OnDestroy {
 
     modal.onWillDismiss().then((returnValue) => {
       if(returnValue.data) {
-        this.newPowerOutletEvent.emit(returnValue.data);
+        if(!this.isPowerOutletSetup(powerOutletName)) {
+          this.newPowerOutletEvent.emit(returnValue.data);
+        }
       } else {
         this.controlForm.patchValue( { [formKey]: false } );
       }

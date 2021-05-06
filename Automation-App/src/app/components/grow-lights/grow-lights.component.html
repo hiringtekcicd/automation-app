@@ -12,7 +12,7 @@
       <!--Card Content-->
       <form [formGroup]="growLightsForm">
         <div *ngIf="isOpen">
-        <hr color="grey" />
+          <hr color="grey" />
           <h3>Day and Night Times</h3>
           <ion-row> 
             <ion-col size="12">
@@ -30,6 +30,22 @@
               </ion-item>
             </ion-col>
           </ion-row>
+          <ion-item>
+            <h3>Power Outlets</h3>
+            <ion-icon slot="end" name="add-outline" (click)="newPowerOutlet()"></ion-icon>
+          </ion-item>
+          <div formArrayName="power_outlets">
+            <ion-list lines="none">
+              <div *ngFor="let powerOutlet of powerOutletsArray.value; let i = index">
+                <ion-item [formGroupName]="i">
+                  <ion-toggle slot="start" [formControlName]="'grow_light_' + (i + 1)" (click)="onOutletToggleChange('Grow Light ' + (i + 1), 'grow_light_' + (i + 1))"></ion-toggle>
+                  <ion-icon name="sunny-outline"></ion-icon>
+                  <ion-label>Grow Light {{ (i + 1) }}</ion-label>
+                  <ion-button slot="end" (click)="presentAddPowerOutletModal('Grow Light ' + (i + 1))">{{ isPowerOutletSetup('Grow Light ' + (i + 1))? "Edit": "Setup"}}</ion-button>
+                </ion-item>
+              </div>
+            </ion-list>
+          </div>
         </div>
       </form>
     </ion-grid>

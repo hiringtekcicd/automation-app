@@ -15,17 +15,20 @@ export class AddPowerOutletPage implements OnInit {
   powerOutletIndex = -1;
   outletToggleVal = false;
 
-  readonly powerOutletStructure: PowerOutlet[] = 
+  powerOutletStructure: PowerOutlet[] = 
   [
       new PowerOutlet("0", "Water Cooler", "snow-outline"),
       new PowerOutlet("1", "Water Heater", "flame-outline"),
       new PowerOutlet("2", "Irrigation", "water-outline"),
       new PowerOutlet("3", "Reservoir Water In", "return-down-back-outline"),
       new PowerOutlet("4", "Reservoir Water Out", "return-down-forward-outline"),
-      new PowerOutlet("5", "Growlight", "sunny-outline")
   ]
 
-  constructor(public modalController: ModalController, private mqttService: MqttInterfaceService) { }
+  constructor(public modalController: ModalController, private mqttService: MqttInterfaceService) { 
+    for(var i = 1; i < 11; i++) {
+      this.powerOutletStructure.push(new PowerOutlet((i + 4).toString(), "Grow Light " + i, "sunny-outline"));
+    }
+  }
 
   ngOnInit() {
     for (let i = 0; i < this.powerOutletStructure.length; i++) {
@@ -37,14 +40,21 @@ export class AddPowerOutletPage implements OnInit {
   }
 
   toggleOutlet() {
-    let outletObj = {
-      [this.powerOutletStructure[this.powerOutletIndex].id]: this.outletToggleVal
+    if(this.powerOutletIndex >= 0) {
+      let outletObj = {
+        [this.powerOutletStructure[this.powerOutletIndex].id]: this.outletToggleVal
+      }
+      let outletJsonString = JSON.stringify(outletObj);
+      this.mqttService.publishMessage("manual_rf_control/a23b5", outletJsonString, 1, false);
+      console.log(this.powerOutletIndex);
+    } else {
+      console.log("Power Outlet Name Not Found. Current Index: " + this.powerOutletIndex);
     }
-    let outletJsonString = JSON.stringify(outletObj);
-    this.mqttService.publishMessage("manual_rf_control/a23b5", outletJsonString, 1, false);
+
   }
 
   addPowerOutlet() {
+    console.log(this.powerOutletStructure[this.powerOutletIndex]);
     this.modalController.dismiss(this.powerOutletStructure[this.powerOutletIndex]);
   }
 

@@ -23,8 +23,7 @@ export class IrrigationComponent implements OnInit {
   ngOnInit() {
     this.irrigationForm = this.fb.group({
       'on_interval': this.fb.control(null),
-      'off_interval': this.fb.control(null),
-      'is_control': this.fb.control(false)
+      'off_interval': this.fb.control(null)
     });
 
     this.parentForm.addControl('irrigation', this.irrigationForm);
@@ -38,7 +37,7 @@ export class IrrigationComponent implements OnInit {
     this.parentForm.removeControl('irrigation');
   }
 
-  onOutletToggleChange(name: string, formKey: string) {
+  onOutletToggleChange(name: string) {
     let isPowerOutletConfigured;
     this.powerOutlets.forEach(powerOutlet => {
       if(powerOutlet.name == name) {
@@ -46,26 +45,32 @@ export class IrrigationComponent implements OnInit {
       }
     });
     if(!isPowerOutletConfigured) {
-      this.presentAddPowerOutletModal(name, formKey);
+      this.presentAddPowerOutletModal(name);
     }
-  
-}
+  }
 
-async presentAddPowerOutletModal(powerOutletName: string, formKey: string) {
-  const modal = await this.modalController.create({
-    component: AddPowerOutletPage,
-    componentProps: {
-      'powerOutletName': powerOutletName
+  isPowerOutletSetup(name: string): boolean {
+    for(var i = 0; i < this.powerOutlets.length; i++) {
+      if(this.powerOutlets[i].name == name) {
+        return true;
+      }
     }
-  });
+    return false;
+  }
 
-  modal.onWillDismiss().then((returnValue) => {
-    if(returnValue.data) {
-      this.newPowerOutletEvent.emit(returnValue.data);
-    } else {
-      this.irrigationForm.patchValue( { [formKey]: false } );
-    }
-  });
-  return await modal.present();
-}
+  async presentAddPowerOutletModal(powerOutletName: string) {
+    const modal = await this.modalController.create({
+      component: AddPowerOutletPage,
+      componentProps: {
+        'powerOutletName': powerOutletName
+      }
+    });
+
+    modal.onWillDismiss().then((returnValue) => {
+      if(returnValue.data && !this.isPowerOutletSetup(powerOutletName)) {
+        this.newPowerOutletEvent.emit(returnValue.data);
+      }
+    });
+    return await modal.present();
+  }
 }
