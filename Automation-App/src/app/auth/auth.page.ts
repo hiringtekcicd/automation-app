@@ -42,6 +42,7 @@ export class AuthPage implements OnInit {
     const password = this.formgroup.value['password'];
     this.onLogin(email, password);
   }
+  
   onLogin(email: string, password: string) {
     this.isLoading = true;
     this.loadingCtrl
