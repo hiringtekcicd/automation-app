@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "kansastek.hydrotek",
   "appName": "Automation-App",
   "bundledWebRuntime": false,
   "npmClient": "npm",
