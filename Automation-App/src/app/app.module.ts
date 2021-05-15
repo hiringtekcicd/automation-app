@@ -20,6 +20,7 @@ import { AddPowerOutletPageModule } from './add-power-outlet/add-power-outlet.mo
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [IdentifyDevicePage, AddPowerOutletPage],
@@ -34,7 +35,8 @@ import { environment } from 'src/environments/environment';
     IdentifyDevicePageModule, 
     AddPowerOutletPageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule],
+    AngularFirestoreModule,
+  ],
   providers: [
     VariableManagementService,
     StatusBar,
