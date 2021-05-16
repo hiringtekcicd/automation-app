@@ -1,0 +1,22 @@
+<ion-content>
+  <div *ngIf="noCameras">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="10" offset="1">
+          <h6>You have no Hydrotek Cameras</h6>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div *ngIf="cameras != null">
+    <ion-list>
+      <ion-card *ngFor="let camera of cameras">
+        <!--dummy JSON file here - array of camera objs-->
+        <!--make a model-->
+        <ion-card-content>
+          
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+  </div>
+</ion-content>

@@ -30,12 +30,17 @@ const routes: Routes = [
     loadChildren: () => import('./warnings/warnings.module').then( m => m.WarningsPageModule)
   },
   {
+    path: 'cameras',
+    loadChildren: () => import('./cameras/cameras.module').then( m => m.CamerasPageModule)
+  },
+  {
     path: '',
     redirectTo: '/dashboard/monitoring',
     pathMatch: 'full'
   }
  ]
-}
+},
+  
   // {
   //   path: '',
   //   redirectTo: '',
