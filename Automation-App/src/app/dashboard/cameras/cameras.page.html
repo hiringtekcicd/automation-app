@@ -8,7 +8,9 @@
       </ion-row>
     </ion-grid>
   </div>
-  <div *ngFor="let camera of cameras">
-    <camera></camera>
+  <div *ngIf="!noCameras">
+    <div *ngFor="let cam of cameras">
+      <camera [cameraData]="cam"></camera>
+    </div>
   </div>
 </ion-content>
