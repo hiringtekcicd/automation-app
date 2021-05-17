@@ -1,6 +1,16 @@
 <ion-card>
   <ion-card-header>
-    <ion-card-title>Camera name: {{cameraData.name}}</ion-card-title>
+    <ion-toolbar>
+      <ion-title>{{cameraData.name}}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button color="primary" fill="clear" (click)="onEditCamera()">
+          <ion-icon slot="end" name="create"></ion-icon>
+        </ion-button>
+        <ion-button color="primary" fill="clear" (click)="onDeleteCamera()">
+          <ion-icon slot="end" name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
   </ion-card-header>
   <ion-card-content>
     <p>Camera URL: {{cameraData.url}}</p>

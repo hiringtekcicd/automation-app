@@ -27,7 +27,7 @@ export class CamerasPage implements OnInit {
       }else{
         console.log(this.currentDeviceType, this.currentDeviceIndex, "cameras page ts null params");
       }
-      console.log(this.currentDevice);
+      //console.log(this.currentDevice);
     });
   }
 }

@@ -1,5 +1,6 @@
+import { AddCameraPage } from './../../add-camera/add-camera.page';
+import { ModalController } from '@ionic/angular';
 import { Camera } from './../../models/camera.model';
-import { FormGroup } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
@@ -10,8 +11,29 @@ import { Component, Input, OnInit } from '@angular/core';
 export class CameraComponent implements OnInit {
   @Input() cameraData: Camera;
    
-  constructor() { }
+  constructor(private modalCtrl : ModalController) { }
 
   ngOnInit() {}
 
+  onEditCamera(){
+    console.log("Edit camera with name ",this.cameraData.name);
+    this.presentCameraModal();
+  }
+
+  async presentCameraModal() {
+    const modal = await this.modalCtrl.create({
+      component: AddCameraPage,
+      componentProps: {
+        'name': this.cameraData.name,
+        'url': this.cameraData.url
+      }
+    });
+    //onwilldismiss?
+    return await modal.present();
+  }
+  
+
+  onDeleteCamera(){
+    console.log("Delete camera with name ", this.cameraData.name);
+  }
 }

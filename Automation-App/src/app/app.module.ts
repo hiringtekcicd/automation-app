@@ -1,3 +1,5 @@
+import { AddCameraPageModule } from './add-camera/add-camera.module';
+import { AddCameraPage } from './add-camera/add-camera.page';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -19,8 +21,8 @@ import { AddPowerOutletPage } from './add-power-outlet/add-power-outlet.page';
 import { AddPowerOutletPageModule } from './add-power-outlet/add-power-outlet.module';
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [IdentifyDevicePage, AddPowerOutletPage],
-  imports: [BrowserModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule, ComponentsModule, FormsModule, ReactiveFormsModule,ChartsModule, IdentifyDevicePageModule, AddPowerOutletPageModule],
+  entryComponents: [IdentifyDevicePage, AddPowerOutletPage, AddCameraPage],
+  imports: [BrowserModule, HttpClientModule, IonicModule.forRoot(), AppRoutingModule, ComponentsModule, FormsModule, ReactiveFormsModule, ChartsModule, IdentifyDevicePageModule, AddPowerOutletPageModule, AddCameraPageModule],
   providers: [
     VariableManagementService,
     StatusBar,
