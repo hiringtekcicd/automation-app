@@ -63,9 +63,9 @@ export class FertigationSystem extends Device implements Deserializable {
 
         if(input.cameras !== undefined) {
             this.cameras = [];
-            console.log(input.cameras);
+            //console.log(input.cameras);
             for(let camera of input.cameras) {
-                console.log(camera);
+                //console.log(camera);
                 this.cameras.push(new Camera().deserialize(camera));
             }
         }
