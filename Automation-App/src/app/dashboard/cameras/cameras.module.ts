@@ -1,3 +1,4 @@
+import { ComponentsModule } from 'src/app/components/components.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +14,8 @@ import { CamerasPage } from './cameras.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    CamerasPageRoutingModule
+    CamerasPageRoutingModule,
+    ComponentsModule
   ],
   declarations: [CamerasPage]
 })

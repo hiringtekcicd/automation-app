@@ -39,6 +39,10 @@ const routes: Routes = [
   },  {
     path: 'add-power-outlet',
     loadChildren: () => import('./add-power-outlet/add-power-outlet.module').then( m => m.AddPowerOutletPageModule)
+  },
+  {
+    path: 'add-camera',
+    loadChildren: () => import('./add-camera/add-camera.module').then( m => m.AddCameraPageModule)
   }
 
 ];

@@ -8,15 +8,7 @@
       </ion-row>
     </ion-grid>
   </div>
-  <div *ngIf="cameras != null">
-    <ion-list>
-      <ion-card *ngFor="let camera of cameras">
-        <!--dummy JSON file here - array of camera objs-->
-        <!--make a model-->
-        <ion-card-content>
-          
-        </ion-card-content>
-      </ion-card>
-    </ion-list>
+  <div *ngFor="let camera of cameras">
+    <camera></camera>
   </div>
 </ion-content>

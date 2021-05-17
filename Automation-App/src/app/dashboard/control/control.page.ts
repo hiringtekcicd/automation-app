@@ -63,10 +63,10 @@ export class ControlPage implements OnInit {
         this.changeDetector.detectChanges();
         this.settingsForm.patchValue(this.currentDevice.settings);
         this.growLightArray = this.currentDevice.settings['grow_lights']['power_outlets'];
-        this.powerOutlets = this.currentDevice.power_outlets
+        this.powerOutlets = this.currentDevice.power_outlets;
       } else {
         let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
-        let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length
+        let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length;
         if((fertigationSystemCount && climateControllerCount) == 0) {
           this.noDevices = true;
         } 
