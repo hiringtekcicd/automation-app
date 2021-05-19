@@ -4,7 +4,6 @@ import { ModalController } from '@ionic/angular';
 import { VariableManagementService } from 'src/app/Services/variable-management.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
-import { Camera } from '../models/camera.model';
 
 
 @Component({
@@ -62,7 +61,6 @@ export class AddCameraPage implements OnInit {
       deviceCopy.cameras[cameraIdx]['name'] = this.cameraForm.value['cam_name'];
       deviceCopy.cameras[cameraIdx]['url'] = this.cameraForm.value['cam_url'];
     }
-
     this.varman.updateDeviceSettings(deviceCopy, this.currentDeviceType, deviceCopy._id, this.currentDeviceIndex)
       .subscribe(()=>{
         this.currentDevice = deviceCopy;
@@ -73,4 +71,20 @@ export class AddCameraPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
+  onDeleteCamera(){
+    let deviceCopy;
+    deviceCopy = {...this.currentDevice};
+    const newArr = deviceCopy.cameras.filter((element) => {
+      return element.name !== this.name;
+    });
+    deviceCopy.cameras = newArr;
+    this.varman.updateDeviceSettings(deviceCopy, this.currentDeviceType, deviceCopy._id, this.currentDeviceIndex)
+      .subscribe(()=>{
+        this.currentDevice = deviceCopy;
+      }, (error) => {
+        console.log(error)
+      }
+    );
+    this.modalCtrl.dismiss();
+  }
 }

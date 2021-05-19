@@ -1,7 +1,9 @@
+import { AddCameraPage } from './../../add-camera/add-camera.page';
+import { ModalController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { Camera } from './../../models/camera.model';
 import { Devices, VariableManagementService } from './../../Services/variable-management.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'cameras',
@@ -15,7 +17,10 @@ export class CamerasPage implements OnInit {
   currentDeviceIndex: number;
   currentDevice: Devices;
 
-  constructor(private varman: VariableManagementService, private route: ActivatedRoute) {}
+  constructor(private varman: VariableManagementService,
+     private route: ActivatedRoute,
+     private modalCtrl : ModalController,
+     private chgDetect : ChangeDetectorRef) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -29,5 +34,24 @@ export class CamerasPage implements OnInit {
       }
       //console.log(this.currentDevice);
     });
+  }
+
+  onCreateCamera(){
+    this.presentNewCameraModal();
+  }
+
+  async presentNewCameraModal() {
+    const modal = await this.modalCtrl.create({
+      component: AddCameraPage,
+      componentProps: {
+        'name': "",
+        'url': ""
+      }
+    });
+    modal.onDidDismiss().then(() => {
+      console.log("Change detect");
+      this.chgDetect.detectChanges();
+    })
+    return await modal.present();
   }
 }

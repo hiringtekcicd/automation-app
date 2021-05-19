@@ -1,4 +1,14 @@
 <ion-content>
+  <div>
+    <ion-toolbar>
+      <ion-title>Cameras</ion-title>
+      <ion-buttons slot="end">
+        <ion-button color="primary" fill="clear" (click)="onCreateCamera()">
+          <ion-icon slot="end" name="add-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </div>
   <div *ngIf="noCameras">
     <ion-grid>
       <ion-row>
