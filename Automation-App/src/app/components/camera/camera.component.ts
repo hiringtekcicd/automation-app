@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AddCameraPage } from './../../add-camera/add-camera.page';
 import { ModalController } from '@ionic/angular';
 import { Camera } from './../../models/camera.model';
-import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'camera',
@@ -15,23 +15,11 @@ export class CameraComponent implements OnInit {
   currentDeviceType: string;
   currentDeviceIndex: number;
   currentDevice: Devices;
+  urlError = false;
    
-  constructor(private modalCtrl : ModalController,
-    private route : ActivatedRoute,
-    private varman : VariableManagementService,
-    private chgDetect : ChangeDetectorRef) { }
+  constructor(private modalCtrl : ModalController) {}
 
-  ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.currentDeviceType = params['deviceType'];
-      this.currentDeviceIndex = params['deviceIndex'];
-      if((this.currentDeviceType && this.currentDeviceIndex) != null) {
-        this.currentDevice = this.varman.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
-      }else{
-        console.log(this.currentDeviceType, this.currentDeviceIndex, "cameras page ts null params");
-      }
-    });
-  }
+  ngOnInit() {}
 
   onEditCamera(){
     console.log("Edit camera with name ",this.cameraData.name);
@@ -45,10 +33,6 @@ export class CameraComponent implements OnInit {
         'name': this.cameraData.name,
         'url': this.cameraData.url
       }
-    });
-    modal.onDidDismiss().then(() => {
-      console.log("Change detect");
-      this.chgDetect.detectChanges();
     });
     return await modal.present();
   }

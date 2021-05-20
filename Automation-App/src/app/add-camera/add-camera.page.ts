@@ -79,12 +79,10 @@ export class AddCameraPage implements OnInit {
     });
     deviceCopy.cameras = newArr;
     this.varman.updateDeviceSettings(deviceCopy, this.currentDeviceType, deviceCopy._id, this.currentDeviceIndex)
-      .subscribe(()=>{
-        this.currentDevice = deviceCopy;
+      .subscribe(() => {
+        this.modalCtrl.dismiss();
       }, (error) => {
-        console.log(error)
-      }
-    );
-    this.modalCtrl.dismiss();
+        console.log(error);
+      });
   }
 }
