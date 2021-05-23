@@ -10,7 +10,6 @@
     </ion-toolbar>
   </ion-card-header>
   <ion-card-content>
-    <p *ngIf="[urlError]">The view could not be loaded; Check your URL.</p>
-    <img *ngIf="[!urlError]" [src]="cameraData.url" onerror="urlError=true;console.log(urlError);">
+    <img [src]="cameraData.url" onerror="this.onerror=null;this.src='assets/icon/cameraURLError.png'">
   </ion-card-content>
 </ion-card>

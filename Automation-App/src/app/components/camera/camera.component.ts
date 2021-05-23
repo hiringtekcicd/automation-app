@@ -15,7 +15,6 @@ export class CameraComponent implements OnInit {
   currentDeviceType: string;
   currentDeviceIndex: number;
   currentDevice: Devices;
-  urlError = false;
    
   constructor(private modalCtrl : ModalController) {}
 
