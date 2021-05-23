@@ -1,0 +1,15 @@
+<ion-card class="dashboard-card">
+  <ion-card-header>
+    <ion-toolbar>
+      <ion-title>{{cameraData.name}}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button color="primary" fill="clear" (click)="onEditCamera()">
+          <ion-icon slot="end" name="create"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-card-header>
+  <ion-card-content>
+    <img [src]="cameraData.url" onerror="this.onerror=null;this.src='assets/icon/cameraURLError.png'">
+  </ion-card-content>
+</ion-card>

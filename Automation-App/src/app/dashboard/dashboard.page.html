@@ -12,13 +12,16 @@
     <ion-tab-bar color="primary" slot="top"> 
       <ion-tab-button tab="warnings">
         <ion-label class="tab-label">Warnings</ion-label>
-        </ion-tab-button>
-        <ion-tab-button (click)="navigateToMonitoringTab()">
-          <ion-label class="tab-label">Monitoring</ion-label>
-        </ion-tab-button>
-        <ion-tab-button (click)="navigateToControlTab()">
-          <ion-label class="tab-label">Control</ion-label>
-        </ion-tab-button>
+      </ion-tab-button>
+      <ion-tab-button (click)="navigateToTab('monitoring')">
+        <ion-label class="tab-label">Monitoring</ion-label>
+      </ion-tab-button>
+      <ion-tab-button (click)="navigateToTab('control')">
+        <ion-label class="tab-label">Control</ion-label>
+      </ion-tab-button>
+      <ion-tab-button (click)="navigateToTab('cameras')">
+        <ion-label class="tab-label">Cameras</ion-label>
+      </ion-tab-button>
     </ion-tab-bar> 
   </ion-tabs>
 </ion-content>

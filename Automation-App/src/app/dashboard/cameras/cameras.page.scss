@@ -1,0 +1,34 @@
+h2 {
+    color: white;
+    padding-left: 10px;
+    margin-top: 10px;
+    padding-top: 0px;
+    display: inline-block;
+}
+
+ion-content{
+    --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
+}
+
+ion-col {
+    text-align: center;
+}
+
+
+ion-toolbar{
+    --background: transparent;
+    padding-top: 8px;
+}
+
+.add-button{
+    display: block;
+}
+
+.add-icon{
+    color: white;
+}
+
+.content {
+    padding-left: 10px;
+    padding-right: 10px;
+}

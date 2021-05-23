@@ -62,13 +62,18 @@ export class ControlPage implements OnInit {
         this.currentDevice = this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
         this.changeDetector.detectChanges();
         this.settingsForm.patchValue(this.currentDevice.settings);
+<<<<<<< HEAD
         if(this.currentDevice.settings['grow_lights']['power_outlets']) {
           this.growLightArray = this.currentDevice.settings['grow_lights']['power_outlets'];
         }
         this.powerOutlets = this.currentDevice.power_outlets
+=======
+        this.growLightArray = this.currentDevice.settings['grow_lights']['power_outlets'];
+        this.powerOutlets = this.currentDevice.power_outlets;
+>>>>>>> camera-stream-tom
       } else {
         let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
-        let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length
+        let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length;
         if((fertigationSystemCount && climateControllerCount) == 0) {
           this.noDevices = true;
         } 

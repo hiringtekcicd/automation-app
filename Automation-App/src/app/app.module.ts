@@ -1,3 +1,5 @@
+import { AddCameraPageModule } from './add-camera/add-camera.module';
+import { AddCameraPage } from './add-camera/add-camera.page';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -23,7 +25,7 @@ import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [IdentifyDevicePage, AddPowerOutletPage],
+  entryComponents: [IdentifyDevicePage, AddPowerOutletPage, AddCameraPage],
   imports: [
     BrowserModule, 
     HttpClientModule, 
@@ -36,6 +38,7 @@ import { environment } from 'src/environments/environment';
     AddPowerOutletPageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
+    AddCameraPageModule
   ],
   providers: [
     VariableManagementService,

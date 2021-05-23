@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Add Camera</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click)="this.modalCtrl.dismiss()"><ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="cameraForm" (ngSubmit)="onFormSubmit()">
+    <ion-item>
+      <ion-label position="floating">Camera Name</ion-label>
+      <ion-input formControlName="cam_name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Camera URL</ion-label>
+      <ion-input formControlName="cam_url"></ion-input>
+    </ion-item>
+    <ion-button type="submit" expand="block" fill="clear" shape="round">
+      Submit
+    </ion-button>
+    <ion-button color="danger" expand="block" fill="clear" (click)="onDeleteCamera()">
+      Delete
+    </ion-button>
+  </form>
+
+</ion-content>

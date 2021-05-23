@@ -1,3 +1,4 @@
+import { Camera } from './camera.model';
 import { Deserializable } from "./deserializable";
 import { Device } from "./device.model";
 import { EcSensor } from "./ec-sensor.model";
@@ -7,6 +8,7 @@ import { PhSensor } from "./ph-sensor.model";
 import { PowerOutlet } from "./power-outlet.model";
 import { ReservoirSettings } from "./reservoir-settings.model";
 import { WaterTempSensor } from "./water-temp-sensor.model";
+
 
 export class FertigationSystem extends Device implements Deserializable {
 
@@ -20,6 +22,7 @@ export class FertigationSystem extends Device implements Deserializable {
     }
 
     power_outlets: PowerOutlet[] = [];
+    cameras: Camera[] = [];
 
     deserialize(input: any): this {
         Object.assign(this, input);
@@ -55,6 +58,15 @@ export class FertigationSystem extends Device implements Deserializable {
             for(let powerOutlet of input.power_outlets) {
                 console.log(powerOutlet);
                 this.power_outlets.push(new PowerOutlet().deserialize(powerOutlet));
+            }
+        }
+
+        if(input.cameras !== undefined) {
+            this.cameras = [];
+            //console.log(input.cameras);
+            for(let camera of input.cameras) {
+                //console.log(camera);
+                this.cameras.push(new Camera().deserialize(camera));
             }
         }
         

@@ -13,12 +13,8 @@ export class DashboardPage implements OnInit {
 
   ngOnInit() { }
 
-  navigateToMonitoringTab() {
-    this.router.navigate(['/dashboard/monitoring'], { queryParamsHandling: "preserve" });
-  }
-
-  navigateToControlTab() {
-    this.router.navigate(['/dashboard/control'], { queryParamsHandling: "preserve" });
+  navigateToTab(tabName : string){
+    this.router.navigate(['/dashboard/'+tabName], { queryParamsHandling: "preserve" });
   }
 }
 
