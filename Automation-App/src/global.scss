@@ -50,13 +50,21 @@
     --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
 }
 
-.h3_sensor_title{//used in 9 files in components
+.h3_sensor_title{//used in 9 files in components, sensor/item titles
     font-weight: 700 !important;
     color: black;
     font-size: 150% !important;
     margin-left: 10px !important;
     margin-bottom: 0px !important;
 }
+
+.sensor_black_label { //used in 12 files in components and pages
+    font-size: 14px;
+    color: black;
+    font-weight: 400;
+    margin: 10px;
+} //ion-label is still used in control (one-off, white color)
+
 /*
 h2, h6 {
     color: white;
@@ -65,14 +73,7 @@ h2, h6 {
 }
 
 
-//below: diff scss definitions exist for different components/pages
-ion-label { //used in 12 files in components and pages
-    font-size: 14px;
-    color: black; 
-    //TODO: grow-lights component, irrigation component, ph component, reservoir component do NOT have black color spec'd in scss
-    font-weight: 400;
-    margin: 10px;
-}
+
 
 ion-card-content { //used in 13 files in components and pages
     padding-top: 5px; //TODO: this is majority usage, some other pages specify different params

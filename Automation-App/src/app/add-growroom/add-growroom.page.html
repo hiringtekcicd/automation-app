@@ -25,11 +25,11 @@
         <ion-card-content>
           <ion-list>
             <ion-item>
-              <ion-label position="floating">Grow Room Name</ion-label>
+              <ion-label class="sensor_black_label" position="floating">Grow Room Name</ion-label>
               <ion-input formControlName="grow_room_name"></ion-input>
             </ion-item>
             <ion-item>
-              <ion-label>Select a Cluster</ion-label>
+              <ion-label class="sensor_black_label">Select a Cluster</ion-label>
               <ion-select formControlName="cluster_name" placeholder="Cluster">
                 <ion-select-option *ngFor="let cluster of variableManagementService.clusterNames" [value]="cluster">
                   {{ cluster }}
@@ -37,7 +37,7 @@
               </ion-select>
             </ion-item>
             <ion-item>
-              <ion-label>Select a Plant</ion-label>
+              <ion-label class="sensor_black_label">Select a Plant</ion-label>
               <ion-select #plantSelect placeholder="Plant" formControlName="plant_name" [interfaceOptions]="plantAlertOptions" [(ngModel)]="plantName" (ionChange)="addRecommendedSettings(plantSelect.value)">
                 <ion-select-option *ngFor="let plant of variableManagementService.plants" [value]="plant">
                   {{ plant.name }}
