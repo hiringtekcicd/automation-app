@@ -29,7 +29,7 @@
     color : var(--ion-color-danger); //If we have ion-invalid and touched classes, the nested elements will turn red.
 }
 
-/*
+
 .group {//used in 5 components
     margin-top: 20px;
 }
@@ -46,12 +46,10 @@
     padding-top: 14px;
 }
 
-
-//TODO replace bottom w/ classes
-ion-content{ //app background
+.gradient_background{ //app background
     --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
 }
-
+/*
 h2, h6 {
     color: white;
     margin-left: 10px;
