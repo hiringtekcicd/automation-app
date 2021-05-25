@@ -15,7 +15,7 @@
           <hr color="grey" />
           <div class="group">
             <ion-row>
-              <ion-col size="12">
+              <ion-col class="no_padding" size="12">
                 <ion-item lines="none">
                   <ion-checkbox formControlName="monit_only" mode="md"></ion-checkbox>
                   <ion-label class="sensor_black_label">Monitoring Only</ion-label>
@@ -26,13 +26,13 @@
   
           <div *ngIf="!ecForm.get('monit_only').value" [formGroup]="controlForm"> 
             <ion-row>
-              <ion-col size="5">
+              <ion-col class="no_padding" size="5">
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Dosing Time</ion-label>
                   <ion-input formControlName="dose_time" type="number"></ion-input>
                 </ion-item>
               </ion-col>
-              <ion-col offset="1" size="5">
+              <ion-col class="no_padding" offset="1" size="5">
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Dosing Interval</ion-label>
                   <ion-input formControlName="dose_interv" type="number"></ion-input>
@@ -78,13 +78,13 @@
               </ion-item>
             </ion-row>
             <ion-row *ngIf="controlForm.get('d_n_enabled').value">
-              <ion-col size="6">
+              <ion-col class="no_padding" size="6">
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Day Target Value</ion-label>
                   <ion-input formControlName="day_tgt" type="number"></ion-input>
                 </ion-item>
               </ion-col>
-              <ion-col size="6">
+              <ion-col class="no_padding" size="6">
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Night Target Value</ion-label>
                   <ion-input formControlName="night_tgt" type="number"></ion-input>
@@ -92,7 +92,7 @@
               </ion-col>
             </ion-row>
             <ion-row *ngIf="!controlForm.get('d_n_enabled').value">
-              <ion-col size="12">
+              <ion-col class="no_padding" size="12">
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Target Value</ion-label>
                   <ion-input formControlName="tgt" type="number"></ion-input>
@@ -103,13 +103,13 @@
           
           <h3 class="h3_sensor_title">Alarm Settings</h3>
             <ion-row>
-              <ion-col size="5">
+              <ion-col class="no_padding" size="5">
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Min</ion-label>
                   <ion-input formControlName="alarm_min" type="number"></ion-input>
                 </ion-item>
               </ion-col>
-              <ion-col offset="1" size="5">
+              <ion-col class="no_padding" offset="1" size="5">
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Max</ion-label>
                   <ion-input formControlName="alarm_max" type="number"></ion-input>

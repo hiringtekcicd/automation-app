@@ -38,7 +38,7 @@
     display: inline-block;
 }
 
-.add_button { //used in 3 pages
+.add_button { //used in 3 pages TODO not complete
     display: inline-block;
 }
 
@@ -65,15 +65,23 @@
     margin: 10px;
 } //ion-label is still used in control (one-off, white color)
 
+.no_padding{
+    padding: 0px;
+}
+
+.no_padding_bottom{
+    padding-bottom: 0px;
+}
+
+.text_center{
+    text-align: center;
+}
 /*
 h2, h6 {
     color: white;
     margin-left: 10px;
     display: inline;
 }
-
-
-
 
 ion-card-content { //used in 13 files in components and pages
     padding-top: 5px; //TODO: this is majority usage, some other pages specify different params
@@ -85,8 +93,4 @@ ion-card-content { //used in 13 files in components and pages
 .content {//used in 6 files for pages
     padding-left: 10px; //TODO: multiple versions in 6 files
     padding-right: 10px;
-}
-
-ion-col {//used in 18 files for pages and components
-    padding: 0px;//TODO: multiple versions, including text centering or just bottom padding
 }*/

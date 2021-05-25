@@ -15,7 +15,7 @@
           <hr color="grey" />
           <div class="group">
             <ion-row>
-              <ion-col size="12">
+              <ion-col class="no_padding" size="12">
                 <ion-item lines="none">
                   <ion-checkbox formControlName="monit_only" mode="md"></ion-checkbox>
                   <ion-label class="sensor_black_label">Monitoring Only</ion-label>
@@ -33,13 +33,13 @@
               </ion-item>
             </ion-row>
             <ion-row *ngIf="controlForm.get('d_n_enabled').value">
-              <ion-col size="6">
+              <ion-col class="no_padding" size="6">
                 <ion-item>
                   <ion-label  class="sensor_black_label" position="floating">Day Target Value</ion-label>
                   <ion-input formControlName="day_tgt" type="number"></ion-input>
                 </ion-item>
               </ion-col>
-              <ion-col size="6">
+              <ion-col class="no_padding" size="6">
                 <ion-item>
                   <ion-label  class="sensor_black_label" position="floating">Night Target Value</ion-label>
                   <ion-input formControlName="night_tgt" type="number"></ion-input>
@@ -47,7 +47,7 @@
               </ion-col>
             </ion-row>
             <ion-row *ngIf="!controlForm.get('d_n_enabled').value">
-              <ion-col size="12">
+              <ion-col class="no_padding" size="12">
                 <ion-item>
                   <ion-label  class="sensor_black_label" position="floating">Target Value</ion-label>
                   <ion-input formControlName="tgt" type="number"></ion-input>
@@ -70,13 +70,13 @@
           </div>
           <h3 class="h3_sensor_title">Alarm Settings</h3>
           <ion-row>
-            <ion-col size="5">
+            <ion-col class="no_padding" size="5">
               <ion-item>
                 <ion-label  class="sensor_black_label" position="floating">Min</ion-label>
                 <ion-input formControlName="alarm_min" type="number"></ion-input>
               </ion-item>
             </ion-col>
-            <ion-col offset="1" size="5">
+            <ion-col class="no_padding" offset="1" size="5">
               <ion-item>
                 <ion-label  class="sensor_black_label" position="floating">Max</ion-label>
                 <ion-input formControlName="alarm_max" type="number"></ion-input>
