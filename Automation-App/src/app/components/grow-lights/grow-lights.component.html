@@ -6,14 +6,14 @@
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">Grow Lights</h3>
+          <h3 fill="clear" class="color h3_sensor_title">Grow Lights</h3>
         </ion-item>
       </ion-row>
 
       <form [formGroup]="growLightsForm">
         <div *ngIf="isOpen">
           <hr color="grey" />
-          <h3>Day and Night Times</h3>
+          <h3 class="h3_sensor_title">Day and Night Times</h3>
           <ion-row> 
             <ion-col size="12">
               <ion-item>
@@ -31,7 +31,7 @@
             </ion-col>
           </ion-row>
           <ion-item>
-            <h3>Power Outlets</h3>
+            <h3 class="h3_sensor_title">Power Outlets</h3>
             <ion-icon slot="end" name="add-outline" (click)="newPowerOutlet()"></ion-icon>
           </ion-item>
           <div formArrayName="power_outlets">

@@ -6,7 +6,7 @@
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">Water Temperature</h3>
+          <h3 fill="clear" class="color h3_sensor_title">Water Temperature</h3>
         </ion-item>
       </ion-row>
 
@@ -24,7 +24,7 @@
             </ion-row>
           </div>
           <div *ngIf="!waterTemperatureForm.get('monit_only').value" [formGroup]="controlForm"> 
-            <h3>Desired Value</h3>
+            <h3 class="h3_sensor_title">Desired Value</h3>
             <ion-row>
               <ion-item lines="none">
                 <ion-checkbox formControlName="d_n_enabled" mode="md"></ion-checkbox>
@@ -53,7 +53,7 @@
                 </ion-item>
               </ion-col>
             </ion-row>
-            <h3>Power Outlets</h3>
+            <h3 class="h3_sensor_title">Power Outlets</h3>
             <ion-list>
               <ion-item lines="none">
                 <ion-toggle slot="start" formControlName="up_ctrl" (click)="onOutletToggleChange('Water Heater', 'up_ctrl')"></ion-toggle>
@@ -69,7 +69,7 @@
               </ion-item>
             </ion-list>
           </div>
-          <h3>Alarm Settings</h3>
+          <h3 class="h3_sensor_title">Alarm Settings</h3>
           <ion-row>
             <ion-col size="5">
               <ion-item>

@@ -6,7 +6,7 @@
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">EC</h3>
+          <h3 fill="clear" class="color h3_sensor_title">EC</h3>
         </ion-item>
       </ion-row>
       
@@ -40,7 +40,7 @@
               </ion-col>
             </ion-row>
             
-            <h3>Pumps</h3>
+            <h3 class="h3_sensor_title">Pumps</h3>
             <div formGroupName="pumps">
               <ion-list>
                 <ion-item>
@@ -70,7 +70,7 @@
               </ion-list>
             </div>
 
-            <h3>Desired Value</h3>
+            <h3 class="h3_sensor_title">Desired Value</h3>
             <ion-row>
               <ion-item lines="none">
                 <ion-checkbox formControlName="d_n_enabled" mode="md"></ion-checkbox>
@@ -101,7 +101,7 @@
             </ion-row>
           </div>
           
-          <h3>Alarm Settings</h3>
+          <h3 class="h3_sensor_title">Alarm Settings</h3>
             <ion-row>
               <ion-col size="5">
                 <ion-item>

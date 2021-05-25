@@ -49,6 +49,14 @@
 .gradient_background{ //app background
     --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
 }
+
+.h3_sensor_title{//used in 9 files in components
+    font-weight: 700 !important;
+    color: black;
+    font-size: 150% !important;
+    margin-left: 10px !important;
+    margin-bottom: 0px !important;
+}
 /*
 h2, h6 {
     color: white;
@@ -56,13 +64,6 @@ h2, h6 {
     display: inline;
 }
 
-h3 { //used in 9 files in components
-    font-weight: 700;
-    color: black;
-    font-size: 150%;
-    margin-left: 10px;
-    margin-bottom: 0px;
-}
 
 //below: diff scss definitions exist for different components/pages
 ion-label { //used in 12 files in components and pages
