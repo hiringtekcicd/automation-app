@@ -76,18 +76,19 @@
 .text_center{
     text-align: center;
 }
+
+.top_bottom_padding ion-card-content{//used in 13 files in components and pages
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
+}//create-cluster and sensor-display have custom values
+
 /*
 h2, h6 {
     color: white;
     margin-left: 10px;
     display: inline;
-}
-
-ion-card-content { //used in 13 files in components and pages
-    padding-top: 5px; //TODO: this is majority usage, some other pages specify different params
-    padding-bottom: 5px;
-    padding-left: 0px;
-    padding-right: 0px;
 }
 
 .content {//used in 6 files for pages
