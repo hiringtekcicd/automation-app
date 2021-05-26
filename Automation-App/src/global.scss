@@ -77,21 +77,20 @@
     text-align: center;
 }
 
-.top_bottom_padding ion-card-content{//used in 13 files in components and pages
+.top_bottom_padding{//used in 13 files in components and pages
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 0px;
     padding-right: 0px;
 }//create-cluster and sensor-display have custom values
 
-/*
-h2, h6 {
+.content {//used in 6 files for pages
+    padding-left: 10px;
+    padding-right: 10px;
+}//monitoring, control are different
+
+.h2_title{
     color: white;
     margin-left: 10px;
     display: inline;
-}
-
-.content {//used in 6 files for pages
-    padding-left: 10px; //TODO: multiple versions in 6 files
-    padding-right: 10px;
-}*/
+} //cameras is different

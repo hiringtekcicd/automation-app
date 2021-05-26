@@ -4,7 +4,7 @@
     <div *ngIf="currentDevice != null">
       <form [formGroup]="settingsForm">
         <div>
-          <h2 class="inline-heading">{{ currentDevice.name }}</h2>
+          <h2 class="h2_title inline-heading">{{ currentDevice.name }}</h2>
           <ion-button class="inline-button" (click)="onSettingsFormSubmit()" [disabled]="!isDirty">Save</ion-button>
           <ion-button class="start-button" (click)="onBootButtonClick()">{{ currentDevice.device_started? stopDeviceString: startDeviceString }}</ion-button>
         </div>

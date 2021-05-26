@@ -1,14 +1,3 @@
-h2 {
-    color: white;
-    margin-left: 10px;
-    display: inline;
-}
-
-.content {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
 ion-card-content {
     padding-left: 0px;
     padding-right: 0px;
@@ -16,13 +5,5 @@ ion-card-content {
 }
 
 .title {
-    display: inline-block;
-}
-
-.add_button {
-    display: inline-block;
-}
-
-.button_col {
-    padding-top: 14px;
+    display: inline-block; //needed??
 }
