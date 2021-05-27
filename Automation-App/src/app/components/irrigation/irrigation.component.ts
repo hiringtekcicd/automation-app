@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AddPowerOutletPage } from 'src/app/add-power-outlet/add-power-outlet.page';
 import { PowerOutlet } from 'src/app/models/power-outlet.model';
@@ -22,8 +22,8 @@ export class IrrigationComponent implements OnInit {
 
   ngOnInit() {
     this.irrigationForm = this.fb.group({
-      'on_interval': this.fb.control(null),
-      'off_interval': this.fb.control(null)
+      'on_interval': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(1440)]),
+      'off_interval': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(1440)])
     });
 
     this.parentForm.addControl('irrigation', this.irrigationForm);

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VariableManagementService } from 'src/app/Services/variable-management.service';
 
 @Component({
@@ -20,26 +20,26 @@ export class EcComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.controlForm = this.fb.group({
-      'dose_time': this.fb.control(null),
-      'dose_interv': this.fb.control(null),
+      'dose_time': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(7200)]),
+      'dose_interv': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(14400)]),
       'd_n_enabled': this.fb.control(true),
-      'day_tgt': this.fb.control(null),
-      'night_tgt': this.fb.control(null),
-      'tgt': this.fb.control(null),
+      'day_tgt': this.fb.control(null, [Validators.min(0), Validators.max(10000)]),
+      'night_tgt': this.fb.control(null, [Validators.min(0), Validators.max(10000)]), // TODO conditional
+      'tgt': this.fb.control(null, [Validators.min(0), Validators.max(10000)]),
       'pumps': this.fb.group({
-        'pump_1': this.fb.control(null),
-        'pump_2': this.fb.control(null),
-        'pump_3': this.fb.control(null),
-        'pump_4': this.fb.control(null),
-        'pump_5': this.fb.control(null)
+        'pump_1': this.fb.control(null, [Validators.min(0), Validators.max(1000)]), // TODO at least one of the following
+        'pump_2': this.fb.control(null, [Validators.min(0), Validators.max(1000)]),
+        'pump_3': this.fb.control(null, [Validators.min(0), Validators.max(1000)]),
+        'pump_4': this.fb.control(null, [Validators.min(0), Validators.max(1000)]),
+        'pump_5': this.fb.control(null, [Validators.min(0), Validators.max(1000)])
       })
     });
 
     this.ecForm = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
-      'alarm_min': this.fb.control(null),
-      'alarm_max': this.fb.control(null)
+      'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(9999)]), //TODO do compare values
+      'alarm_max': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(10000)])
     });
 
     this.parentForm.addControl('ec', this.ecForm);

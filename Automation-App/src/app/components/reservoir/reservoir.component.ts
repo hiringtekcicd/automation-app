@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AddPowerOutletPage } from 'src/app/add-power-outlet/add-power-outlet.page';
 import { PowerOutlet } from 'src/app/models/power-outlet.model';
@@ -22,9 +22,9 @@ export class ReservoirComponent implements OnInit {
 
   ngOnInit() {
     this.reservoirForm = this.fb.group({
-      'reservoir_size': this.fb.control(null),
+      'reservoir_size': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(10000)]),
       'is_control': this.fb.control(false),
-      'water_replacement_interval': this.fb.control(null)
+      'water_replacement_interval': this.fb.control(null, [Validators.min(0.5), Validators.max(1000)]) //TODO conditional
     });
     this.parentForm.addControl('reservoir', this.reservoirForm);
   }

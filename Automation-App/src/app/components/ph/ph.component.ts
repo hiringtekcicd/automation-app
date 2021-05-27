@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { VariableManagementService } from 'src/app/Services/variable-management.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'ph',
@@ -22,12 +22,12 @@ export class PhComponent implements OnInit, OnDestroy {
     this.day_and_night_targetForm = this.fb.group({});
 
     this.controlForm = this.fb.group({
-      'dose_time': this.fb.control(null),
-      'dose_interv': this.fb.control(null),
+      'dose_time': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(7200)]),
+      'dose_interv': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(14400)]),
       'd_n_enabled': this.fb.control(true),
-      'day_tgt': this.fb.control(null),
-      'night_tgt': this.fb.control(null),
-      'tgt': this.fb.control(null),
+      'day_tgt': this.fb.control(null, [Validators.min(0), Validators.max(14)]),
+      'night_tgt': this.fb.control(null, [Validators.min(0), Validators.max(14)]), //TODO conditional
+      'tgt': this.fb.control(null, [Validators.min(0), Validators.max(14)]),
       'up_ctrl': this.fb.control(false),
       'down_ctrl': this.fb.control(false)
     });
@@ -35,8 +35,8 @@ export class PhComponent implements OnInit, OnDestroy {
     this.phForm = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
-      'alarm_min': this.fb.control(null),
-      'alarm_max': this.fb.control(null)
+      'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(13.9)]), //TODO compare
+      'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0.1), Validators.max(14)])
     });
 
     this.parentForm.addControl('ph', this.phForm);

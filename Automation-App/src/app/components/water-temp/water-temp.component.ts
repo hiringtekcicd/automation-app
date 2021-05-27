@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AddPowerOutletPage } from 'src/app/add-power-outlet/add-power-outlet.page';
 import { PowerOutlet } from 'src/app/models/power-outlet.model';
@@ -25,9 +25,9 @@ export class WaterTempComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.controlForm = this.fb.group({
       'd_n_enabled': this.fb.control(true),
-      'day_tgt': this.fb.control(null),
-      'night_tgt': this.fb.control(null),
-      'tgt': this.fb.control(null),
+      'day_tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
+      'night_tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]), //TODO conditional
+      'tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
       'up_ctrl': this.fb.control(false),
       'down_ctrl': this.fb.control(false)
     });
@@ -35,8 +35,8 @@ export class WaterTempComponent implements OnInit, OnDestroy {
     this.waterTemperatureForm = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
-      'alarm_min': this.fb.control(null),
-      'alarm_max': this.fb.control(null)
+      'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)]),//TODO compare
+      'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)])
     });
 
     this.parentForm.addControl('water_temp', this.waterTemperatureForm);
