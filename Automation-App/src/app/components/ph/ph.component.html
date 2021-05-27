@@ -22,19 +22,7 @@
           </div>
   
           <div *ngIf="!phForm.get('monit_only').value" [formGroup]="controlForm">
-            <div class="settings-group">
-               <h3 class="h3_sensor_title">Dose Settings</h3>
-              <ion-list>
-                <ion-item>
-                  <ion-label class="sensor_black_label" position="floating">Dose Time</ion-label>
-                  <ion-input formControlName="dose_time" type="number"></ion-input>
-                </ion-item>
-                <ion-item>
-                  <ion-label class="sensor_black_label" position="floating">Dosing Interval</ion-label>
-                  <ion-input formControlName="dose_interv" type="number"></ion-input>
-                </ion-item>
-              </ion-list>  
-            </div>
+            
             
             <div class="settings-group">
               <h3 class="h3_sensor_title">Pumps</h3>
@@ -51,6 +39,20 @@
             </div>
   
             <div class="settings-group">
+              <h3 class="h3_sensor_title">Dose Settings</h3>
+             <ion-list>
+               <ion-item>
+                 <ion-label class="sensor_black_label" position="floating">Dose Time</ion-label>
+                 <ion-input formControlName="dose_time" type="number"></ion-input>
+               </ion-item>
+               <ion-item>
+                 <ion-label class="sensor_black_label" position="floating">Dosing Interval</ion-label>
+                 <ion-input formControlName="dose_interv" type="number"></ion-input>
+               </ion-item>
+             </ion-list>  
+           </div>
+
+           <div class="settings-group">
               <h3 class="h3_sensor_title">Desired Value</h3>
               <ion-row>
                 <ion-item lines="none">
