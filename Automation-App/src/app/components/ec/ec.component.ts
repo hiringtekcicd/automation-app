@@ -1,3 +1,5 @@
+import { DayNightTargetValidator } from 'src/app/validators/daynighttarget.validator';
+import { TwoValCompareValidator } from 'src/app/validators/twovalcompare.validator';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { VariableManagementService } from 'src/app/Services/variable-management.service';
@@ -16,7 +18,9 @@ export class EcComponent implements OnInit, OnDestroy {
   controlForm: FormGroup;
   day_and_night_targetForm: FormGroup;
   
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder,
+    private twoValCompareValidator : TwoValCompareValidator,
+    private dayNightTargetValidator: DayNightTargetValidator) { }
 
   ngOnInit() {
     this.controlForm = this.fb.group({
@@ -33,14 +37,14 @@ export class EcComponent implements OnInit, OnDestroy {
         'pump_4': this.fb.control(null, [Validators.min(0), Validators.max(1000)]),
         'pump_5': this.fb.control(null, [Validators.min(0), Validators.max(1000)])
       })
-    });
+    }, {validators: [this.dayNightTargetValidator.dayNightTarget('tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')]});
 
     this.ecForm = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
       'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(9999)]), //TODO do compare values
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(10000)])
-    });
+    }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min', 'alarm_max')]});
 
     this.parentForm.addControl('ec', this.ecForm);
   }

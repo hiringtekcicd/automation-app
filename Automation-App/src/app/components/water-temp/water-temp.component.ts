@@ -1,3 +1,5 @@
+import { DayNightTargetValidator } from 'src/app/validators/daynighttarget.validator';
+import { TwoValCompareValidator } from './../../validators/twovalcompare.validator';
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
@@ -20,7 +22,9 @@ export class WaterTempComponent implements OnInit, OnDestroy {
   controlForm: FormGroup;
   day_and_night_targetForm: FormGroup;
   
-  constructor(private fb: FormBuilder, private modalController: ModalController) { }
+  constructor(private fb: FormBuilder, private modalController: ModalController,
+    private twoValCompareValidator : TwoValCompareValidator,
+    private dayNightTargetValidator: DayNightTargetValidator) { }
 
   ngOnInit() {
     this.controlForm = this.fb.group({
@@ -30,14 +34,14 @@ export class WaterTempComponent implements OnInit, OnDestroy {
       'tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
       'up_ctrl': this.fb.control(false),
       'down_ctrl': this.fb.control(false)
-    });
+    }, {validators: [this.dayNightTargetValidator.dayNightTarget('tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')]});
 
     this.waterTemperatureForm = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
       'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)]),//TODO compare
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)])
-    });
+    }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min','alarm_max')]});
 
     this.parentForm.addControl('water_temp', this.waterTemperatureForm);
   }

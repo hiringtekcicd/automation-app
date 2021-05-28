@@ -53,6 +53,8 @@
                 </ion-item>
               </ion-col>
             </ion-row>
+            <p *ngIf="controlForm.errors?.targetReq">Target cannot be empty.</p>
+            <p *ngIf="controlForm.errors?.dnReq">Day/Night targets cannot be empty.</p>
             <h3 class="h3_sensor_title">Power Outlets</h3>
             <ion-list>
               <ion-item lines="none">
@@ -84,6 +86,7 @@
               </ion-item>
             </ion-col>
           </ion-row>
+          <p *ngIf="waterTemperatureForm.errors?.compareError">Alarm min must be lower than Alarm max.</p>
         </div>
       </form>
     </ion-grid>

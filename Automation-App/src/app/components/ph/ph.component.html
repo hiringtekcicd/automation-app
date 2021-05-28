@@ -82,6 +82,8 @@
                   </ion-item>
                 </ion-col>
               </ion-row>
+              <p *ngIf="controlForm.errors?.targetReq">Target cannot be empty.</p>
+              <p *ngIf="controlForm.errors?.dnReq">Day/Night targets cannot be empty.</p>
             </div>
           </div>
           <div class="settings-group">
@@ -100,7 +102,7 @@
                 </ion-item>
               </ion-col>
             </ion-row>
-            <p *ngIf="phForm.errors?.compareError">Alarm min value must be lower than Alarm max.</p>
+            <p *ngIf="phForm.errors?.compareError">Alarm min must be lower than Alarm max.</p>
           </div>
         </div>
       </form>
