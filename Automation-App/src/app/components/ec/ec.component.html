@@ -68,6 +68,7 @@
                   <ion-input formControlName="pump_5" type="number"></ion-input>
                 </ion-item>
               </ion-list>
+              <p *ngIf="ecForm.errors?.ecPumpZero">At least one pump must have a nonzero ratio.</p>
             </div>
 
             <h3 class="h3_sensor_title">Desired Value</h3>

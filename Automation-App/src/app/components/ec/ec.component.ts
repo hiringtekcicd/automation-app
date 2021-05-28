@@ -1,3 +1,4 @@
+import { ECPumpValidator } from './../../validators/ecpump.validator';
 import { DayNightTargetValidator } from 'src/app/validators/daynighttarget.validator';
 import { TwoValCompareValidator } from 'src/app/validators/twovalcompare.validator';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
@@ -20,7 +21,8 @@ export class EcComponent implements OnInit, OnDestroy {
   
   constructor(private fb: FormBuilder,
     private twoValCompareValidator : TwoValCompareValidator,
-    private dayNightTargetValidator: DayNightTargetValidator) { }
+    private dayNightTargetValidator: DayNightTargetValidator,
+    private ecPumpValidator: ECPumpValidator) { }
 
   ngOnInit() {
     this.controlForm = this.fb.group({
@@ -44,7 +46,8 @@ export class EcComponent implements OnInit, OnDestroy {
       'control': this.controlForm,
       'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(9999)]), //TODO do compare values
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(10000)])
-    }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min', 'alarm_max')]});
+    }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min', 'alarm_max'),
+                     this.ecPumpValidator.ecPumpValidator('monit_only', 'control', 'pumps')]});
 
     this.parentForm.addControl('ec', this.ecForm);
   }
