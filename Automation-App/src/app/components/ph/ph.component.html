@@ -100,6 +100,7 @@
                 </ion-item>
               </ion-col>
             </ion-row>
+            <p *ngIf="phForm.errors?.compareError">Alarm min value must be lower than Alarm max.</p>
           </div>
         </div>
       </form>

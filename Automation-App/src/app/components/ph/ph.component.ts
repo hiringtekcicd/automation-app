@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { VariableManagementService } from 'src/app/Services/variable-management.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators} from '@angular/forms';
+import { TwoValCompareValidator } from 'src/app/validators/twovalcompare.validator';
 
 @Component({
   selector: 'ph',
@@ -16,7 +16,8 @@ export class PhComponent implements OnInit, OnDestroy {
   controlForm: FormGroup;
   day_and_night_targetForm: FormGroup;
   
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder,
+    private twoValCompareVal : TwoValCompareValidator) { }
 
   ngOnInit() {
     this.day_and_night_targetForm = this.fb.group({});
@@ -37,7 +38,7 @@ export class PhComponent implements OnInit, OnDestroy {
       'control': this.controlForm,
       'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(13.9)]), //TODO compare
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0.1), Validators.max(14)])
-    });
+    }, {validators: [this.twoValCompareVal.twoValCompare('alarm_min', 'alarm_max')]});
 
     this.parentForm.addControl('ph', this.phForm);
   }
