@@ -70,6 +70,7 @@
                 <ion-button slot="end" (click)="presentAddPowerOutletModal('Water Cooler', 'down_ctrl')">{{ isPowerOutletSetup('Water Cooler')? "Edit": "Setup"}}</ion-button>
               </ion-item>
             </ion-list>
+            <p *ngIf="waterTemperatureForm.errors?.noneEnabled">If not monitoring, at least one control must be enabled.</p>
           </div>
           <h3 class="h3_sensor_title">Alarm Settings</h3>
           <ion-row>

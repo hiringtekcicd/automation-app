@@ -1,3 +1,4 @@
+import { AtLeastOneEnableValidator } from './../../validators/atleastoneenable.validator';
 import { DayNightTargetValidator } from 'src/app/validators/daynighttarget.validator';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators} from '@angular/forms';
@@ -19,7 +20,8 @@ export class PhComponent implements OnInit, OnDestroy {
   
   constructor(private fb: FormBuilder,
     private twoValCompareVal : TwoValCompareValidator,
-    private dayNightTargetValidator: DayNightTargetValidator) { }
+    private dayNightTargetValidator: DayNightTargetValidator,
+    private atLeastOneEnableValidator: AtLeastOneEnableValidator) { }
 
   ngOnInit() {
     this.day_and_night_targetForm = this.fb.group({});
@@ -40,7 +42,8 @@ export class PhComponent implements OnInit, OnDestroy {
       'control': this.controlForm,
       'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(13.9)]),
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0.1), Validators.max(14)])
-    }, {validators: [this.twoValCompareVal.twoValCompare('alarm_min', 'alarm_max')]});
+    }, {validators: [this.twoValCompareVal.twoValCompare('alarm_min', 'alarm_max'),
+                     this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl')]});
 
     this.parentForm.addControl('ph', this.phForm);
   }
