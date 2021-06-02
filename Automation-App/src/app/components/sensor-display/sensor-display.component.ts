@@ -6,7 +6,6 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./sensor-display.component.scss'],
 })
 export class SensorDisplayComponent implements OnInit {
-
   @Input() sensor: SensorMonitoringWidget;
 
   @Input() 
@@ -31,6 +30,7 @@ export class SensorDisplayComponent implements OnInit {
 export interface SensorMonitoringWidget {
   name: string,
   display_name: string;
+  sensorUnit: string;
   monit_only: boolean;
   tgt: number;
   alarm_min: number;
