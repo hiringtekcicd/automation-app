@@ -11,7 +11,7 @@ import { PowerOutlet } from 'src/app/models/power-outlet.model';
 })
 export class IrrigationComponent implements OnInit {
   isOpen: boolean = false;
-
+  valueUnit = "minutes";
   @Input() parentForm: FormGroup;
   @Input() powerOutlets: PowerOutlet[];
   @Output() newPowerOutletEvent = new EventEmitter<PowerOutlet>();

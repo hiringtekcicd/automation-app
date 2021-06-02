@@ -11,7 +11,8 @@ import { PowerOutlet } from 'src/app/models/power-outlet.model';
 })
 export class ReservoirComponent implements OnInit {
   isOpen: boolean = false;
-
+  reservoirUnit = "gallons";
+  replIntervalUnit = "days";
   @Input() parentForm: FormGroup;
   @Input() powerOutlets: PowerOutlet[];
   @Output() newPowerOutletEvent = new EventEmitter<PowerOutlet>();
