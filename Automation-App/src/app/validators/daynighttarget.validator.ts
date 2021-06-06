@@ -13,11 +13,20 @@ export class DayNightTargetValidator{
             if(dnEnableVal === null) return null; //not supposed to happen
             if(dnEnableVal){
                 if(dayVal === null || nightVal === null){
+                    if(dayVal == null){
+                        form.controls[dayTarget].setErrors({'incorrect': true});
+                    }
+                    if(nightVal == null){
+                        form.controls[nightTarget].setErrors({'incorrect': true});
+                    }
                     return {"dnReq": true};
                 }
                 return null;
             }else{
-                if(targetVal === null) return {"targetReq": true};
+                if(targetVal === null) {
+                    form.controls[target].setErrors({'incorrect': true});
+                    return {"targetReq": true};
+                }
                 return null;
             }
         }
