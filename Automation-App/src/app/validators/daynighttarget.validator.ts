@@ -21,13 +21,26 @@ export class DayNightTargetValidator{
                     }
                     return {"dnReq": true};
                 }
-                return null;
+                if(form.controls[target].hasError('incorrect')){
+                    form.controls[target].setErrors(null);
+                }
+                return null;//need to clear error for other side (dn --> remove target err, vice versa)
+                /*
+                If one of these has 'incorrect' and we need to clear it, we can just set all errors to null
+                All possible errors are max, min, and this (incorrect) which only happens when it is empty
+                */
             }else{
                 if(targetVal === null) {
                     form.controls[target].setErrors({'incorrect': true});
                     return {"targetReq": true};
                 }
-                return null;
+                if(form.controls[dayTarget].hasError('incorrect')){
+                    form.controls[dayTarget].setErrors(null);
+                }
+                if(form.controls[nightTarget].hasError('incorrect')){
+                    form.controls[nightTarget].setErrors(null);
+                }
+                return null;//need to clear error for other side (dn --> remove target err, vice versa)
             }
         }
     }
