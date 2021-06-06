@@ -23,7 +23,6 @@
   
           <div *ngIf="!phForm.get('monit_only').value" [formGroup]="controlForm">
             
-            
             <div class="settings-group">
               <h3 class="h3_sensor_title">Pumps</h3>
               <ion-list>
@@ -57,7 +56,7 @@
               </ion-row>
            </div>
 
-           <div class="settings-group">
+           <div class="settings-group" [ngClass]="{'form_invalid_outline': controlForm.errors}">
               <h3 class="h3_sensor_title">Desired Value</h3>
               <ion-row>
                 <ion-item lines="none">
