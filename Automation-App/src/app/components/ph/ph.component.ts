@@ -50,6 +50,8 @@ export class PhComponent implements OnInit, OnDestroy {
 
   toggleAccordion() {
     this.isOpen = !this.isOpen;
+    console.warn("PHForm", this.phForm.valid);
+    console.warn("ctrlForm",this.controlForm.valid);
   }
 
   ngOnDestroy(){
