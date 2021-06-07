@@ -5,3 +5,7 @@
 .form_invalid_outline{
     border: 1px solid red;
 }
+
+.time_unit::after{
+    content: " s";
+}
