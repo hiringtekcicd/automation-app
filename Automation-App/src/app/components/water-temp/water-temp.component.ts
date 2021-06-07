@@ -37,7 +37,7 @@ export class WaterTempComponent implements OnInit, OnDestroy {
       'tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
       'up_ctrl': this.fb.control(false),
       'down_ctrl': this.fb.control(false)
-    }, {validators: [this.dayNightTargetValidator.dayNightTarget('tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')]});
+    }, {validators: [this.dayNightTargetValidator.dayNightTarget('tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')], updateOn: 'blur'});
 
     this.waterTemperatureForm = this.fb.group({
       'monit_only': this.fb.control(false),
@@ -45,7 +45,7 @@ export class WaterTempComponent implements OnInit, OnDestroy {
       'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)]),//TODO compare
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)])
     }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min','alarm_max'),
-                     this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl')]});
+                     this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl')], updateOn: 'blur'});
 
     this.parentForm.addControl('water_temp', this.waterTemperatureForm);
   }
