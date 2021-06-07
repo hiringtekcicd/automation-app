@@ -68,22 +68,22 @@
               <ion-row *ngIf="controlForm.get('d_n_enabled').value">
                 <ion-col class="no_padding" size="4">
                   <ion-item>
-                    <ion-label class="sensor_black_label" position="floating">Day Target ({{valueUnit}})</ion-label>
-                    <ion-input formControlName="day_tgt" type="number"></ion-input>
+                    <ion-label class="sensor_black_label" position="floating">Day Target</ion-label>
+                    <ion-input formControlName="day_tgt" type="number" class="ph_unit"></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col class="no_padding" offset="2" size="4">
                   <ion-item>
-                    <ion-label class="sensor_black_label" position="floating">Night Target ({{valueUnit}})</ion-label>
-                    <ion-input formControlName="night_tgt" type="number"></ion-input>
+                    <ion-label class="sensor_black_label" position="floating">Night Target</ion-label>
+                    <ion-input formControlName="night_tgt" type="number" class="ph_unit"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-row>
               <ion-row *ngIf="!controlForm.get('d_n_enabled').value">
                 <ion-col class="no_padding" size="12">
                   <ion-item>
-                    <ion-label class="sensor_black_label" position="floating">Target ({{valueUnit}})</ion-label>
-                    <ion-input formControlName="tgt" type="number"></ion-input>
+                    <ion-label class="sensor_black_label" position="floating">Target</ion-label>
+                    <ion-input formControlName="tgt" type="number" class="ph_unit"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-row>
@@ -96,14 +96,14 @@
             <ion-row>
               <ion-col class="no_padding" size="5">
                 <ion-item>
-                  <ion-label class="sensor_black_label" position="floating">Min ({{valueUnit}})</ion-label>
-                  <ion-input formControlName="alarm_min" type="number"></ion-input>
+                  <ion-label class="sensor_black_label" position="floating">Min</ion-label>
+                  <ion-input formControlName="alarm_min" type="number" class="ph_unit"></ion-input>
                 </ion-item>
               </ion-col>
               <ion-col class="no_padding" offset="1" size="5">
                 <ion-item>
-                  <ion-label class="sensor_black_label" position="floating">Max ({{valueUnit}})</ion-label>
-                  <ion-input formControlName="alarm_max" type="number"></ion-input>
+                  <ion-label class="sensor_black_label" position="floating">Max</ion-label>
+                  <ion-input formControlName="alarm_max" type="number" class="ph_unit"></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>

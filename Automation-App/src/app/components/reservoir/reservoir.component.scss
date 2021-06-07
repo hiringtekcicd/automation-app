@@ -1,0 +1,9 @@
+.gallon_unit::after{
+    color: gray;
+    content: "gallons";
+}
+
+.day_unit::after{
+    color: gray;
+    content: "days";
+}

@@ -1,0 +1,9 @@
+.ec_unit::after{
+    color: gray;
+    content: " μs/cm";
+}
+
+.time_unit::after{
+    content: "sec";
+    color: gray;
+}

@@ -7,5 +7,11 @@
 }
 
 .time_unit::after{
-    content: " s";
+    content: "sec";
+    color: gray;
+}
+
+.ph_unit::after{
+    content: "PH";
+    color: gray;
 }
