@@ -10,7 +10,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./ec.component.scss'],
 })
 export class EcComponent implements OnInit, OnDestroy {
-  valueUnit = "μs/cm";
   isOpen: boolean = false;
 
   @Input() parentForm: FormGroup;

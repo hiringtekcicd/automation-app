@@ -10,7 +10,6 @@ import { TwoValCompareValidator } from 'src/app/validators/twovalcompare.validat
   styleUrls: ['./ph.component.scss'],
 })
 export class PhComponent implements OnInit, OnDestroy {
-  valueUnit = "PH";
   isOpen: boolean = false;
 
   @Input() parentForm: FormGroup;

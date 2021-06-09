@@ -14,7 +14,6 @@ import { PowerOutlet } from 'src/app/models/power-outlet.model';
 })
 export class WaterTempComponent implements OnInit, OnDestroy {
   isOpen: boolean = false;
-  valueUnit = "°C";
 
   @Input() powerOutlets: PowerOutlet[];
   @Input() parentForm: FormGroup;
