@@ -104,11 +104,12 @@ export class ControlPage implements OnInit {
     console.warn(this.settingsForm);
     if(!this.settingsForm.valid){
       console.warn("onSubmit with errors");
-      this.presentFormSubmitDialog();
+      this.presentInvalidSubmitDialog();
       return;
     }
     console.warn("onSubmit valid");
-
+    this.presentValidSubmitDialog();
+    
      var changedData = [];
      for(var key in this.settingsForm.value){
        if(!_.isMatch(this.settingsForm.value[key], this.currentDevice.settings[key])) {
@@ -139,10 +140,19 @@ export class ControlPage implements OnInit {
     });
   }
 
-  async presentFormSubmitDialog(){
+  async presentInvalidSubmitDialog(){
     const alert = await this.alertController.create({
       header: "Error",
       message: "There are mistakes in the information entered. Please correct the fields marked in red.",
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  async presentValidSubmitDialog(){
+    const alert = await this.alertController.create({
+      header: "Successfully Saved",
+      message: "The information has been successfully saved.",
       buttons: ['OK']
     });
     await alert.present();
