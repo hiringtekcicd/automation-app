@@ -41,20 +41,16 @@
   
             <div class="settings-group">
               <h3 class="h3_sensor_title">Dose Settings</h3>
-              <ion-row>
-                <ion-col class="no_padding" size="5">
-                  <ion-item>
-                    <ion-label position="floating" class="sensor_black_label">Dosing Time</ion-label>
-                    <ion-input formControlName="dose_time" type="number" class="time_unit"></ion-input>
-                  </ion-item>
-                </ion-col>
-                <ion-col class="no_padding" offset="1" size="5">
-                  <ion-item>
-                    <ion-label position="floating" class="sensor_black_label">Dosing Interval</ion-label>
-                    <ion-input formControlName="dose_interv" type="number" class="time_unit"></ion-input>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
+              <ion-list>
+                <ion-item>
+                  <ion-label position="floating" class="sensor_black_label">Dosing Time</ion-label>
+                  <ion-input formControlName="dose_time" type="number" class="time_unit"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating" class="sensor_black_label">Dosing Interval</ion-label>
+                  <ion-input formControlName="dose_interv" type="number" class="time_unit"></ion-input>
+                </ion-item>
+            </ion-list>
            </div>
 
            <div class="settings-group" [ngClass]="{'form_invalid_outline': controlForm.errors}">
@@ -65,20 +61,16 @@
                   <ion-label class="sensor_black_label" >Different Targets for Day and Night</ion-label>
                 </ion-item>
               </ion-row>
-              <ion-row *ngIf="controlForm.get('d_n_enabled').value">
-                <ion-col class="no_padding" size="4">
+              <ion-list *ngIf="controlForm.get('d_n_enabled').value">
                   <ion-item>
                     <ion-label class="sensor_black_label" position="floating">Day Target</ion-label>
                     <ion-input formControlName="day_tgt" type="number" class="ph_unit"></ion-input>
                   </ion-item>
-                </ion-col>
-                <ion-col class="no_padding" offset="2" size="4">
                   <ion-item>
                     <ion-label class="sensor_black_label" position="floating">Night Target</ion-label>
                     <ion-input formControlName="night_tgt" type="number" class="ph_unit"></ion-input>
                   </ion-item>
-                </ion-col>
-              </ion-row>
+              </ion-list>
               <ion-row *ngIf="!controlForm.get('d_n_enabled').value">
                 <ion-col class="no_padding" size="12">
                   <ion-item>
@@ -93,20 +85,16 @@
           </div>
           <div class="settings-group">
             <h3 class="h3_sensor_title">Alarm Settings</h3>
-            <ion-row>
-              <ion-col class="no_padding" size="5">
+            <ion-list>
                 <ion-item>
                   <ion-label class="sensor_black_label" position="floating">Min</ion-label>
                   <ion-input formControlName="alarm_min" type="number" class="ph_unit"></ion-input>
                 </ion-item>
-              </ion-col>
-              <ion-col class="no_padding" offset="1" size="5">
                 <ion-item>
                   <ion-label class="sensor_black_label" position="floating">Max</ion-label>
                   <ion-input formControlName="alarm_max" type="number" class="ph_unit"></ion-input>
                 </ion-item>
-              </ion-col>
-            </ion-row>
+            </ion-list>
             <p *ngIf="phForm.errors?.compareError">Alarm min must be lower than Alarm max.</p>
           </div>
         </div>
