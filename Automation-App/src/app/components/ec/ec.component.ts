@@ -37,16 +37,16 @@ export class EcComponent implements OnInit, OnDestroy {
         'pump_4': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(1000)]),
         'pump_5': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(1000)])
       })
-    }, {validators: [this.dayNightTargetValidator.dayNightTarget('tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')],
-        updateOn: 'blur'});
-
+    });
+    
     this.ecForm = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
       'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(9999)]),
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(10000)])
     }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min', 'alarm_max'),
-                     this.ecPumpValidator.ecPumpValidator('monit_only', 'control', 'pumps')],
+                     this.ecPumpValidator.ecPumpValidator('monit_only', 'control', 'pumps'),
+                     this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')],
                      updateOn: 'blur'});
 
     this.parentForm.addControl('ec', this.ecForm);

@@ -32,19 +32,21 @@ export class WaterTempComponent implements OnInit, OnDestroy {
     this.controlForm = this.fb.group({
       'd_n_enabled': this.fb.control(true),
       'day_tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
-      'night_tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]), //TODO conditional
+      'night_tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
       'tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
       'up_ctrl': this.fb.control(false),
       'down_ctrl': this.fb.control(false)
-    }, {validators: [this.dayNightTargetValidator.dayNightTarget('tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')], updateOn: 'blur'});
+    });
 
     this.waterTemperatureForm = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
-      'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)]),//TODO compare
+      'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)]),
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)])
     }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min','alarm_max'),
-                     this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl')], updateOn: 'blur'});
+                     this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl'),
+                     this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')],
+                     updateOn: 'blur'});
 
     this.parentForm.addControl('water_temp', this.waterTemperatureForm);
   }
