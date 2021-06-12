@@ -46,17 +46,26 @@ export class PhComponent implements OnInit, OnDestroy {
                      this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')],
                      updateOn: 'blur'});
 
-    this.parentForm.addControl('ph', this.phForm);
+    this.parentForm.addControl('ph', this.phForm);    
+    this.manualCheckValidity(); //should take care of any errors on init
   }
 
   toggleAccordion() {
     this.isOpen = !this.isOpen;
-    console.warn("PHForm", this.phForm.valid);
-    console.warn("ctrlForm",this.controlForm.valid);
+    this.manualCheckValidity();
   }
 
   ngOnDestroy(){
     this.parentForm.removeControl('ph');
+  }
+
+  manualCheckValidity(){
+    for (let key in this.controlForm.controls) {
+      this.controlForm.controls[key].updateValueAndValidity();
+    }
+    for (let key in this.phForm.controls) {
+      this.phForm.controls[key].updateValueAndValidity();
+    }
   }
 
 }

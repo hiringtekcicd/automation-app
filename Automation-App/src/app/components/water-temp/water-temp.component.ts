@@ -49,10 +49,12 @@ export class WaterTempComponent implements OnInit, OnDestroy {
                      updateOn: 'blur'});
 
     this.parentForm.addControl('water_temp', this.waterTemperatureForm);
+    this.manualCheckValidity();
   }
 
   toggleAccordion() {
     this.isOpen = !this.isOpen;
+    this.manualCheckValidity();
   }
 
   ngOnDestroy() {
@@ -78,6 +80,15 @@ export class WaterTempComponent implements OnInit, OnDestroy {
       if(!isPowerOutletConfigured) {
         this.presentAddPowerOutletModal(name, formKey);
       }
+  }
+
+  manualCheckValidity(){
+    for (let key in this.controlForm.controls) {
+      this.controlForm.controls[key].updateValueAndValidity();
+    }
+    for (let key in this.waterTemperatureForm.controls) {
+      this.waterTemperatureForm.controls[key].updateValueAndValidity();
+    }
   }
 
   async presentAddPowerOutletModal(powerOutletName: string, formKey: string) {

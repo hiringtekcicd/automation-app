@@ -8,7 +8,6 @@ export class DayNightTargetValidator{
         return (form: FormGroup) => {
             const monitVal: boolean = form.get(monitOnly).value;
             const subFormVal = form.get(subForm) as FormGroup;
-            console.warn(form);
             if(monitVal){//monit only, don't care
                 subFormVal.controls[target].setErrors(null);
                 subFormVal.controls[dayTarget].setErrors(null);

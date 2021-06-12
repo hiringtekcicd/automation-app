@@ -50,13 +50,24 @@ export class EcComponent implements OnInit, OnDestroy {
                      updateOn: 'blur'});
 
     this.parentForm.addControl('ec', this.ecForm);
+    this.manualCheckValidity();
   }
 
   toggleAccordion() {
     this.isOpen = !this.isOpen;
+    this.manualCheckValidity();
   }
 
   ngOnDestroy(){
     this.parentForm.removeControl('ec');
+  }
+
+  manualCheckValidity(){
+    for (let key in this.controlForm.controls) {
+      this.controlForm.controls[key].updateValueAndValidity();
+    }
+    for (let key in this.ecForm.controls) {
+      this.ecForm.controls[key].updateValueAndValidity();
+    }
   }
 }

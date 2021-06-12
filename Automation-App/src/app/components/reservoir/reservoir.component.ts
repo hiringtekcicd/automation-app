@@ -26,10 +26,12 @@ export class ReservoirComponent implements OnInit {
       'water_replacement_interval': this.fb.control(null, [Validators.min(0.5), Validators.max(1000)]) //TODO conditional
     }, {updateOn: 'blur'});
     this.parentForm.addControl('reservoir', this.reservoirForm);
+    this.manualCheckValidity();
   }
 
   toggleAccordion() {
     this.isOpen = !this.isOpen;
+    this.manualCheckValidity();
   }
 
   ngOnDestroy(){
@@ -54,6 +56,12 @@ export class ReservoirComponent implements OnInit {
     });
     if(!isPowerOutletConfigured) {
       this.presentAddPowerOutletModal(name);
+    }
+  }
+
+  manualCheckValidity(){
+    for(let key in this.reservoirForm.controls){
+      this.reservoirForm.controls[key].updateValueAndValidity();
     }
   }
 

@@ -26,10 +26,12 @@ export class IrrigationComponent implements OnInit {
     }, {updateOn: 'blur'});
 
     this.parentForm.addControl('irrigation', this.irrigationForm);
+    this.manualCheckValidity();
   }
 
   toggleAccordion() {
     this.isOpen = !this.isOpen;
+    this.manualCheckValidity();
   }
 
   ngOnDestroy(){
@@ -55,6 +57,12 @@ export class IrrigationComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  manualCheckValidity(){
+    for(let key in this.irrigationForm.controls){
+      this.irrigationForm.controls[key].updateValueAndValidity();
+    }
   }
 
   async presentAddPowerOutletModal(powerOutletName: string) {
