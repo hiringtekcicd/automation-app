@@ -32,10 +32,16 @@
                   <ion-label position="floating" class="sensor_black_label">Dosing Time</ion-label>
                   <ion-input formControlName="dose_time" type="number" class="time_unit"></ion-input>
                 </ion-item>
+                <p *ngIf="controlForm.get('dose_time').errors?.required" class="error_msg">This is a required value.</p>
+                <p *ngIf="controlForm.get('dose_time').errors?.min" class="error_msg">This value must be at least {{controlForm.get('dose_time').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('dose_time').errors?.max" class="error_msg">This value must be at most {{controlForm.get('dose_time').errors.max.max}}.</p>
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Dosing Interval</ion-label>
                   <ion-input formControlName="dose_interv" type="number" class="time_unit"></ion-input>
                 </ion-item>
+                <p *ngIf="controlForm.get('dose_interv').errors?.required" class="error_msg">This is a required value.</p>
+                <p *ngIf="controlForm.get('dose_interv').errors?.min" class="error_msg">This value must be at least {{controlForm.get('dose_interv').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('dose_interv').errors?.max" class="error_msg">This value must be at most {{controlForm.get('dose_interv').errors.max.max}}.</p>
             </ion-list>
             
             <h3 class="h3_sensor_title">Pumps</h3>
@@ -45,28 +51,40 @@
                   <ion-label position="floating" class="sensor_black_label">Pump 1 Ratio</ion-label>
                   <ion-input formControlName="pump_1" type="number"></ion-input>
                 </ion-item>
+                <p *ngIf="controlForm.get('pumps').get('pump_1')?.errors?.min" class="error_msg">This value must be at least {{controlForm.get('pumps').get('pump_1').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('pumps').get('pump_1')?.errors?.max" class="error_msg">This value must be at most {{controlForm.get('pumps').get('pump_1').errors.max.max}}.</p>
+            
   
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Pump 2 Ratio</ion-label>
                   <ion-input formControlName="pump_2" type="number"></ion-input>
                 </ion-item>
-  
+                <p *ngIf="controlForm.get('pumps').get('pump_2')?.errors?.min" class="error_msg">This value must be at least {{controlForm.get('pumps').get('pump_2').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('pumps').get('pump_2')?.errors?.max" class="error_msg">This value must be at most {{controlForm.get('pumps').get('pump_2').errors.max.max}}.</p>
+            
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Pump 3 Ratio</ion-label>
                   <ion-input formControlName="pump_3" type="number"></ion-input>
                 </ion-item>
-  
+                <p *ngIf="controlForm.get('pumps').get('pump_3')?.errors?.min" class="error_msg">This value must be at least {{controlForm.get('pumps').get('pump_3').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('pumps').get('pump_3')?.errors?.max" class="error_msg">This value must be at most {{controlForm.get('pumps').get('pump_3').errors.max.max}}.</p>
+            
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Pump 4 Ratio</ion-label>
                   <ion-input formControlName="pump_4" type="number"></ion-input>
                 </ion-item>
-  
+                <p *ngIf="controlForm.get('pumps').get('pump_4')?.errors?.min" class="error_msg">This value must be at least {{controlForm.get('pumps').get('pump_4').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('pumps').get('pump_4')?.errors?.max" class="error_msg">This value must be at most {{controlForm.get('pumps').get('pump_4').errors.max.max}}.</p>
+            
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Pump 5 Ratio</ion-label>
                   <ion-input formControlName="pump_5" type="number"></ion-input>
                 </ion-item>
+                <p *ngIf="controlForm.get('pumps').get('pump_5')?.errors?.min" class="error_msg">This value must be at least {{controlForm.get('pumps').get('pump_5').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('pumps').get('pump_5')?.errors?.max" class="error_msg">This value must be at most {{controlForm.get('pumps').get('pump_5').errors.max.max}}.</p>
+            
               </ion-list>
-              <p *ngIf="ecForm.errors?.ecPumpZero">At least one pump must have a nonzero ratio.</p>
+              <p *ngIf="ecForm.errors?.ecPumpZero" class="error_msg">At least one pump must have a nonzero ratio.</p>
             </div>
 
             <h3 class="h3_sensor_title">Desired Value</h3>
@@ -81,10 +99,18 @@
                   <ion-label position="floating" class="sensor_black_label">Day Target Value</ion-label>
                   <ion-input formControlName="day_tgt" type="number" class="ec_unit"></ion-input>
                 </ion-item>
+                <p *ngIf="controlForm.get('day_tgt').errors?.incorrect" class="error_msg">This is a required value.</p>
+                <p *ngIf="controlForm.get('day_tgt').errors?.min" class="error_msg">This value must be at least {{controlForm.get('day_tgt').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('day_tgt').errors?.max" class="error_msg">This value must be at most {{controlForm.get('day_tgt').errors.max.max}}.</p>
+
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Night Target Value</ion-label>
                   <ion-input formControlName="night_tgt" type="number" class="ec_unit"></ion-input>
                 </ion-item>
+                <p *ngIf="controlForm.get('night_tgt').errors?.incorrect" class="error_msg">This is a required value.</p>
+                <p *ngIf="controlForm.get('night_tgt').errors?.min" class="error_msg">This value must be at least {{controlForm.get('night_tgt').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('night_tgt').errors?.max" class="error_msg">This value must be at most {{controlForm.get('night_tgt').errors.max.max}}.</p>
+
             </ion-list>
             <ion-row *ngIf="!controlForm.get('d_n_enabled').value">
               <ion-col class="no_padding" size="12">
@@ -92,10 +118,12 @@
                   <ion-label position="floating" class="sensor_black_label">Target Value</ion-label>
                   <ion-input formControlName="tgt" type="number" class="ec_unit"></ion-input>
                 </ion-item>
+                <p *ngIf="controlForm.get('tgt').errors?.incorrect" class="error_msg">This is a required value.</p>
+                <p *ngIf="controlForm.get('tgt').errors?.min" class="error_msg">This value must be at least {{controlForm.get('tgt').errors.min.min}}.</p>
+                <p *ngIf="controlForm.get('tgt').errors?.max" class="error_msg">This value must be at most {{controlForm.get('tgt').errors.max.max}}.</p>
+
               </ion-col>
             </ion-row>
-            <p *ngIf="controlForm.errors?.targetReq">Target cannot be empty.</p>
-            <p *ngIf="controlForm.errors?.dnReq">Day/Night targets cannot be empty.</p>
           </div>
           
           <h3 class="h3_sensor_title">Alarm Settings</h3>
@@ -104,12 +132,20 @@
                   <ion-label position="floating" class="sensor_black_label">Min</ion-label>
                   <ion-input formControlName="alarm_min" type="number" class="ec_unit"></ion-input>
                 </ion-item>
+                <p *ngIf="ecForm.get('alarm_min').errors?.required" class="error_msg">This is a required value.</p>
+                <p *ngIf="ecForm.get('alarm_min').errors?.min" class="error_msg">This value must be at least {{ecForm.get('alarm_min').errors.min.min}}.</p>
+                <p *ngIf="ecForm.get('alarm_min').errors?.max" class="error_msg">This value must be at most {{ecForm.get('alarm_min').errors.max.max}}.</p>
+
                 <ion-item>
                   <ion-label position="floating" class="sensor_black_label">Max</ion-label>
                   <ion-input formControlName="alarm_max" type="number" class="ec_unit"></ion-input>
                 </ion-item>
+                <p *ngIf="ecForm.get('alarm_max').errors?.required" class="error_msg">This is a required value.</p>
+                <p *ngIf="ecForm.get('alarm_max').errors?.min" class="error_msg">This value must be at least {{ecForm.get('alarm_max').errors.min.min}}.</p>
+                <p *ngIf="ecForm.get('alarm_max').errors?.max" class="error_msg">This value must be at most {{ecForm.get('alarm_max').errors.max.max}}.</p>
+
             </ion-list>
-            <p *ngIf="ecForm.errors?.compareError">Alarm min must be lower than Alarm max.</p>
+            <p *ngIf="ecForm.errors?.compareError" class="error_msg">Alarm min must be lower than Alarm max.</p>
         </div>
       </form>
     </ion-grid>
