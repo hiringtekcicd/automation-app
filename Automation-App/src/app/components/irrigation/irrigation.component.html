@@ -30,6 +30,10 @@
                 <ion-input type="number" placeholder="On Interval" formControlName="on_interval" class="minute_unit"></ion-input>
               </ion-item>
             </ion-col>
+            <p *ngIf="irrigationForm.get('on_interval').errors?.required" class="error_msg">This is a required value.</p>
+            <p *ngIf="irrigationForm.get('on_interval').errors?.min" class="error_msg">This value must be at least {{irrigationForm.get('on_interval').errors.min.min}}.</p>
+            <p *ngIf="irrigationForm.get('on_interval').errors?.max" class="error_msg">This value must be at most {{irrigationForm.get('on_interval').errors.max.max}}.</p>
+
           </ion-row>
           <ion-row> 
             <ion-col class="no_padding" size="12">
@@ -38,6 +42,10 @@
                 <ion-input type="number" placeholder="Off Interval" formControlName="off_interval" class="minute_unit"></ion-input>
               </ion-item>
             </ion-col>
+            <p *ngIf="irrigationForm.get('off_interval').errors?.required" class="error_msg">This is a required value.</p>
+            <p *ngIf="irrigationForm.get('off_interval').errors?.min" class="error_msg">This value must be at least {{irrigationForm.get('off_interval').errors.min.min}}.</p>
+            <p *ngIf="irrigationForm.get('off_interval').errors?.max" class="error_msg">This value must be at most {{irrigationForm.get('off_interval').errors.max.max}}.</p>
+
           </ion-row>         
         </div>
       </form>

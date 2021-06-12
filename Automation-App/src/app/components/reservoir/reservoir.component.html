@@ -24,6 +24,10 @@
               <ion-label class="sensor_black_label" position="floating">Reservoir Size</ion-label>
               <ion-input formControlName="reservoir_size" type="number" class="gallon_unit"></ion-input>
             </ion-item>
+            <p *ngIf="reservoirForm.get('reservoir_size').errors?.required" class="error_msg">This is a required value.</p>
+            <p *ngIf="reservoirForm.get('reservoir_size').errors?.min" class="error_msg">This value must be at least {{reservoirForm.get('reservoir_size').errors.min.min}}.</p>
+            <p *ngIf="reservoirForm.get('reservoir_size').errors?.max" class="error_msg">This value must be at most {{reservoirForm.get('reservoir_size').errors.max.max}}.</p>
+
           </ion-col>
         </ion-row>
         <ion-row>
@@ -32,6 +36,8 @@
               <ion-label class="sensor_black_label" position="floating">Replacement Interval</ion-label>
               <ion-input formControlName="water_replacement_interval" type="number" class="day_unit"></ion-input>
             </ion-item>
+            <p *ngIf="reservoirForm.get('water_replacement_interval').errors?.min" class="error_msg">This value must be at least {{reservoirForm.get('water_replacement_interval').errors.min.min}}.</p>
+            <p *ngIf="reservoirForm.get('water_replacement_interval').errors?.max" class="error_msg">This value must be at most {{reservoirForm.get('water_replacement_interval').errors.max.max}}.</p>
           </ion-col>
         </ion-row>
         <h3 class="h3_sensor_title">Power Outlets</h3>
