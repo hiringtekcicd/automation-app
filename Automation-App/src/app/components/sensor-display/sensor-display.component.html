@@ -1,6 +1,7 @@
 <ion-card class="dashboard-card">
   <ion-card-content>
     <ion-grid class="no_padding">
+      <!--
       <ion-row>
         <ion-col class="no_padding" size="6">
           <h3 class="header-title" lines="none">{{ sensor.display_name }}</h3>
@@ -23,6 +24,16 @@
               <ion-label class="value">{{ sensor.alarm_min + ' - ' + sensor.alarm_max }} {{sensor.sensorUnit}}</ion-label>
             </div>
         </ion-col>
+      </ion-row>-->
+      <ion-row>
+        <ion-icon name="locate-outline"></ion-icon>
+        <h3 class="header-title" lines="none">{{ sensor.display_name }}</h3>
+        <h3 class="justify_right header-title">{{ currentVal }}{{sensor.sensorUnit}}</h3>
+      </ion-row>
+      <ion-row>
+        <ion-icon name="locate-outline"></ion-icon>
+        <h3 class="header-title" lines="none">Target Value</h3>
+        <h3 class="justify_right header-title">{{ sensor.tgt }}{{sensor.sensorUnit}}</h3>
       </ion-row>
     </ion-grid>
   </ion-card-content>
