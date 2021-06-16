@@ -10,12 +10,27 @@ h1 {
     font-size: 300%;
 }
 
+h2{
+    font-weight: 450;
+    color: black;
+}
+
 .header-title {
     font-weight: 700;
     color: black;
-    font-size: 150%;
+    font-size: 120%;
     margin-left: 10px;
     margin-bottom: 0px;
+    display: inline;
+}
+
+.header-unit {
+    font-weight: 700;
+    color: black;
+    font-size: 120%;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    display: inline;
 }
 
 ion-card-header {
