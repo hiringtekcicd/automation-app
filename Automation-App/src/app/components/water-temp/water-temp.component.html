@@ -68,13 +68,13 @@
               <ion-item lines="none">
                 <ion-toggle slot="start" formControlName="up_ctrl" (click)="onOutletToggleChange('Water Heater', 'up_ctrl')"></ion-toggle>
                 <ion-icon name="flame-outline"></ion-icon>
-                <ion-label class="sensor_black_label">Heater</ion-label>
+                <ion-label class="sensor_black_label sw-prevent-invalid">Heater</ion-label>
                 <ion-button slot="end" (click)="presentAddPowerOutletModal('Water Heater', 'up_ctrl')">{{ isPowerOutletSetup('Water Heater')? "Edit": "Setup"}}</ion-button>
               </ion-item>
               <ion-item lines="none">
                 <ion-toggle slot="start" formControlName="down_ctrl" (click)="onOutletToggleChange('Water Cooler', 'down_ctrl')"></ion-toggle>
                 <ion-icon name="snow-outline"></ion-icon>
-                <ion-label class="sensor_black_label">Cooler</ion-label>
+                <ion-label class="sensor_black_label sw-prevent-invalid">Cooler</ion-label>
                 <ion-button slot="end" (click)="presentAddPowerOutletModal('Water Cooler', 'down_ctrl')">{{ isPowerOutletSetup('Water Cooler')? "Edit": "Setup"}}</ion-button>
               </ion-item>
             </ion-list>

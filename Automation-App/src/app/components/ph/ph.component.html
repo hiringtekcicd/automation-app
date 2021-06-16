@@ -29,11 +29,11 @@
               <ion-list>
                 <ion-item>
                   <ion-toggle slot="start" formControlName="up_ctrl"></ion-toggle>
-                  <ion-label class="sensor_black_label">pH Up</ion-label>
+                  <ion-label class="sensor_black_label sw-prevent-invalid">pH Up</ion-label>
                 </ion-item>
                 <ion-item>
                   <ion-toggle slot="start" formControlName="down_ctrl"></ion-toggle>
-                  <ion-label class="sensor_black_label">pH Down</ion-label>
+                  <ion-label class="sensor_black_label sw-prevent-invalid">pH Down</ion-label>
                 </ion-item>
               </ion-list>
               <p *ngIf="phForm.errors?.noneEnabled" class="error_msg">If not monitoring, at least one control must be enabled.</p>
