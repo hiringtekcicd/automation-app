@@ -5,9 +5,9 @@
       <ion-row>
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
-          <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
+          <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>          
+          <ion-icon slot="start" name="alert-circle-outline" class="form-warning-icon" color="danger" *ngIf="!irrigationForm.valid"></ion-icon>
           <h3 fill="clear" class="color h3_sensor_title">Irrigation</h3>
-          <ion-icon slot="end" name="alert-circle-outline" color="danger" *ngIf="!irrigationForm.valid"></ion-icon>
         </ion-item>
       </ion-row>
 
