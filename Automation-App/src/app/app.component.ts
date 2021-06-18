@@ -3,11 +3,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MenuController, ModalController, Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import {AuthService} from './auth/auth.service';
+import { AuthService } from './auth/auth.service';
 import { Router } from '@angular/router';
 import { VariableManagementService } from './Services/variable-management.service';
 import { IdentifyDevicePage } from './add-device/identify-device/identify-device.page';
 import { Subscription } from 'rxjs';
+import { AddFertigationSystemPage } from './add-fertigation-system/add-fertigation-system.page';
+import { AddClimateControllerPage } from './add-climate-controller/add-climate-controller.page';
 
 @Component({
   selector: 'app-root',
@@ -61,8 +63,76 @@ export class AppComponent implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: IdentifyDevicePage
     });
+
+    modal.onWillDismiss().then((resData) => {
+      if (resData.data) {
+        switch(resData.data.type) {
+          case "fertigation-system":
+            console.log("Fertigation System add");
+            this.presentAddFertigationSystemModal(resData.data.topicId);
+            break;
+          case "climate-controller":
+            console.log("climatte Controller add");
+            this.presentAddClimateControllerModal(resData.data.topicId);
+            break;
+        }
+        
+      }
+    });
     return await modal.present();
   }
+
+  async presentAddFertigationSystemModal(topicId: string) {
+    const modal = await this.modalController.create({
+      component: AddFertigationSystemPage,
+      componentProps: {
+        'topicId': topicId
+      }
+    });
+
+    modal.onWillDismiss().then((resData) => {
+      if (resData.data) {
+        this.router.navigate(['/dashboard', 'monitoring'], { queryParams: { deviceType: "fertigation-system", deviceIndex: resData.data } })
+      }
+    });
+  
+    return await modal.present();
+  }
+
+  async presentAddClimateControllerModal(topicId: string) {
+    const modal = await this.modalController.create({
+      component: AddClimateControllerPage,
+      componentProps: {
+        'topicId': topicId
+      }
+    });
+
+    modal.onWillDismiss().then((resData) => {
+      if (resData.data) {
+        this.router.navigate(['/dashboard', 'monitoring'], { queryParams: { deviceType: "climate-controller", deviceIndex: resData.data } })
+      }
+    });
+    return await modal.present();
+  }
+
+
+
+  
+  // async presentAddPowerOutletModal(powerOutletName: string) {
+  //   const modal = await this.modalController.create({
+  //     component: AddPowerOutletPage,
+  //     componentProps: {
+  //       'powerOutletName': powerOutletName
+  //     }
+  //   });
+
+  //   modal.onWillDismiss().then((returnValue) => {
+  //     if(returnValue.data && !this.isPowerOutletSetup(powerOutletName)) {
+  //       this.newPowerOutletEvent.emit(returnValue.data);
+  //     }
+  //   });
+  //   return await modal.present();
+  // }
 
   initializeApp() {
     this.platform.ready().then(() => {

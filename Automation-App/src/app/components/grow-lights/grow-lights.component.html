@@ -41,7 +41,7 @@
                   <ion-toggle slot="start" formControlName="is_control" (click)="onOutletToggleChange('Grow Light ' + (i + 1), i)"></ion-toggle>
                   <ion-icon name="sunny-outline"></ion-icon>
                   <ion-label>Grow Light {{ (i + 1) }}</ion-label>
-                  <ion-button slot="end" (click)="presentAddPowerOutletModal('Grow Light ' + (i + 1))">{{ isPowerOutletSetup('Grow Light ' + (i + 1))? "Edit": "Setup"}}</ion-button>
+                  <ion-button slot="end" (click)="presentAddPowerOutletModal('Grow Light ' + (i + 1), i)">{{ isPowerOutletSetup('Grow Light ' + (i + 1))? "Edit": "Setup"}}</ion-button>
                 </ion-item>
               </div>
             </ion-list>

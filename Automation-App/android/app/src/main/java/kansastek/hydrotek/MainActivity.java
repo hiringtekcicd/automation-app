@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package kansastek.hydrotek;
 
 import android.os.Bundle;
 

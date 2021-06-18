@@ -86,6 +86,7 @@ export class GrowLightsComponent implements OnInit {
   }
 
   onOutletToggleChange(name: string, index: number) {
+    console.log(index);
     let isPowerOutletConfigured;
     this.powerOutlets.forEach(powerOutlet => {
       if(powerOutlet.name == name) {
@@ -111,6 +112,7 @@ export class GrowLightsComponent implements OnInit {
           this.newPowerOutletEvent.emit(returnValue.data);
         }
       } else {
+        console.log(index);
         this.growLightsForm.get('power_outlets')['controls'][index].patchValue( { is_control: false } );
       }
     });

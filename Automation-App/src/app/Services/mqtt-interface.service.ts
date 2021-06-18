@@ -97,20 +97,39 @@ export class MqttInterfaceService {
   };
 
   public connectToBroker(topic: string[]) {
+    console.log(topic);
+    console.log(this.client);
     return this.client.connect(
       {
         onSuccess: this._onConnect.bind(this, topic),
         onFailure: this._onConnectionFailure.bind(this)
     });
-  } 
+  }
+  
+  public async publishMultipleMessages(messagesArray: {topic: string, payload: string, qos?: number, retained?: boolean}[]) {
+    var i = 0;
+    while(i < messagesArray.length) {
+      await this.publishMessage(messagesArray[i].topic, messagesArray[i].payload, messagesArray[i].qos, messagesArray[i].retained).then(() => {
+        i++;
+      }).catch((error) => {
+        throw { index: i, error: error };
+      });
+      console.log(i);
+    }
+    return i;
+  }
 
   public publishMessage(topic: string, payload: string, qos?: number, retained?: boolean): Promise<any> {
       console.log('msg, topic', topic, payload);
-      var message = new Paho.Message(payload);
-      message.topic = topic;
-      qos ? message.qos = qos : 1;
-      qos ? message.retained = retained : false;
-      this.client.publish(message);
+
+      let publishPromise = new Promise(() => {
+        var message = new Paho.Message(payload);
+        message.topic = topic;
+        qos ? message.qos = qos : 1;
+        qos ? message.retained = retained : false;
+        this.client.publish(message);
+      });
+      
       let messageConfirmationPromise = new Promise<void>((resolve, reject) => {
         this.messageConfirmation.pipe(filter((message) => message == payload), take(1)).subscribe(() => {
           console.log("resolved");
@@ -123,12 +142,11 @@ export class MqttInterfaceService {
 
       let timeOutPromise = new Promise((resolve, reject) => {
         setTimeout(() => {
-          console.log("timeout");
-          reject();
+          reject("timeout");
         }, 10000);
       })
 
-      return Promise.race([messageConfirmationPromise, timeOutPromise]);
+      return Promise.race([messageConfirmationPromise, timeOutPromise, publishPromise]);
   };
 
   public onMessageDelivered(ResponseObject) {

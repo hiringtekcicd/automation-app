@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
-// import { HomePage } from './home/home.page';
 
 const routes: Routes = [
   {
@@ -26,16 +25,6 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule),
-    canLoad: [AuthGuard]
-  },
-  {
-    path: 'add-growroom',
-    loadChildren: () => import('./add-growroom/add-growroom.module').then( m => m.AddGrowroomPageModule),
-    canLoad: [AuthGuard]
-  },
-  {
-    path: 'new-fertigation-system',
-    loadChildren: () => import('./add-system/add-system.module').then( m => m.AddSystemPageModule),
     canLoad: [AuthGuard]
   },
   {

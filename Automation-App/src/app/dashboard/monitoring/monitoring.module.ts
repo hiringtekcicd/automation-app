@@ -8,8 +8,8 @@ import { MonitoringPageRoutingModule } from './monitoring-routing.module';
 
 import { MonitoringPage } from './monitoring.page';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { AddGrowroomPageModule } from 'src/app/add-growroom/add-growroom.module';
-import { AddSystemPageModule } from 'src/app/add-system/add-system.module';
+import { AddClimateControllerPageModule } from 'src/app/add-climate-controller/add-climate-controller.module';
+import { AddFertigationSystemPageModule } from 'src/app/add-fertigation-system/add-fertigation-system.module';
 import { AddSensorPageModule } from 'src/app/add-sensor/add-sensor.module';
 import { CreateClusterPageModule } from 'src/app/create-cluster/create-cluster.module';
 import { IdentifyDevicePageModule } from 'src/app/add-device/identify-device/identify-device.module';
@@ -21,8 +21,8 @@ import { IdentifyDevicePageModule } from 'src/app/add-device/identify-device/ide
     IonicModule,
     MonitoringPageRoutingModule,
     ComponentsModule,
-    AddGrowroomPageModule,
-    AddSystemPageModule,
+    AddClimateControllerPageModule,
+    AddFertigationSystemPageModule,
     AddSensorPageModule,
     CreateClusterPageModule,
     IdentifyDevicePageModule

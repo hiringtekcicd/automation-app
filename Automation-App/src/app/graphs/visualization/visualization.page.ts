@@ -8,8 +8,8 @@ import { Label } from 'ng2-charts';
 import { ChartsModule } from 'ng2-charts';
 import * as moment from 'moment';
 import { ModalController } from '@ionic/angular';
-import { AddSystemPage } from 'src/app/add-system/add-system.page';
-import { AddGrowroomPage } from 'src/app/add-growroom/add-growroom.page';
+import { AddFertigationSystemPage } from 'src/app/add-fertigation-system/add-fertigation-system.page';
+import { AddClimateControllerPage } from 'src/app/add-climate-controller/add-climate-controller.page';
 import { skipWhile, filter } from 'rxjs/operators';
 
 @Component({
@@ -335,14 +335,14 @@ chartOptions= {
 
 async presentGrowRoomModal() {
   const modal = await this.modalController.create({
-    component: AddGrowroomPage,
+    component: AddClimateControllerPage,
   });
   return await modal.present();
 }
 
 async presentSystemModal() {
   const modal = await this.modalController.create({
-    component: AddSystemPage,
+    component: AddFertigationSystemPage,
   });
   return await modal.present();
 }

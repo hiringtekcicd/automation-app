@@ -8,8 +8,8 @@ import { VisualizationPageRoutingModule } from './visualization-routing.module';
 
 import { VisualizationPage } from './visualization.page';
 import {ChartsModule} from 'ng2-charts'
-import { AddGrowroomPageModule } from 'src/app/add-growroom/add-growroom.module';
-import { AddSystemPageModule } from 'src/app/add-system/add-system.module';
+import { AddClimateControllerPageModule } from 'src/app/add-climate-controller/add-climate-controller.module';
+import { AddFertigationSystemPageModule } from 'src/app/add-fertigation-system/add-fertigation-system.module';
  
 @NgModule({
   imports: [
@@ -18,8 +18,8 @@ import { AddSystemPageModule } from 'src/app/add-system/add-system.module';
     IonicModule,
     VisualizationPageRoutingModule,
     ChartsModule,
-    AddGrowroomPageModule,
-    AddSystemPageModule
+    AddClimateControllerPageModule,
+    AddFertigationSystemPageModule
   ],
   declarations: [VisualizationPage]
 })

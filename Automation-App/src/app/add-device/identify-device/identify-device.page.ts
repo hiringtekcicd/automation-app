@@ -3,8 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
-import { take, timeout } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
+import { wifiConnectStatus } from 'src/app/Services/topicKeys';
+import { VariableManagementService } from 'src/app/Services/variable-management.service';
 
 @Component({
   selector: 'app-identify-device',
@@ -13,16 +15,20 @@ import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
 })
 export class IdentifyDevicePage implements OnInit {
 
-  private deviceIP: string = "192.168.4.1";
+  private readonly deviceIP: string = "192.168.4.1";
+  private readonly deviceIDLength = 5;
+  private readonly charCombinations: string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
   isLoading: boolean = false;
   isConnected: boolean = false;
   deviceType: string;
+  uniqueDeviceId: string;
 
   status: string;
   isWifiSettingsTransferred: boolean = false;
   wifiSettingsForm: FormGroup = new FormGroup({});
   
-  constructor(private modalController: ModalController, private http: HttpClient, private alertController: AlertController, private router: Router, private fb: FormBuilder, private mqttInterfaceService: MqttInterfaceService) { 
+  constructor(private modalController: ModalController, private http: HttpClient, private alertController: AlertController, private router: Router, private fb: FormBuilder, private mqttInterfaceService: MqttInterfaceService, private varmanService: VariableManagementService) { 
     this.wifiSettingsForm = this.fb.group({
       'wifi_ssid': this.fb.control(null),
       'wifi_password': this.fb.control(null)
@@ -30,7 +36,8 @@ export class IdentifyDevicePage implements OnInit {
   }
 
   ngOnInit() {
-  }
+    console.log(this.generateUniqueDeviceId(["a23b5", "D1000", "c5hd6"]));
+   }
 
   dismiss(){
     this.modalController.dismiss();
@@ -51,20 +58,12 @@ export class IdentifyDevicePage implements OnInit {
     });
   }
 
-  async presentDeviceConnectionError() {
-    const alert = await this.alertController.create({
-      header: 'Error',
-      message: 'Unable to connect to device',
-      buttons: ['OK']
-    });
-    await alert.present();
-  }
-
   onWiFiSettingsSubmit() {
+    this.uniqueDeviceId = this.generateUniqueDeviceId(this.varmanService.getDeviceTopicIds());
     this.http.post("http://" + this.deviceIP + "/setup", JSON.stringify({
       ssid: this.wifiSettingsForm.value.wifi_ssid,
       password: this.wifiSettingsForm.value.wifi_password,
-      device_id: "D1000",
+      device_id: this.uniqueDeviceId,
       time: "5:50",
       broker_ip: this.mqttInterfaceService.client.host
     })).subscribe(() => {
@@ -82,37 +81,71 @@ export class IdentifyDevicePage implements OnInit {
     await alert.present();
   }
 
+  async presentDeviceNotRecognizedError() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Device not recognized',
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
   onWiFiChangeClick() {
-    this.mqttInterfaceService.connectToBroker(this.mqttInterfaceService.client);
-    this.mqttInterfaceService.subscribeToTopic("D1000" + "/wificonnectstatus");
+    this.mqttInterfaceService.connectToBroker([wifiConnectStatus + "/" + this.uniqueDeviceId]);
     this.mqttInterfaceService.wifiConnectStatus.pipe(take(1)).subscribe(resData => {
       console.log("here");
       if(resData == true) {
         console.log("true");
         switch(this.deviceType) {
           case "Hydrotek Fertigation System":
-            this.router.navigate(['/add-system']);
-            this.modalController.dismiss();
+            this.modalController.dismiss({ type: "fertigation-system", topicId: this.uniqueDeviceId });
             break;
           case "Hydrotek Climate Controller":
-            this.router.navigate(['/add-growroom']);
-            this.modalController.dismiss();
+            this.modalController.dismiss({ type: "climate-controller", topicId: this.uniqueDeviceId });
             break;
           default:
             console.log("Unknown Name");
+            this.modalController.dismiss();
         }
       } else {
         this.presentWiFiConnectionError();
       }
     });
     setTimeout(() => { 
-      this.mqttInterfaceService.unsubscribeToTopic("D100" + "/wificonnectstatus");
+      this.mqttInterfaceService.unsubscribeToTopic(wifiConnectStatus + "/" + this.uniqueDeviceId);
       this.mqttInterfaceService.wifiConnectStatus.next(false);
     }, 180000);
   }
+
+  private generateUniqueDeviceId(existingIds: string[]) {
+    let uniqueDeviceId = '';
+    let isUnique = true;
+    do {
+      uniqueDeviceId = this.randomString(this.deviceIDLength, this.charCombinations);
+      existingIds.forEach(element => {
+        if(element == uniqueDeviceId) {
+          isUnique = false;
+        }
+      });
+    } while(!isUnique);
+    return uniqueDeviceId;
+  }
+
+  private randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+  }
+  
+  async presentDeviceConnectionError() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Unable to connect to device',
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
 }
-
-
 
 interface deviceSetup {
   ssid: string,

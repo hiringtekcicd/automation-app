@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { AddSystemPage } from './add-system.page';
+import { AddClimateControllerPage } from './add-climate-controller.page';
 
-describe('AddSystemPage', () => {
-  let component: AddSystemPage;
-  let fixture: ComponentFixture<AddSystemPage>;
+describe('AddClimateController', () => {
+  let component: AddClimateControllerPage;
+  let fixture: ComponentFixture<AddClimateControllerPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddSystemPage ],
+      declarations: [ AddClimateControllerPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddSystemPage);
+    fixture = TestBed.createComponent(AddClimateControllerPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

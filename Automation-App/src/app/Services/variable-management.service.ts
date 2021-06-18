@@ -54,7 +54,18 @@ export class VariableManagementService {
 
   public plants: plant[] = [];
 
-  constructor(private http: HttpClient, private storageService: IonicStorageService) { }
+  constructor(private http: HttpClient, private storageService: IonicStorageService) {
+    this.fertigationSystemSettings.subscribe(fertigationSystemArray => {
+      if(fertigationSystemArray) {
+        storageService.set("fertigationSystems", fertigationSystemArray)
+      }
+    });
+    this.climateControllerSettings.subscribe(climateControllerArray => {
+      if(climateControllerArray) {
+        storageService.set("climateControllers", climateControllerArray)
+      }
+    });
+  }
 
   // public getSensorData(){
   //   this.sensorsTimeData=[];
@@ -120,43 +131,14 @@ export class VariableManagementService {
     }));
   }
 
-  public createSystem(systemForm: any): Observable<any> {
-    var sensorsArray = [];
-    for(var key in systemForm.sensors){
-        sensorsArray.push({
-            name: key,
-            monitoring_only: systemForm.sensors[key].monitoring_only,
-            day_and_night: systemForm.sensors[key].monitoring_only? null: systemForm.sensors[key].control.day_and_night,
-            target_value: systemForm.sensors[key].monitoring_only? null: systemForm.sensors[key].control.target_value,
-            day_target_value: systemForm.sensors[key].monitoring_only? null: systemForm.sensors[key].control.day_and_night? systemForm.sensors[key].control.day_target_value: null,
-            night_target_value: systemForm.sensors[key].monitoring_only? null: systemForm.sensors[key].control.day_and_night? systemForm.sensors[key].control.night_target_value: null,
-            desired_range_low: systemForm.sensors[key].alarm_min,
-            desired_range_high: systemForm.sensors[key].alarm_max
-        });
-    }
-    var data = {
-      name: systemForm.system_name,
-      cluster_name: systemForm.cluster_name,
-      settings: systemForm.sensors,
-      brief_info: sensorsArray
-    }
-    return this.http.post(this.dbURL + "/create_system/", data)
+  public createFertigationSystem(fertigationSystem: FertigationSystem): Observable<any> {
+    return this.http.post(this.dbURL + "/fertigation-system-settings/create", fertigationSystem)
       .pipe(map((resData: {_id: string}) => {
-        // this.deviceSettings.push({
-        //   _id: resData._id,
-        //   name: data.name,
-        //   type: "system",
-        //   clusterName: data.cluster_name,
-        //   settings: data.settings
-        // });
-        // this.noDevices = false;
-        // const clusterIndex = this.clusters.findIndex(({name}) => name === data.cluster_name);
-        // this.clusters[clusterIndex].systems.push({
-        //   name: data.name,
-        //   systemVariables: data.brief_info
-        // });
-        // this.devices.push(data.name);
-        // this.updateCurrentCluster(data.cluster_name, data.name);
+        console.log(resData);
+        fertigationSystem._id = resData._id;
+        let fertigationDevicesArray: FertigationSystem[] = this.fertigationSystemSettings.value;
+        fertigationDevicesArray.push(fertigationSystem);
+        this.fertigationSystemSettings.next(fertigationDevicesArray);
       }));
   } 
 
@@ -242,6 +224,17 @@ export class VariableManagementService {
       default:  // TODO add error handling code
         return null;
     }
+  }
+
+  public getDeviceTopicIds(): string[] {
+    let deviceTopicIds: string[] = [];
+    this.fertigationSystemSettings.value.forEach(element => {
+      deviceTopicIds.push(element.topicID);
+    });
+    this.climateControllerSettings.value.forEach(element => {
+      deviceTopicIds.push(element.topicID);
+    });
+    return deviceTopicIds;
   }
 
   public getPlants(){

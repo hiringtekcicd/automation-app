@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { PowerOutlet } from '../models/power-outlet.model';
 import { MqttInterfaceService } from '../Services/mqtt-interface.service';
+import { manualRfControl } from '../Services/topicKeys';
 
 @Component({
   selector: 'app-add-power-outlet',
@@ -45,7 +46,8 @@ export class AddPowerOutletPage implements OnInit {
         [this.powerOutletStructure[this.powerOutletIndex].id]: this.outletToggleVal
       }
       let outletJsonString = JSON.stringify(outletObj);
-      this.mqttService.publishMessage("manual_rf_control/a23b5", outletJsonString, 1, false);
+      // TODO: change to variable topicID
+      this.mqttService.publishMessage(manualRfControl + "/a23b5", outletJsonString, 1, false);
     } else {
       console.log("Power Outlet Name Not Found. Current Index: " + this.powerOutletIndex);
     }

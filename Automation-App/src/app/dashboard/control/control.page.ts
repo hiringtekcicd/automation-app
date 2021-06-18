@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FertigationSystem } from 'src/app/models/fertigation-system.model';
 import { ClimateController } from 'src/app/models/climate-controller.model';
 import { PowerOutlet } from 'src/app/models/power-outlet.model';
+import { deviceSettingsTopic, deviceStatusTopic } from 'src/app/Services/topicKeys';
 
 @Component({
   selector: 'app-control',
@@ -65,7 +66,7 @@ export class ControlPage implements OnInit {
         if(this.currentDevice.settings['grow_lights']['power_outlets']) {
           this.growLightArray = this.currentDevice.settings['grow_lights']['power_outlets'];
         }
-        this.powerOutlets = this.currentDevice.power_outlets
+        this.powerOutlets = this.currentDevice.power_outlets;
       } else {
         let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
         let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length;
@@ -90,7 +91,7 @@ export class ControlPage implements OnInit {
 
   onBootButtonClick() {
     this.currentDevice.device_started = !this.currentDevice.device_started;
-    this.mqttService.publishMessage("device_status/" + this.currentDevice.topicID, this.currentDevice.device_started? "1" : "0");
+    this.mqttService.publishMessage(deviceStatusTopic + "/" + this.currentDevice.topicID, this.currentDevice.device_started? "1" : "0");
     this.onSettingsFormSubmit();    
   }
    
@@ -102,24 +103,30 @@ export class ControlPage implements OnInit {
         changedData.push({ [key]: this.settingsForm.value[key] });
       }
     }
-    console.log(changedData);
-    this.mqttService.publishMessage("device_settings/" + this.currentDevice.topicID, JSON.stringify({ data: changedData}), 1, false).then(() => {
-    let device;
-    device = { ...this.currentDevice };
-    device.settings = this.settingsForm.value;
-    if(this.currentDeviceType == FertigationSystemString) {
-      device = new FertigationSystem().deserialize(device);
-    } 
-    else if(this.currentDeviceType == ClimateControllerString) {
-      device = new ClimateController().deserialize(device);
-    }
 
-    this.variableManagementService
-      .updateDeviceSettings(device, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex)
-        .subscribe(() => {
-          this.currentDevice = device;
-          this.isDirty = false;
-        }, (error) => {console.log(error)});
+    if(changedData.length <= 0) {
+      return;
+    }
+    
+    console.log(changedData);
+    this.mqttService.publishMessage(deviceSettingsTopic + "/" + this.currentDevice.topicID, JSON.stringify({ data: changedData}), 1, false).then(() => {
+      let device;
+      device = { ...this.currentDevice };
+      device.settings = this.settingsForm.value;
+      
+      if(this.currentDeviceType == FertigationSystemString) {
+        device = new FertigationSystem().deserialize(device);
+      } 
+      else if(this.currentDeviceType == ClimateControllerString) {
+        device = new ClimateController().deserialize(device);
+      }
+
+      this.variableManagementService
+        .updateDeviceSettings(device, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex)
+          .subscribe(() => {
+            this.currentDevice = device;
+            this.isDirty = false;
+          }, (error) => {console.log(error)});
     },
     (error) => {
       console.log(error);

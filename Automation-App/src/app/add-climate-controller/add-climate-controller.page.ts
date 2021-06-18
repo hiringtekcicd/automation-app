@@ -1,33 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { VariableManagementService } from '../Services/variable-management.service';
+import { plant } from '../Services/variable-management.service';
 import { Router } from '@angular/router';
-import { VariableManagementService, plant } from '../Services/variable-management.service';
+import { MqttInterfaceService } from '../Services/mqtt-interface.service';
 
 @Component({
-  selector: 'add-system',
-  templateUrl: './add-system.page.html',
-  styleUrls: ['./add-system.page.scss'],
+  selector: 'add-climate-controller',
+  templateUrl: './add-climate-controller.page.html',
+  styleUrls: ['./add-climate-controller.page.scss'],
 })
-export class AddSystemPage implements OnInit {
+export class AddClimateControllerPage implements OnInit {
 
-  growLights = true;
-  ph: boolean = true;
-  ec: boolean = true;
-  waterTemp: boolean = true;
-  reservoir: boolean = true;
-
+  humidity: boolean = true;
+  air_temperature: boolean = true;
+  clusters: string[];
   plantName: string;
 
-  systemForm: FormGroup = new FormGroup({});
+  climateControllerForm: FormGroup = new FormGroup({});
   sensorsForm: FormGroup = new FormGroup({});
-
+  
   plantAlertOptions: any = {
     header: "Plant Name"
   }
 
   isLoading: boolean = false;
 
-  constructor(private router: Router, public variableManagementService: VariableManagementService, private fb: FormBuilder) { 
+  constructor(private router: Router, public variableManagementService: VariableManagementService, private fb: FormBuilder, private mqttInterfaceService: MqttInterfaceService) { 
     if(this.variableManagementService.plants.length == 0){
       this.isLoading = true;
       this.variableManagementService.getPlants().subscribe(() => {
@@ -36,28 +35,30 @@ export class AddSystemPage implements OnInit {
     } else {
       this.isLoading = false;
     }
-    this.systemForm = this.fb.group({
-      'system_name': this.fb.control(null),
+    this.climateControllerForm = this.fb.group({
+      'grow_room_name': this.fb.control(null),
       'cluster_name': this.fb.control(null),
       'plant_name': this.fb.control(null),
       'sensors': this.sensorsForm
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onSubmit(){
-    console.log(this.systemForm.value);
-    this.variableManagementService.createSystem(this.systemForm.value).subscribe(() => {
-      this.dismiss();
+    console.log(this.climateControllerForm.value);
+    this.variableManagementService.createGrowRoom(this.climateControllerForm.value).subscribe(() => {
+  //    this.mqttInterfaceService.publishMessage()
+//      this.dismiss();
     }, error => {
       console.log(error);
     });
   }
 
   addRecommendedSettings(value: plant){
+    console.log(this.variableManagementService.plants);
     var temp = { ...value.settings };
+    console.log(temp);
     for(var key of Object.keys(temp)){
       temp[key] = {
         "monitoring_only": false,
@@ -71,6 +72,7 @@ export class AddSystemPage implements OnInit {
         }
       }
     }
+    console.log(temp);
     this.sensorsForm.patchValue(temp);
   }
 

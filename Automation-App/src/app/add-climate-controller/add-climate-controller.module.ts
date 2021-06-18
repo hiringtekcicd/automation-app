@@ -4,9 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddGrowroomPageRoutingModule } from './add-growroom-routing.module';
+import { AddClimateControllerPageRoutingModule } from './add-climate-controller-routing.module';
 
-import { AddGrowroomPage } from './add-growroom.page';
+import { AddClimateControllerPage } from './add-climate-controller.page';
 import { ComponentsModule } from '../components/components.module';
 
 @NgModule({
@@ -14,10 +14,10 @@ import { ComponentsModule } from '../components/components.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    AddGrowroomPageRoutingModule,
+    AddClimateControllerPageRoutingModule,
     ReactiveFormsModule,
     ComponentsModule
   ],
-  declarations: [AddGrowroomPage]
+  declarations: [AddClimateControllerPage]
 })
-export class AddGrowroomPageModule {}
+export class AddClimateControllerPageModule {}

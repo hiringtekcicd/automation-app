@@ -22,10 +22,14 @@ import { AddPowerOutletPageModule } from './add-power-outlet/add-power-outlet.mo
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
+import { AddFertigationSystemPage } from './add-fertigation-system/add-fertigation-system.page';
+import { AddClimateControllerPage } from './add-climate-controller/add-climate-controller.page';
+import { AddFertigationSystemPageModule } from './add-fertigation-system/add-fertigation-system.module';
+import { AddClimateControllerPageModule } from './add-climate-controller/add-climate-controller.module';
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [IdentifyDevicePage, AddPowerOutletPage, AddCameraPage],
+  entryComponents: [IdentifyDevicePage, AddPowerOutletPage, AddCameraPage, AddFertigationSystemPage, AddClimateControllerPage ],
   imports: [
     BrowserModule, 
     HttpClientModule, 
@@ -38,7 +42,9 @@ import { environment } from 'src/environments/environment';
     AddPowerOutletPageModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
-    AddCameraPageModule
+    AddCameraPageModule,
+    AddFertigationSystemPageModule,
+    AddClimateControllerPageModule
   ],
   providers: [
     VariableManagementService,

@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Setup Fertigation System</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  (click)="dismiss()"><ion-icon name="close-outline"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="content">
+    <form [formGroup]="fertigationSystemForm" (ngSubmit)="onSubmit()">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="8">
+            <h2 class="general_settings">General Settings</h2>
+          </ion-col>
+          <ion-col size="4" class="button_col">
+            <ion-button class="add_button" type="submit">Create</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-card>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-label position="floating">Device Name</ion-label>
+              <ion-input formControlName="name"></ion-input>
+            </ion-item>
+            <!-- <ion-item>
+              <ion-label>Select a Plant</ion-label>
+              <ion-select #plantSelect placeholder="Plant" formControlName="plant_name" [interfaceOptions]="plantAlertOptions" [(ngModel)]="plantName" (ionChange)="addRecommendedSettings(plantSelect.value)">
+                <ion-select-option *ngFor="let plant of variableManagementService.plants" [value]="plant">
+                  {{ plant.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item> -->
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+      <h2>Sensor List</h2>
+      <ph *ngIf="ph" [parentForm]="settingsForm"></ph>
+      <ec *ngIf="ec" [parentForm]="settingsForm"></ec>
+      <water-temp *ngIf="waterTemperature" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></water-temp>
+      <grow-lights *ngIf="growLights" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)" [powerOutletArray]="growLightArray"></grow-lights>
+      <irrigation *ngIf="irrigation" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></irrigation>
+      <reservoir *ngIf="reservoir" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></reservoir>
+    </form>
+  </div>
+</ion-content>
