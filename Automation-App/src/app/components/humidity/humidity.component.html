@@ -1,12 +1,12 @@
 <ion-card class="dashboard-card">
-  <ion-card-content>
+  <ion-card-content class="top_bottom_padding">
     <ion-grid>
       <!--Card Header-->
       <ion-row>
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">Humidity</h3>
+          <h3 fill="clear" class="color h3_sensor_title">Humidity</h3>
         </ion-item>
       </ion-row>
       <!--Card Content-->
@@ -15,10 +15,10 @@
           <hr color="grey" />
           <div class="group">
             <ion-row>
-              <ion-col size="12">
+              <ion-col class="no_padding" size="12">
                 <ion-item lines="none">
                   <ion-checkbox formControlName="monit_only" mode="md"></ion-checkbox>
-                  <ion-label>Monitoring Only</ion-label>
+                  <ion-label class="sensor_black_label">Monitoring Only</ion-label>
                 </ion-item>
               </ion-col>
             </ion-row>
@@ -26,60 +26,60 @@
   
           <div *ngIf="!humidityForm.get('monit_only').value" [formGroup]="controlForm"> 
  
-            <h3>Desired Value</h3>
+            <h3 class="h3_sensor_title">Desired Value</h3>
             <ion-row>
               <ion-item lines="none">
                 <ion-checkbox formControlName="d_n_enabled" mode="md"></ion-checkbox>
-                <ion-label>Different Targets for Day and Night</ion-label>
+                <ion-label class="sensor_black_label">Different Targets for Day and Night</ion-label>
               </ion-item>
             </ion-row>
             <ion-row *ngIf="controlForm.get('d_n_enabled').value">
-              <ion-col size="6">
+              <ion-col class="no_padding" size="6">
                 <ion-item>
-                  <ion-label position="floating">Day Target Value</ion-label>
+                  <ion-label class="sensor_black_label" position="floating">Day Target Value</ion-label>
                   <ion-input formControlName="day_tgt" type="number"></ion-input>
                 </ion-item>
               </ion-col>
-              <ion-col size="6">
+              <ion-col class="no_padding" size="6">
                 <ion-item>
-                  <ion-label position="floating">Night Target Value</ion-label>
+                  <ion-label class="sensor_black_label" position="floating">Night Target Value</ion-label>
                   <ion-input formControlName="night_tgt" type="number"></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="!controlForm.get('d_n_enabled').value">
-              <ion-col size="12">
+              <ion-col class="no_padding" size="12">
                 <ion-item>
-                  <ion-label position="floating">Target Value</ion-label>
+                  <ion-label class="sensor_black_label" position="floating">Target Value</ion-label>
                   <ion-input formControlName="tgt" type="number"></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
-            <h3>Power Outlets</h3>
+            <h3 class="h3_sensor_title">Power Outlets</h3>
             <ion-row>
               <ion-list>
                 <ion-item>
                   <ion-toggle slot="start" formControlName="up_ctrl"></ion-toggle>
-                  <ion-label>Humidifier</ion-label>
+                  <ion-label class="sensor_black_label">Humidifier</ion-label>
                 </ion-item>
                 <ion-item>
                   <ion-toggle slot="start" formControlName="down_ctrl"></ion-toggle>
-                  <ion-label>Dehumidifier</ion-label>
+                  <ion-label class="sensor_black_label">Dehumidifier</ion-label>
                 </ion-item>
               </ion-list>
             </ion-row>
           </div>
-          <h3>Alarm Settings</h3>
+          <h3 class="h3_sensor_title">Alarm Settings</h3>
           <ion-row>
-            <ion-col size="5">
+            <ion-col class="no_padding" size="5">
               <ion-item>
-                <ion-label position="floating">Min</ion-label>
+                <ion-label class="sensor_black_label" position="floating">Min</ion-label>
                 <ion-input formControlName="alarm_min" type="number"></ion-input>
               </ion-item>
             </ion-col>
-            <ion-col offset="1" size="5">
+            <ion-col class="no_padding" offset="1" size="5">
               <ion-item>
-                <ion-label position="floating">Max</ion-label>
+                <ion-label class="sensor_black_label" position="floating">Max</ion-label>
                 <ion-input formControlName="alarm_max" type="number"></ion-input>
               </ion-item>
             </ion-col>

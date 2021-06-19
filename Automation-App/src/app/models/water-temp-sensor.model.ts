@@ -17,6 +17,6 @@ export class WaterTempSensor extends Sensor implements Deserializable {
     }
 
     getDisplayName(): string {
-        return 'Water Temperature'
+        return 'Water Temp'
     }
 }

@@ -1,37 +1,38 @@
 <ion-card class="dashboard-card">
-  <ion-card-content>
+  <ion-card-content class="top_bottom_padding">
     <ion-grid>
       
       <ion-row>
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">Grow Lights</h3>
+          <ion-icon slot="start" name="alert-circle-outline" class="form-warning-icon" color="danger" *ngIf="!growLightsForm.valid"></ion-icon>
+          <h3 fill="clear" class="color h3_sensor_title">Grow Lights</h3>
         </ion-item>
       </ion-row>
 
       <form [formGroup]="growLightsForm">
         <div *ngIf="isOpen">
           <hr color="grey" />
-          <h3>Day and Night Times</h3>
+          <h3 class="h3_sensor_title">Day and Night Times</h3>
           <ion-row> 
-            <ion-col size="12">
+            <ion-col class="no_padding" size="12">
               <ion-item>
-                <ion-label position="floating">Lights On</ion-label>
+                <ion-label  class="sensor_black_label" position="floating">Lights On</ion-label>
                 <ion-datetime displayFormat="h:mm a" placeholder="Select Time" formControlName="lights_on"></ion-datetime>
               </ion-item>
             </ion-col>
           </ion-row>
           <ion-row> 
-            <ion-col size="12">
+            <ion-col class="no_padding" size="12">
               <ion-item>
-                <ion-label position="floating">Lights Off</ion-label>
+                <ion-label class="sensor_black_label" position="floating">Lights Off</ion-label>
                 <ion-datetime displayFormat="h:mm a" placeholder="Select Time" formControlName="lights_off"></ion-datetime>
               </ion-item>
             </ion-col>
           </ion-row>
           <ion-item>
-            <h3>Power Outlets</h3>
+            <h3 class="h3_sensor_title">Power Outlets</h3>
             <ion-icon slot="end" name="add-outline" (click)="newPowerOutlet()"></ion-icon>
           </ion-item>
           <div formArrayName="power_outlets">
@@ -40,13 +41,13 @@
                 <ion-item [formGroupName]="i">
                   <ion-toggle slot="start" formControlName="is_control" (click)="onOutletToggleChange('Grow Light ' + (i + 1), i)"></ion-toggle>
                   <ion-icon name="sunny-outline"></ion-icon>
-                  <ion-label>Grow Light {{ (i + 1) }}</ion-label>
+                  <ion-label class="sensor_black_label">Grow Light {{ (i + 1) }}</ion-label>
                   <ion-button slot="end" (click)="presentAddPowerOutletModal('Grow Light ' + (i + 1), i)">{{ isPowerOutletSetup('Grow Light ' + (i + 1))? "Edit": "Setup"}}</ion-button>
                 </ion-item>
               </div>
             </ion-list>
             <div *ngIf="powerOutletsArray.length == 0">
-              <ion-label>Click the Add button to Setup a New Power Outlet</ion-label>
+              <ion-label class="sensor_black_label">Click the Add button to Setup a New Power Outlet</ion-label>
             </div>
           </div>
         </div>

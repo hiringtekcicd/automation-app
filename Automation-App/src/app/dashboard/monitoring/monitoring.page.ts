@@ -47,6 +47,7 @@ export class MonitoringPage implements OnInit {
             this.currentDeviceSettings.push({ 
               name: sensor,
               display_name: this.currentDevice.settings[sensor].getDisplayName(),
+              sensorUnit: this.getSensorUnit(sensor),
               monit_only: this.currentDevice.settings[sensor].monit_only,
               tgt: this.currentDevice.settings[sensor].control.tgt,
               alarm_min: this.currentDevice.settings[sensor].alarm_min,
@@ -106,6 +107,29 @@ export class MonitoringPage implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  getSensorUnit(sensorType: string){
+    let sensorUnit = "";
+    switch(sensorType){
+      case "ec":
+        sensorUnit = "μs/cm";
+        break;
+      case "water_temp":
+      case "air_temp":
+        sensorUnit = "°C";
+        break;
+      case "humidity":
+        sensorUnit = "%";
+        break;
+      case "ph":
+        sensorUnit = "";
+        break;
+      default:
+        console.warn("No matching sensor unit for sensor type of ", sensorType);
+        break;
+    }
+    return sensorUnit;
   }
 
   startMqttProcessing() {

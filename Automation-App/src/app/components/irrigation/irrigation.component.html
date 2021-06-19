@@ -1,42 +1,51 @@
 <ion-card class="dashboard-card">
-  <ion-card-content>
+  <ion-card-content class="top_bottom_padding">
     <ion-grid>
 
       <ion-row>
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
-          <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">Irrigation</h3>
+          <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>          
+          <ion-icon slot="start" name="alert-circle-outline" class="form-warning-icon" color="danger" *ngIf="!irrigationForm.valid"></ion-icon>
+          <h3 fill="clear" class="color h3_sensor_title">Irrigation</h3>
         </ion-item>
       </ion-row>
 
       <form [formGroup]="irrigationForm">
         <div *ngIf="isOpen">
         <hr color="grey" />
-        <h3>Power Outlets</h3>
+        <h3 class="h3_sensor_title">Power Outlets</h3>
           <ion-list>
             <ion-item lines="none">
               <ion-icon name="water-outline"></ion-icon>
-              <ion-label>Irrigation Pump</ion-label>
+              <ion-label class="sensor_black_label">Irrigation Pump</ion-label>
               <ion-button slot="end" (click)="presentAddPowerOutletModal('Irrigation')">{{ isPowerOutletSetup('Irrigation')? "Edit": "Setup"}}</ion-button>
             </ion-item>
           </ion-list>
-          <h3>Irrigation Schedule</h3>
+          <h3 class="h3_sensor_title">Irrigation Schedule</h3>
           <ion-row> 
-            <ion-col size="12">
+            <ion-col class="no_padding" size="12">
               <ion-item>
-                <ion-label position="floating">Irrigation On</ion-label>
-                <ion-input type="number" placeholder="On Interval" formControlName="on_interval"></ion-input>
+                <ion-label class="sensor_black_label" position="floating">Irrigation On</ion-label>
+                <ion-input type="number" placeholder="On Interval" formControlName="on_interval" class="minute_unit"></ion-input>
               </ion-item>
             </ion-col>
+            <p *ngIf="irrigationForm.get('on_interval').errors?.required" class="error_msg">This is a required value.</p>
+            <p *ngIf="irrigationForm.get('on_interval').errors?.min" class="error_msg">This value must be at least {{irrigationForm.get('on_interval').errors.min.min}}.</p>
+            <p *ngIf="irrigationForm.get('on_interval').errors?.max" class="error_msg">This value must be at most {{irrigationForm.get('on_interval').errors.max.max}}.</p>
+
           </ion-row>
           <ion-row> 
-            <ion-col size="12">
+            <ion-col class="no_padding" size="12">
               <ion-item>
-                <ion-label position="floating">Irrigation Off</ion-label>
-                <ion-input type="number" placeholder="Off Interval" formControlName="off_interval"></ion-input>
+                <ion-label class="sensor_black_label" position="floating">Irrigation Off</ion-label>
+                <ion-input type="number" placeholder="Off Interval" formControlName="off_interval" class="minute_unit"></ion-input>
               </ion-item>
             </ion-col>
+            <p *ngIf="irrigationForm.get('off_interval').errors?.required" class="error_msg">This is a required value.</p>
+            <p *ngIf="irrigationForm.get('off_interval').errors?.min" class="error_msg">This value must be at least {{irrigationForm.get('off_interval').errors.min.min}}.</p>
+            <p *ngIf="irrigationForm.get('off_interval').errors?.max" class="error_msg">This value must be at most {{irrigationForm.get('off_interval').errors.max.max}}.</p>
+
           </ion-row>         
         </div>
       </form>

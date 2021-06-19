@@ -7,15 +7,30 @@
 h1 {
     font-weight: 450;
     color: black;
-    font-size: 300%;
+    font-size: 250%;
+}
+
+h2{
+    font-weight: 450;
+    color: black;
 }
 
 .header-title {
     font-weight: 700;
     color: black;
-    font-size: 150%;
+    font-size: 120%;
     margin-left: 10px;
     margin-bottom: 0px;
+    display: inline;
+}
+
+.header-unit {
+    font-weight: 700;
+    color: black;
+    font-size: 120%;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    display: inline;
 }
 
 ion-card-header {
@@ -39,14 +54,6 @@ ion-card-content {
     padding-top: 10px;
 }
 
-ion-grid{
-    padding: 0px;
-}
-
-ion-col {
-    padding: 0px;
-}
-
 ion-toggle {
     margin-top: 5px;
 }
@@ -54,7 +61,7 @@ ion-toggle {
 .value {
     font-size: 20px;
     color: black;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .title {
@@ -70,3 +77,8 @@ ion-toggle {
 }
 
 
+.justify_right{
+    position: absolute;
+    right: 0px;
+    padding-right: 10px;
+}

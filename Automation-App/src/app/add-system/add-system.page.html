@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Setup Climate Controller</ion-title>
+    <ion-title>Setup System</ion-title>
     <ion-buttons slot="end">
       <ion-button  (click)="dismiss()"><ion-icon name="back"></ion-icon></ion-button>
     </ion-buttons>
@@ -8,11 +8,11 @@
 </ion-header>
 
 <ion-content class="gradient_background">
-  <div class="content" *ngIf="!isLoading">
-    <form [formGroup]="climateControllerForm" (ngSubmit)="onSubmit()">
-      <ion-grid>
+  <div class="content">
+    <form [formGroup]="systemForm" (ngSubmit)="onSubmit()">
+      <ion-grid class="no_padding_bottom">
         <ion-row>
-          <ion-col class="no_padding_bottom" size="7">
+          <ion-col  class="no_padding_bottom" size="7">
             <h2 class="h2_title general_settings">General Settings</h2>
           </ion-col>
           <ion-col size="5" class="button_col no_padding_bottom">
@@ -25,8 +25,8 @@
         <ion-card-content class="no_padding_bottom">
           <ion-list>
             <ion-item>
-              <ion-label position="floating">Climate Controller Name</ion-label>
-              <ion-input formControlName="grow_room_name"></ion-input>
+              <ion-label class="sensor_black_label" position="floating">System Name</ion-label>
+              <ion-input formControlName="system_name"></ion-input>
             </ion-item>
             <ion-item>
               <ion-label class="sensor_black_label">Select a Cluster</ion-label>
@@ -48,11 +48,11 @@
         </ion-card-content>
       </ion-card>
       <h2 class="h2_title">Sensor List</h2>
-      <air-temperature *ngIf="air_temperature" [parentForm]="sensorsForm"></air-temperature>
-      <humidity *ngIf="humidity" [parentForm]="sensorsForm"></humidity>
+      <grow-lights *ngIf="growLights" [parentForm]="sensorsForm"></grow-lights>
+      <ph *ngIf="ph" [parentForm]="sensorsForm"></ph>
+      <ec *ngIf="ec" [parentForm]="sensorsForm"></ec>
+      <water-temp *ngIf="waterTemp" [parentForm]="sensorsForm"></water-temp>
+      <reservoir *ngIf="reservoir" [parentForm]="sensorsForm"></reservoir>
     </form>
-  </div>
-  <div *ngIf="isLoading">
-    <ion-spinner color="primary"></ion-spinner>
   </div>
 </ion-content>

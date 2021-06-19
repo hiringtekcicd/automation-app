@@ -28,3 +28,78 @@
 .ion-invalid.ion-touched ion-label{
     color : var(--ion-color-danger); //If we have ion-invalid and touched classes, the nested elements will turn red.
 }
+
+
+.group {//used in 5 components
+    margin-top: 20px;
+}
+
+.general_settings { //used in 2 pages
+    display: inline-block;
+}
+
+.add_button { //used in 3 pages TODO not complete
+    display: inline-block;
+}
+
+.button_col {//used in 3 pages
+    padding-top: 14px;
+}
+
+.gradient_background{ //app background
+    --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
+}
+
+.h3_sensor_title{//used in 9 files in components, sensor/item titles
+    font-weight: 700 !important;
+    color: black;
+    font-size: 150% !important;
+    margin-left: 10px !important;
+    margin-bottom: 0px !important;
+}
+
+.sensor_black_label { //used in 12 files in components and pages
+    font-size: 14px;
+    color: black;
+    font-weight: 400;
+    margin: 10px;
+} //ion-label is still used in control (one-off, white color)
+
+.no_padding{
+    padding: 0px;
+}
+
+.no_padding_bottom{
+    padding-bottom: 0px;
+}
+
+.text_center{
+    text-align: center;
+}
+
+.top_bottom_padding{//used in 13 files in components and pages
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
+}//create-cluster and sensor-display have custom values
+
+.content {//used in 6 files for pages
+    padding-left: 10px;
+    padding-right: 10px;
+}//monitoring, control are different
+
+.h2_title{
+    color: white;
+    margin-left: 10px;
+    display: inline;
+} //cameras is different
+
+.error_msg{
+    color: red;
+    margin-left: 10px !important;
+}
+
+.form-warning-icon {
+    margin-right: 10px;
+}

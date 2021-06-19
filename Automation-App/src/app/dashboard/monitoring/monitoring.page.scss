@@ -1,26 +1,13 @@
-.no-padding {
-    padding: 0px;
-}
-
 .dropdown {
     margin-left: 10px;
     margin-right: 10px;
     --ion-color-primary-contrast: #000000;
 }
-
-ion-content{
-    --background:linear-gradient(#2679B9 0%, #196097 15%, #003157 100%) !important;
-}
-
 .center {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 60vh;
-  }
-
-ion-col {
-    text-align: center;
 }
 
 .content {
@@ -56,7 +43,7 @@ h1 {
     font-size: 300%;
 }
 
-h2, h6 {
+h6 {
     color: white;
     margin-left: 10px;
     display: inline;

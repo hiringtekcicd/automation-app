@@ -1,11 +1,12 @@
 <ion-card class="dashboard-card">
-  <ion-card-content>
+  <ion-card-content class="top_bottom_padding">
     <ion-grid>
       <ion-row>
         <ion-item tappable (click)="toggleAccordion()" lines="none">
           <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!isOpen"></ion-icon>
           <ion-icon slot="start" name="chevron-down-outline" *ngIf="isOpen"></ion-icon>
-          <h3 fill="clear" class="color">Reservoir</h3>
+          <ion-icon slot="start" name="alert-circle-outline" class="form-warning-icon" color="danger" *ngIf="!reservoirForm.valid"></ion-icon>
+          <h3 fill="clear" class="color h3_sensor_title">Reservoir</h3>
         </ion-item>
       </ion-row>
       <form [formGroup]="reservoirForm">
@@ -14,35 +15,41 @@
         <ion-row>
           <ion-item lines="none">
             <ion-toggle slot="start" formControlName="is_control"></ion-toggle>
-            <ion-label>Water Replacement Enabled</ion-label>
+            <ion-label class="sensor_black_label">Water Replacement Enabled</ion-label>
           </ion-item>
         </ion-row>
         <ion-row>
-          <ion-col size="12">
+          <ion-col class="no_padding" size="12">
             <ion-item>
-              <ion-label position="floating">Reservoir Size</ion-label>
-              <ion-input formControlName="reservoir_size" type="number"></ion-input>
+              <ion-label class="sensor_black_label" position="floating">Reservoir Size</ion-label>
+              <ion-input formControlName="reservoir_size" type="number" class="gallon_unit"></ion-input>
             </ion-item>
+            <p *ngIf="reservoirForm.get('reservoir_size').errors?.required" class="error_msg">This is a required value.</p>
+            <p *ngIf="reservoirForm.get('reservoir_size').errors?.min" class="error_msg">This value must be at least {{reservoirForm.get('reservoir_size').errors.min.min}}.</p>
+            <p *ngIf="reservoirForm.get('reservoir_size').errors?.max" class="error_msg">This value must be at most {{reservoirForm.get('reservoir_size').errors.max.max}}.</p>
+
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col size="12">
+          <ion-col class="no_padding" size="12">
             <ion-item>
-              <ion-label position="floating">Replacement Interval</ion-label>
-              <ion-input formControlName="water_replacement_interval" type="number"></ion-input>
+              <ion-label class="sensor_black_label" position="floating">Replacement Interval</ion-label>
+              <ion-input formControlName="water_replacement_interval" type="number" class="day_unit"></ion-input>
             </ion-item>
+            <p *ngIf="reservoirForm.get('water_replacement_interval').errors?.min" class="error_msg">This value must be at least {{reservoirForm.get('water_replacement_interval').errors.min.min}}.</p>
+            <p *ngIf="reservoirForm.get('water_replacement_interval').errors?.max" class="error_msg">This value must be at most {{reservoirForm.get('water_replacement_interval').errors.max.max}}.</p>
           </ion-col>
         </ion-row>
-        <h3>Power Outlets</h3>
+        <h3 class="h3_sensor_title">Power Outlets</h3>
         <ion-list>
           <ion-item lines="none">
             <ion-icon name="return-down-back-outline"></ion-icon>
-            <ion-label>Water In</ion-label>
+            <ion-label class="sensor_black_label">Water In</ion-label>
             <ion-button slot="end" (click)="presentAddPowerOutletModal('Reservoir Water In')">{{ isPowerOutletSetup('Reservoir Water In')? "Edit": "Setup"}}</ion-button>
           </ion-item>
           <ion-item lines="none">
             <ion-icon name="return-down-forward-outline"></ion-icon>
-            <ion-label>Water Out</ion-label>
+            <ion-label class="sensor_black_label">Water Out</ion-label>
             <ion-button slot="end" (click)="presentAddPowerOutletModal('Reservoir Water Out')">{{ isPowerOutletSetup('Reservoir Water Out')? "Edit": "Setup"}}</ion-button>
           </ion-item>
         </ion-list>

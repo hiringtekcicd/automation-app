@@ -1,28 +1,21 @@
-h3 {
-    font-weight: 700;
-    color: black;
-    font-size: 150%;
-    margin-left: 10px;
-    margin-bottom: 0px;
-}
-
-ion-label {
-    font-size: 14px;
-    font-weight: 400;
-    margin: 10px;
-}
-
-ion-col {
-    padding: 0px;
-}
-
-ion-card-content {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 0px;
-    padding-right: 0px;
-}
-
 .settings-group {
     margin-top: 10px;
+}
+
+.form_invalid_outline{
+    border: 1px solid red;
+}
+
+.time_unit::after{
+    content: "sec";
+    color: gray;
+}
+
+.ph_unit::after{
+    content: "PH";
+    color: gray;
+}
+
+.sw-prevent-invalid {
+    color: black !important;
 }

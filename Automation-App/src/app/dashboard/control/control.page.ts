@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Devices, FertigationSystemString, ClimateControllerString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { FormGroup } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs/operators';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import * as _ from "lodash";
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
@@ -48,7 +48,12 @@ export class ControlPage implements OnInit {
   formValue$: Observable<any>;
   isDirty: boolean = false;
 
-  constructor(public variableManagementService: VariableManagementService, private changeDetector: ChangeDetectorRef, private modalController: ModalController, private mqttService: MqttInterfaceService, private route: ActivatedRoute) { 
+  constructor(public variableManagementService: VariableManagementService, 
+    private changeDetector: ChangeDetectorRef, 
+    private modalController: ModalController, 
+    private mqttService: MqttInterfaceService, 
+    private route: ActivatedRoute,
+    private alertController: AlertController) { 
     this.mqttService.mqttStatus.subscribe((status) => {
       console.log(status);
     });
@@ -97,6 +102,15 @@ export class ControlPage implements OnInit {
    
   // update data in backend
   onSettingsFormSubmit() {
+    console.warn(this.settingsForm);
+    if(!this.settingsForm.valid){
+      console.warn("onSubmit with errors");
+      this.presentInvalidSubmitDialog();
+      return;
+    }
+    console.warn("onSubmit valid");
+    this.presentValidSubmitDialog();
+    
      var changedData = [];
      for(var key in this.settingsForm.value){
        if(!_.isMatch(this.settingsForm.value[key], this.currentDevice.settings[key])) {
@@ -131,6 +145,24 @@ export class ControlPage implements OnInit {
     (error) => {
       console.log(error);
     });
+  }
+
+  async presentInvalidSubmitDialog(){
+    const alert = await this.alertController.create({
+      header: "Error",
+      message: "There are mistakes in the information entered. Please correct the fields marked in red.",
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  async presentValidSubmitDialog(){
+    const alert = await this.alertController.create({
+      header: "Successfully Saved",
+      message: "The information has been successfully saved.",
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 }
 
