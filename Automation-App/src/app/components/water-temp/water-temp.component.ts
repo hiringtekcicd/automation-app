@@ -45,8 +45,7 @@ export class WaterTempComponent implements OnInit, OnDestroy {
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)])
     }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min','alarm_max'),
                      this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl'),
-                     this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')],
-                     updateOn: 'blur'});
+                     this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')]});
 
     this.parentForm.addControl('water_temp', this.waterTemperatureForm);
     this.manualCheckValidity();

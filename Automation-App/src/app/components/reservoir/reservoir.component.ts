@@ -24,7 +24,7 @@ export class ReservoirComponent implements OnInit {
       'reservoir_size': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(10000)]),
       'is_control': this.fb.control(false),
       'water_replacement_interval': this.fb.control(null, [Validators.min(0.5), Validators.max(1000)]) //TODO conditional
-    }, {updateOn: 'blur'});
+    });
     this.parentForm.addControl('reservoir', this.reservoirForm);
     this.manualCheckValidity();
   }

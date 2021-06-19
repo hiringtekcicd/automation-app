@@ -43,8 +43,7 @@ export class PhComponent implements OnInit, OnDestroy {
       'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0.1), Validators.max(14)])
     }, {validators: [this.twoValCompareVal.twoValCompare('alarm_min', 'alarm_max'),
                      this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl'),
-                     this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')],
-                     updateOn: 'blur'});
+                     this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')]});
 
     this.parentForm.addControl('ph', this.phForm);    
     this.manualCheckValidity(); //should take care of any errors on init

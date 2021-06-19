@@ -23,7 +23,7 @@ export class IrrigationComponent implements OnInit {
     this.irrigationForm = this.fb.group({
       'on_interval': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(1440)]),
       'off_interval': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(1440)])
-    }, {updateOn: 'blur'});
+    });
 
     this.parentForm.addControl('irrigation', this.irrigationForm);
     this.manualCheckValidity();
