@@ -142,6 +142,17 @@ export class VariableManagementService {
       }));
   } 
 
+  public createClimateController(climateController: ClimateController): Observable<any> {
+    return this.http.post(this.dbURL + "/climmate-controller-settings/create", climateController)
+      .pipe(map((resData: {_id: string}) => {
+        console.log(resData);
+        climateController._id = resData._id;
+        let climateControllerDevicesArray: ClimateController[] = this.climateControllerSettings.value;
+        climateControllerDevicesArray.push(climateController);
+        this.climateControllerSettings.next(climateControllerDevicesArray);
+      }));
+  } 
+
   // Update grow room and system settings in backend
   public updateDeviceSettings(device: Devices, deviceType: string, deviceID: string, deviceIndex: number): Observable<any> {
     let endPointURL = "";

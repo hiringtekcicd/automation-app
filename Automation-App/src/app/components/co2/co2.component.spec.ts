@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { AddSensorPage } from './add-sensor.page';
+import { Co2Component } from './co2.component';
 
-describe('AddSensorPage', () => {
-  let component: AddSensorPage;
-  let fixture: ComponentFixture<AddSensorPage>;
+describe('Co2Component', () => {
+  let component: Co2Component;
+  let fixture: ComponentFixture<Co2Component>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddSensorPage ],
+      declarations: [ Co2Component ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddSensorPage);
+    fixture = TestBed.createComponent(Co2Component);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

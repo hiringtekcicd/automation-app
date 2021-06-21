@@ -16,6 +16,7 @@ import { VariableManagementService } from 'src/app/Services/variable-management.
 export class IdentifyDevicePage implements OnInit {
 
   private readonly deviceIP: string = "192.168.4.1";
+
   private readonly deviceIDLength = 5;
   private readonly charCombinations: string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -93,9 +94,7 @@ export class IdentifyDevicePage implements OnInit {
   onWiFiChangeClick() {
     this.mqttInterfaceService.connectToBroker([wifiConnectStatus + "/" + this.uniqueDeviceId]);
     this.mqttInterfaceService.wifiConnectStatus.pipe(take(1)).subscribe(resData => {
-      console.log("here");
       if(resData == true) {
-        console.log("true");
         switch(this.deviceType) {
           case "Hydrotek Fertigation System":
             this.modalController.dismiss({ type: "fertigation-system", topicId: this.uniqueDeviceId });
@@ -104,7 +103,7 @@ export class IdentifyDevicePage implements OnInit {
             this.modalController.dismiss({ type: "climate-controller", topicId: this.uniqueDeviceId });
             break;
           default:
-            console.log("Unknown Name");
+            console.warn("Unknown Device Type: " + this.deviceType);
             this.modalController.dismiss();
         }
       } else {

@@ -8,46 +8,38 @@ import { AddPowerOutletPage } from 'src/app/add-power-outlet/add-power-outlet.pa
 import { PowerOutlet } from 'src/app/models/power-outlet.model';
 
 @Component({
-  selector: 'water-temp',
-  templateUrl: './water-temp.component.html',
-  styleUrls: ['./water-temp.component.scss'],
+  selector: 'co2',
+  templateUrl: './co2.component.html',
+  styleUrls: ['./co2.component.scss'],
 })
-export class WaterTempComponent implements OnInit, OnDestroy {
+export class Co2Component implements OnInit, OnDestroy {
   isOpen: boolean = false;
 
   @Input() powerOutlets: PowerOutlet[];
   @Input() parentForm: FormGroup;
   @Output() newPowerOutletEvent = new EventEmitter<PowerOutlet>();
   
-  waterTemperatureForm: FormGroup;
+  co2Form: FormGroup;
   controlForm: FormGroup;
-  day_and_night_targetForm: FormGroup;
   
   constructor(private fb: FormBuilder, private modalController: ModalController,
     private twoValCompareValidator : TwoValCompareValidator,
-    private dayNightTargetValidator: DayNightTargetValidator,
     private atLeastOneEnableValidator: AtLeastOneEnableValidator) { }
 
   ngOnInit() {
     this.controlForm = this.fb.group({
-      'd_n_enabled': this.fb.control(true),
-      'day_tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
-      'night_tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
-      'tgt': this.fb.control(null, [Validators.min(0), Validators.max(50)]),
-      'up_ctrl': this.fb.control(false),
-      'down_ctrl': this.fb.control(false)
+      'tgt': this.fb.control(null, [Validators.min(0), Validators.max(10000)]),
+      'up_ctrl': this.fb.control(false)
     });
 
-    this.waterTemperatureForm = this.fb.group({
+    this.co2Form = this.fb.group({
       'monit_only': this.fb.control(false),
       'control': this.controlForm,
-      'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)]),
-      'alarm_max': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(49)])
-    }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min','alarm_max'),
-                     this.atLeastOneEnableValidator.atLeastOneEnable('monit_only', 'control', 'up_ctrl', 'down_ctrl'),
-                     this.dayNightTargetValidator.dayNightTarget('monit_only', 'control', 'tgt', 'day_tgt', 'night_tgt', 'd_n_enabled')]});
+      'alarm_min': this.fb.control(null, [Validators.required, Validators.min(0), Validators.max(9999)]),
+      'alarm_max': this.fb.control(null, [Validators.required, Validators.min(1), Validators.max(10000)])
+    }, {validators: [this.twoValCompareValidator.twoValCompare('alarm_min','alarm_max')]});
 
-    this.parentForm.addControl('water_temp', this.waterTemperatureForm);
+    this.parentForm.addControl('co2', this.co2Form);
     this.manualCheckValidity();
   }
 
@@ -57,7 +49,7 @@ export class WaterTempComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.parentForm.removeControl('water_temp');
+    this.parentForm.removeControl('co2');
   }
 
   isPowerOutletSetup(name: string): boolean {
@@ -85,8 +77,8 @@ export class WaterTempComponent implements OnInit, OnDestroy {
     for (let key in this.controlForm.controls) {
       this.controlForm.controls[key].updateValueAndValidity();
     }
-    for (let key in this.waterTemperatureForm.controls) {
-      this.waterTemperatureForm.controls[key].updateValueAndValidity();
+    for (let key in this.co2Form.controls) {
+      this.co2Form.controls[key].updateValueAndValidity();
     }
   }
 

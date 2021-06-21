@@ -109,6 +109,7 @@ export class GrowLightsComponent implements OnInit {
     modal.onWillDismiss().then((returnValue) => {
       if(returnValue.data) {
         if(!this.isPowerOutletSetup(powerOutletName)) {
+          this.growLightsForm.get('power_outlets')['controls'][index].patchValue( { is_control: true } );
           this.newPowerOutletEvent.emit(returnValue.data);
         }
       } else {

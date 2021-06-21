@@ -40,7 +40,7 @@ export class AddFertigationSystemPage implements OnInit {
 
   isLoading: boolean = false;
 
-  constructor(private router: Router, public variableManagementService: VariableManagementService, private fb: FormBuilder, private mqttService: MqttInterfaceService, private modalController: ModalController, private alertController: AlertController) { 
+  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private mqttService: MqttInterfaceService, private modalController: ModalController, private alertController: AlertController) { 
     if(this.variableManagementService.plants.length == 0){
       this.isLoading = true;
       this.variableManagementService.getPlants().subscribe(() => {

@@ -32,7 +32,6 @@ export class ControlPage implements OnInit {
   currentDeviceIndex: number;
 
   settingsForm: FormGroup = new FormGroup({});
-  powerOutlets: PowerOutlet[] = [];
   growLightArray = [];
 
   ph: boolean = true;
@@ -43,7 +42,8 @@ export class ControlPage implements OnInit {
   irrigation: boolean = true;
 
   humidity: boolean = true;
-  air_temperature: boolean = true;
+  airTemperature: boolean = true;
+  co2: boolean = true;
 
   formValue$: Observable<any>;
   isDirty: boolean = false;
@@ -68,10 +68,11 @@ export class ControlPage implements OnInit {
         this.currentDevice = this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
         this.changeDetector.detectChanges();
         this.settingsForm.patchValue(this.currentDevice.settings);
-        if(this.currentDevice.settings['grow_lights']['power_outlets']) {
-          this.growLightArray = this.currentDevice.settings['grow_lights']['power_outlets'];
+        if(this.currentDeviceType == FertigationSystemString) {
+          if(this.currentDevice.settings['grow_lights']['power_outlets']) {
+            this.growLightArray = this.currentDevice.settings['grow_lights']['power_outlets'];
+          }
         }
-        this.powerOutlets = this.currentDevice.power_outlets;
       } else {
         let fertigationSystemCount = this.variableManagementService.fertigationSystemSettings.value.length;
         let climateControllerCount = this.variableManagementService.climateControllerSettings.value.length;
@@ -102,44 +103,60 @@ export class ControlPage implements OnInit {
    
   // update data in backend
   onSettingsFormSubmit() {
-    console.warn(this.settingsForm);
+    console.log(this.settingsForm);
     if(!this.settingsForm.valid){
       console.warn("onSubmit with errors");
       this.presentInvalidSubmitDialog();
       return;
     }
-    console.warn("onSubmit valid");
-    this.presentValidSubmitDialog();
+    console.log("onSubmit valid");
     
-     var changedData = [];
-     for(var key in this.settingsForm.value){
-       if(!_.isMatch(this.settingsForm.value[key], this.currentDevice.settings[key])) {
+    var changedData = [];
+    for(var key in this.settingsForm.value) {
+      console.log(key);
+      console.log(this.settingsForm.value[key]);
+      let a = JSON.parse(JSON.stringify(this.settingsForm.value[key]));
+      let b = JSON.parse(JSON.stringify(this.currentDevice.settings[key]));
+      let isDirty = (_.isEqual(a, b) == false);
+      if(isDirty) {
+        console.log(key);
         changedData.push({ [key]: this.settingsForm.value[key] });
       }
     }
 
     if(changedData.length <= 0) {
+      console.warn("Attempted to save with even though no data changed");
       return;
     }
     
     console.log(changedData);
     this.mqttService.publishMessage(deviceSettingsTopic + "/" + this.currentDevice.topicID, JSON.stringify({ data: changedData}), 1, false).then(() => {
-      let device;
-      device = { ...this.currentDevice };
-      device.settings = this.settingsForm.value;
-      
+      console.log("123");
+      let tempDevice;
+      let device: Devices;
+      tempDevice = { ...this.currentDevice };
+      tempDevice.settings = this.settingsForm.value;
+      console.log("asdasd");
       if(this.currentDeviceType == FertigationSystemString) {
-        device = new FertigationSystem().deserialize(device);
+        console.log("fert");
+        device = new FertigationSystem().deserialize(tempDevice);
+        console.log(device);
       } 
       else if(this.currentDeviceType == ClimateControllerString) {
-        device = new ClimateController().deserialize(device);
+        console.log(tempDevice);
+        device = new ClimateController().deserialize(tempDevice);
+        console.log(device);
+      } else {
+        console.warn("Unable to Save to Cloud: Unkown Device Type");
+        return;
       }
-
+      console.log("hererer");
       this.variableManagementService
         .updateDeviceSettings(device, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex)
           .subscribe(() => {
             this.currentDevice = device;
             this.isDirty = false;
+            this.presentValidSubmitDialog();
           }, (error) => {console.log(error)});
     },
     (error) => {

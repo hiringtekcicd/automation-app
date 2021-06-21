@@ -18,11 +18,19 @@ export class AddPowerOutletPage implements OnInit {
 
   powerOutletStructure: PowerOutlet[] = 
   [
+      // Fertigation System Power Outlets
       new PowerOutlet("0", "Water Cooler", "snow-outline"),
       new PowerOutlet("1", "Water Heater", "flame-outline"),
       new PowerOutlet("2", "Irrigation", "water-outline"),
       new PowerOutlet("3", "Reservoir Water In", "return-down-back-outline"),
       new PowerOutlet("4", "Reservoir Water Out", "return-down-forward-outline"),
+      
+      // Climate Controller Power Outlets
+      new PowerOutlet("0", "CO2 Injector", "cloud-outline"),
+      new PowerOutlet("1", "Air Heater", "flame-outline"),
+      new PowerOutlet("2", "Air Cooler", "snow-outline"),
+      new PowerOutlet("3", "Humidifier", "water-outline"),
+      new PowerOutlet("4", "Dehumidifier", "umbrella-outline")
   ]
 
   constructor(public modalController: ModalController, private mqttService: MqttInterfaceService) { 
