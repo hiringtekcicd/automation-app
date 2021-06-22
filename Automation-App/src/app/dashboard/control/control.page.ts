@@ -120,7 +120,12 @@ export class ControlPage implements OnInit {
       let isDirty = (_.isEqual(a, b) == false);
       if(isDirty) {
         console.log(key);
-        changedData.push({ [key]: this.settingsForm.value[key] });
+        changedData.push({
+          topic: deviceSettingsTopic + "/" + this.currentDevice.topicID,
+          payload: JSON.stringify({ [key]: this.settingsForm.value[key] }),
+          qos: 1,
+          retained: false
+        });
       }
     }
 
@@ -130,7 +135,7 @@ export class ControlPage implements OnInit {
     }
     
     console.log(changedData);
-    this.mqttService.publishMessage(deviceSettingsTopic + "/" + this.currentDevice.topicID, JSON.stringify({ data: changedData}), 1, false).then(() => {
+    this.mqttService.publishMultipleMessages(changedData).then(() => {
       console.log("123");
       let tempDevice;
       let device: Devices;
@@ -157,10 +162,10 @@ export class ControlPage implements OnInit {
             this.currentDevice = device;
             this.isDirty = false;
             this.presentValidSubmitDialog();
-          }, (error) => {console.log(error)});
+          }, (error) => {console.warn(error)});
     },
     (error) => {
-      console.log(error);
+      console.warn(error);
     });
   }
 

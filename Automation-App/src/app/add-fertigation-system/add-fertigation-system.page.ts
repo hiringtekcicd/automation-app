@@ -86,7 +86,7 @@ export class AddFertigationSystemPage implements OnInit {
         this.variableManagementService.createFertigationSystem(new FertigationSystem().deserialize(fertigationSystem)).subscribe(() => {
           this.dismiss();
         }, error => {
-          console.log(error);
+          console.warn(error);
           this.presentMongoPushError();
         });
 
@@ -95,7 +95,7 @@ export class AddFertigationSystemPage implements OnInit {
         this.presentDevicePushError();
       }
     }).catch((error) => {
-      console.log(error);
+      console.warn(error);
       this.presentDevicePushError();
     });
   }
