@@ -12,6 +12,7 @@ import { manualRfControl } from '../Services/topicKeys';
 export class AddPowerOutletPage implements OnInit {
 
   @Input() powerOutletName: string;
+  @Input() topicID: string;
 
   powerOutletIndex = -1;
   outletToggleVal = false;
@@ -54,8 +55,8 @@ export class AddPowerOutletPage implements OnInit {
         [this.powerOutletStructure[this.powerOutletIndex].id]: this.outletToggleVal
       }
       let outletJsonString = JSON.stringify(outletObj);
-      // TODO: change to variable topicID
-      this.mqttService.publishMessage(manualRfControl + "/a23b5", outletJsonString, 1, false);
+      console.log(this.topicID);
+      this.mqttService.publishMessage(manualRfControl + "/" + this.topicID, outletJsonString, 1, false);
     } else {
       console.log("Power Outlet Name Not Found. Current Index: " + this.powerOutletIndex);
     }

@@ -17,6 +17,8 @@ export class WaterTempComponent implements OnInit, OnDestroy {
 
   @Input() powerOutlets: PowerOutlet[];
   @Input() parentForm: FormGroup;
+  @Input() topicID: string;
+
   @Output() newPowerOutletEvent = new EventEmitter<PowerOutlet>();
   
   waterTemperatureForm: FormGroup;
@@ -94,7 +96,8 @@ export class WaterTempComponent implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: AddPowerOutletPage,
       componentProps: {
-        'powerOutletName': powerOutletName
+        'powerOutletName': powerOutletName,
+        'topicID': this.topicID
       }
     });
 

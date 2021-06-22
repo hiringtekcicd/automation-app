@@ -17,6 +17,8 @@ export class Co2Component implements OnInit, OnDestroy {
 
   @Input() powerOutlets: PowerOutlet[];
   @Input() parentForm: FormGroup;
+  @Input() topicID: string;
+  
   @Output() newPowerOutletEvent = new EventEmitter<PowerOutlet>();
   
   co2Form: FormGroup;
@@ -86,7 +88,8 @@ export class Co2Component implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: AddPowerOutletPage,
       componentProps: {
-        'powerOutletName': powerOutletName
+        'powerOutletName': powerOutletName,
+        'topicID': this.topicID
       }
     });
 

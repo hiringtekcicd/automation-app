@@ -39,9 +39,9 @@
         </ion-card-content>
       </ion-card>
       <h2>Sensor List</h2>
-      <air-temperature *ngIf="airTemperature" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></air-temperature>
-      <humidity *ngIf="humidity" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></humidity>
-      <co2 *ngIf="co2" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" (newPowerOutletEvent)="onAddPowerOutlet($event)"></co2>
+      <air-temperature *ngIf="airTemperature" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" [topicID]="this.topicId" (newPowerOutletEvent)="onAddPowerOutlet($event)"></air-temperature>
+      <humidity *ngIf="humidity" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" [topicID]="this.topicId" (newPowerOutletEvent)="onAddPowerOutlet($event)"></humidity>
+      <co2 *ngIf="co2" [parentForm]="settingsForm" [powerOutlets]="powerOutlets" [topicID]="this.topicId" (newPowerOutletEvent)="onAddPowerOutlet($event)"></co2>
     </form>
   </div>
 </ion-content>

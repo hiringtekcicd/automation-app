@@ -14,6 +14,8 @@ export class GrowLightsComponent implements OnInit {
 
   @Input() parentForm: FormGroup;
   @Input() powerOutlets: PowerOutlet[];
+  @Input() topicID: string;
+
   @Input() set powerOutletArray(array: [{ name: string, is_control: boolean }]) {
     if(this.powerOutletsArray) {
       this.powerOutletsArray.clear();
@@ -102,7 +104,8 @@ export class GrowLightsComponent implements OnInit {
     const modal = await this.modalController.create({
       component: AddPowerOutletPage,
       componentProps: {
-        'powerOutletName': powerOutletName
+        'powerOutletName': powerOutletName,
+        'topicID': this.topicID
       }
     });
 
