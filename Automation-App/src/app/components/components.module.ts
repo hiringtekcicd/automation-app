@@ -1,3 +1,4 @@
+import { SensorGraphComponent } from './sensor-graph/sensor-graph.component';
 import { CameraComponent } from './camera/camera.component';
 import { NgModule, Component } from '@angular/core';
 import { SensorDisplayComponent } from './sensor-display/sensor-display.component';
@@ -16,9 +17,9 @@ import { IrrigationComponent } from './irrigation/irrigation.component';
 import { PowerOutletComponent } from './power-outlet/power-outlet.component';
 
 @NgModule({
-    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent],
+    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, SensorGraphComponent],
     imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule],
-    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent]
+    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, SensorGraphComponent]
 })
 
 export class ComponentsModule {}

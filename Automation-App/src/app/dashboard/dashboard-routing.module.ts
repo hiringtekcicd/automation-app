@@ -34,12 +34,18 @@ const routes: Routes = [
     loadChildren: () => import('./cameras/cameras.module').then( m => m.CamerasPageModule)
   },
   {
+    path: 'analytics',
+    loadChildren: () => import('./analytics/analytics.module').then( m => m.AnalyticsPageModule)
+  },
+  {
     path: '',
     redirectTo: '/dashboard/monitoring',
     pathMatch: 'full'
   }
  ]
 },
+  
+
   
   // {
   //   path: '',
