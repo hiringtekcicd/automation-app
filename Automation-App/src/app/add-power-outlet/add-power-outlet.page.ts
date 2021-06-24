@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { PowerOutlet } from '../models/power-outlet.model';
 import { MqttInterfaceService } from '../Services/mqtt-interface.service';
 import { manualRfControlTopic } from '../Services/topicKeys';
@@ -34,7 +34,7 @@ export class AddPowerOutletPage implements OnInit {
       new PowerOutlet("4", "Dehumidifier", "umbrella-outline")
   ]
 
-  constructor(public modalController: ModalController, private mqttService: MqttInterfaceService) { 
+  constructor(public modalController: ModalController, private mqttService: MqttInterfaceService, private alertController: AlertController) { 
     for(var i = 1; i < 11; i++) {
       this.powerOutletStructure.push(new PowerOutlet((i + 4).toString(), "Grow Light " + i, "sunny-outline"));
     }
@@ -56,9 +56,13 @@ export class AddPowerOutletPage implements OnInit {
       }
       let outletJsonString = JSON.stringify(outletObj);
       console.log(this.topicID);
-      this.mqttService.publishMessage(manualRfControlTopic + "/" + this.topicID, outletJsonString, 1, false);
+      this.mqttService.publishMessage(manualRfControlTopic + "/" + this.topicID, outletJsonString, 1, false).catch((error) => {
+        console.log(error);
+        this.presentPowerOutletToggleError(this.outletToggleVal, this.powerOutletName);
+        this.outletToggleVal = !this.outletToggleVal; 
+      });
     } else {
-      console.log("Power Outlet Name Not Found. Current Index: " + this.powerOutletIndex);
+      console.warn("Power Outlet Name Not Found. Current Index: " + this.powerOutletIndex);
     }
 
   }
@@ -67,4 +71,17 @@ export class AddPowerOutletPage implements OnInit {
     this.modalController.dismiss(this.powerOutletStructure[this.powerOutletIndex]);
   }
 
+  async presentPowerOutletToggleError(state: boolean, outletName: string) {
+    let outletState = 'off';
+    if(state) {
+      outletState = 'on';
+    } 
+
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Unable to turn ' + outletState + ' ' + outletName,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
 }

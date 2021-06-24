@@ -170,13 +170,45 @@ export class VariableManagementService {
         endPointURL = ClimateControllerString;
         deviceSubject = this.climateControllerSettings;
         break;
-      // TODO Add error checking
+      default:
+        console.warn("Device type of " + deviceType + " does not exist");
+        return;
     }
     return this.http.put(this.dbURL + "/" + endPointURL + "-settings/update/" + deviceID, device)
       .pipe(switchMap(() => {
         let updatedDevicesArray = deviceSubject.value;
         console.log(device);
         updatedDevicesArray[deviceIndex] = device;
+        return this.storageService.set(localStorageKey, updatedDevicesArray).pipe(tap(() => {
+          deviceSubject.next(updatedDevicesArray);
+          console.log(deviceSubject.value);
+        }))
+      }));
+  }
+
+  public updateDeviceStartedStatus(deviceStatus: boolean, deviceType: string, deviceID: string, deviceIndex: number) {
+    let endPointURL = "";
+    let localStorageKey = "";
+    let deviceSubject: BehaviorSubject<Devices[]>;
+    switch(deviceType){
+      case FertigationSystemString:
+        localStorageKey = "fertigationSystems";
+        endPointURL = FertigationSystemString;
+        deviceSubject = this.fertigationSystemSettings;
+        break;
+      case ClimateControllerString:
+        localStorageKey = "climateControllers";
+        endPointURL = ClimateControllerString;
+        deviceSubject = this.climateControllerSettings;
+        break;
+      default:
+        console.warn("Device type of " + deviceType + " does not exist");
+        return;
+    }
+    return this.http.put(this.dbURL + "/" + endPointURL + "-settings/device-started/" + deviceID, deviceStatus)
+      .pipe(switchMap(() => {
+        let updatedDevicesArray = deviceSubject.value;
+        updatedDevicesArray[deviceIndex].device_started = deviceStatus;
         return this.storageService.set(localStorageKey, updatedDevicesArray).pipe(tap(() => {
           deviceSubject.next(updatedDevicesArray);
           console.log(deviceSubject.value);

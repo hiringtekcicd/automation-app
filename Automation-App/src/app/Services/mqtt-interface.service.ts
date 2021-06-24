@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { filter, take, timeout } from 'rxjs/operators';
 
 declare const Paho: any;
 declare const document: any;
@@ -123,19 +123,16 @@ export class MqttInterfaceService {
   }
 
   public publishMessage(topic: string, payload: string, qos?: number, retained?: boolean): Promise<any> {
-      console.log('msg, topic', topic, payload);
+      console.log('Attempting to publish: msg, topic', topic, payload);
 
-      let publishPromise = new Promise(() => {
-        var message = new Paho.Message(payload);
-        message.topic = topic;
-        qos ? message.qos = qos : 1;
-        qos ? message.retained = retained : false;
-        this.client.publish(message);
-      });
-      
+      var message = new Paho.Message(payload);
+      message.topic = topic;
+      qos ? message.qos = qos : message.qos = 1;
+      qos ? message.retained = retained : message.retained = false;
+
       let messageConfirmationPromise = new Promise<void>((resolve, reject) => {
-        this.messageConfirmation.pipe(filter((message) => message == payload), take(1)).subscribe(() => {
-          console.log("resolved");
+        this.messageConfirmation.pipe(timeout(10 * 10000),filter((message) => message == payload), take(1)).subscribe(() => {
+          console.log('Successfully published: msg, topic', topic, payload);
           resolve();
         },
         (error) => {
@@ -143,16 +140,13 @@ export class MqttInterfaceService {
         });
       });
 
-      let timeOutPromise = new Promise((resolve, reject) => {
-        setTimeout(() => {
-          reject("timeout");
-        }, 10000);
-      })
+      this.client.publish(message);
 
-      return Promise.race([messageConfirmationPromise, timeOutPromise, publishPromise]);
+      return messageConfirmationPromise;
   };
 
   public onMessageDelivered(ResponseObject) {
+    console.log(ResponseObject);
     this.messageConfirmation.next(ResponseObject.payloadString);
   }
 

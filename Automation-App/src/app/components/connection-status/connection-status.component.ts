@@ -24,7 +24,7 @@ export class ConnectionStatusComponent implements OnInit {
       element.classList.add("mqtt-success");
       setTimeout(() => {
         this.showBanner = false;
-      }, 10000);
+      }, 5000);
 
     } else if (value == ConnectionStatus.UNABLE_TO_REACH_BROKER) {
       this.message = "Unable to reach Hydrotek server";

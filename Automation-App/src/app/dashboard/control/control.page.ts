@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Devices, FertigationSystemString, ClimateControllerString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { FormGroup } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs/operators';
-import { ModalController, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import * as _ from "lodash";
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
@@ -95,9 +95,17 @@ export class ControlPage implements OnInit {
   }
 
   onBootButtonClick() {
-    this.currentDevice.device_started = !this.currentDevice.device_started;
-    this.mqttService.publishMessage(deviceStatusTopic + "/" + this.currentDevice.topicID, this.currentDevice.device_started? "1" : "0");
-    this.onSettingsFormSubmit();    
+    this.mqttService.publishMessage(deviceStatusTopic + "/" + this.currentDevice.topicID, this.currentDevice.device_started? "1" : "0").then(() => {
+      this.variableManagementService.updateDeviceStartedStatus(!this.currentDevice.device_started, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex).subscribe(() => {
+        console.log("Published Device Status");
+      }, (error) => {
+        console.warn(error);
+        this.presentDeviceStartedError(this.currentDevice.device_started);
+      });
+    }).catch(error => {
+      console.warn(error);
+      this.presentDeviceStartedError(this.currentDevice.device_started);
+    });
   }
    
   // update data in backend
@@ -177,6 +185,20 @@ export class ControlPage implements OnInit {
     const alert = await this.alertController.create({
       header: "Successfully Saved",
       message: "The information has been successfully saved.",
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  async presentDeviceStartedError(state: boolean) {
+    let outletState = 'off';
+    if(state) {
+      outletState = 'on';
+    } 
+
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Unable to turn ' + outletState + ' device',
       buttons: ['OK']
     });
     await alert.present();
