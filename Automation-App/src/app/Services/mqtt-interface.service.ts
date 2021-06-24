@@ -12,7 +12,7 @@ const PORT = 9001;
 
 export class MqttInterfaceService {
   private status: string[] = ['uninitialized', 'connecting', 'connected', 'disconnected'];
-  public mqttStatus = new BehaviorSubject(status[0]);
+  public mqttStatus = new BehaviorSubject<ConnectionStatus>(ConnectionStatus.UNINITIALIZED);
 
   public deviceLiveData = new Subject<string>();
   public wifiConnectStatus = new Subject<boolean>();
@@ -22,6 +22,8 @@ export class MqttInterfaceService {
   public client: any;
 
   private messageConfirmation = new Subject<string>();
+
+  private reconnectDelay = 3000;
 
   private scripts: any = {};
   private ScriptStore: Scripts[] = [
@@ -85,7 +87,7 @@ export class MqttInterfaceService {
       path?: string,
     }): any {
     return this._load('paho_mqtt').then(() => {
-      this.mqttStatus.next(this.status[1]);
+      this.mqttStatus.next(ConnectionStatus.CONNECTING);
       this.client = new Paho.Client(MQTT_CONFIG.host, Number(MQTT_CONFIG.port) || PORT, MQTT_CONFIG.path || "/mqtt", MQTT_CONFIG.clientId || CLIENTID);
       this.client.onConnectionLost = this.onConnectionLost.bind(this);
       this.client.onMessageArrived = this.onMessageArrived.bind(this);
@@ -102,7 +104,8 @@ export class MqttInterfaceService {
     return this.client.connect(
       {
         onSuccess: this._onConnect.bind(this, topic),
-        onFailure: this._onConnectionFailure.bind(this)
+        onFailure: this._onConnectionFailure.bind(this, topic),
+        reconnect: true
     });
   }
   
@@ -183,7 +186,7 @@ export class MqttInterfaceService {
 
   onConnectionLost(ResponseObject) {
     console.log(ResponseObject);
-    this.mqttStatus.next('connection lost');
+    this.mqttStatus.next(ConnectionStatus.RECONNECTING);
   }
     
   public publishUpdate(topic: string, payload: string): void {
@@ -219,20 +222,42 @@ export class MqttInterfaceService {
       this.client.subscribe(tp);
     });
     console.log("connected");
-    this.mqttStatus.next(this.status[2]);
+    this.mqttStatus.next(ConnectionStatus.CONNECTED);
     return this.client;
   }
 
-  _onConnectionFailure(){
-    console.log("Error");
+  _onConnectionFailure(topic: string[], error){
+    console.warn(error);
+
+    this.mqttStatus.next(ConnectionStatus.RECONNECTING);
+
+    if(error.errorCode == 7) {
+      this.mqttStatus.next(ConnectionStatus.UNABLE_TO_REACH_BROKER);
+    } 
+      
+    setTimeout(() => {
+      this.connectToBroker(topic);
+    }, this.reconnectDelay);
+
+    if(this.reconnectDelay < 120000) {
+      this.reconnectDelay *= 2;
+    }  
   }
 
   public disconnectClient() {
     this.client.disconnect();
-    this.mqttStatus.next(this.status[3]);
+    this.mqttStatus.next(ConnectionStatus.DISCONNECTED);
   }
 }
 
+export enum ConnectionStatus {
+  UNINITIALIZED,
+  CONNECTING,
+  RECONNECTING,
+  CONNECTED,
+  DISCONNECTED,
+  UNABLE_TO_REACH_BROKER
+}
 
 interface Scripts {
    name: string;

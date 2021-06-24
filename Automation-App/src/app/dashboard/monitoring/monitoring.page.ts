@@ -1,12 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { filter, map, skip } from "rxjs/operators";
-import { MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
+import { ConnectionStatus, MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActionSheetController, ModalController } from '@ionic/angular';
 import { Devices } from 'src/app/Services/variable-management.service';
 import { SensorMonitoringWidget } from 'src/app/components/sensor-display/sensor-display.component';
 import { EquipmentStatus } from "src/app/models/equipment-status";
+import { equipmentStatusTopic, liveDataTopic } from "src/app/Services/topicKeys";
 
 @Component({
   selector: "app-monitoring",
@@ -22,11 +23,10 @@ export class MonitoringPage implements OnInit {
   deviceName: string;
   timestamp: string;
   noDevices: boolean;
-  noMqttConnection: boolean;
 
   equipmentStatus: EquipmentStatus;
 
-  constructor(private mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController, private router: Router) { }
+  constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private actionSheetController: ActionSheetController, private modalController: ModalController, private router: Router) { }
  
   ngOnInit() {
     this.variableManagementService.fertigationSystemSettings.subscribe(resData =>{
@@ -110,18 +110,15 @@ export class MonitoringPage implements OnInit {
   }
 
   startMqttProcessing() {
-    this.mqttService.mqttStatus.pipe(skip(1)).subscribe(status => {
+    this.mqttService.mqttStatus.pipe().subscribe(status => {
       console.log(status);
+      
       switch(status) {
-        case "connected": {
-          this.mqttService.unsubscribeToTopic('live_data/#');
-          this.mqttService.unsubscribeToTopic('equipment_status/#');
-          this.mqttService.subscribeToTopic('live_data/' + this.currentDevice.topicID + '/#');
-          this.mqttService.subscribeToTopic('equipment_status/' + this.currentDevice.topicID);
-          break;
-        }
-        case "disconnected": {
-          this.noMqttConnection = true;
+        case ConnectionStatus.CONNECTED: {
+          this.mqttService.unsubscribeToTopic(liveDataTopic + '/#');
+          this.mqttService.unsubscribeToTopic(equipmentStatusTopic + '/#');
+          this.mqttService.subscribeToTopic(liveDataTopic + '/' + this.currentDevice.topicID + '/#');
+          this.mqttService.subscribeToTopic(equipmentStatusTopic + '/' + this.currentDevice.topicID);
           break;
         }
       }

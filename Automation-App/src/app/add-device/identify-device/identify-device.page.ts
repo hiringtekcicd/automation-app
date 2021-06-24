@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { take } from 'rxjs/operators';
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
-import { wifiConnectStatus } from 'src/app/Services/topicKeys';
+import { wifiConnectStatusTopic } from 'src/app/Services/topicKeys';
 import { VariableManagementService } from 'src/app/Services/variable-management.service';
 
 @Component({
@@ -92,7 +92,7 @@ export class IdentifyDevicePage implements OnInit {
   }
 
   onWiFiChangeClick() {
-    this.mqttInterfaceService.connectToBroker([wifiConnectStatus + "/" + this.uniqueDeviceId]);
+    this.mqttInterfaceService.connectToBroker([wifiConnectStatusTopic + "/" + this.uniqueDeviceId]);
     this.mqttInterfaceService.wifiConnectStatus.pipe(take(1)).subscribe(resData => {
       if(resData == true) {
         switch(this.deviceType) {
@@ -111,7 +111,7 @@ export class IdentifyDevicePage implements OnInit {
       }
     });
     setTimeout(() => { 
-      this.mqttInterfaceService.unsubscribeToTopic(wifiConnectStatus + "/" + this.uniqueDeviceId);
+      this.mqttInterfaceService.unsubscribeToTopic(wifiConnectStatusTopic + "/" + this.uniqueDeviceId);
       this.mqttInterfaceService.wifiConnectStatus.next(false);
     }, 180000);
   }

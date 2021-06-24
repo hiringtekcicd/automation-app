@@ -49,9 +49,8 @@ export class ControlPage implements OnInit {
   isDirty: boolean = false;
 
   constructor(public variableManagementService: VariableManagementService, 
+    public mqttService: MqttInterfaceService, 
     private changeDetector: ChangeDetectorRef, 
-    private modalController: ModalController, 
-    private mqttService: MqttInterfaceService, 
     private route: ActivatedRoute,
     private alertController: AlertController) { 
     this.mqttService.mqttStatus.subscribe((status) => {
@@ -136,14 +135,11 @@ export class ControlPage implements OnInit {
     
     console.log(changedData);
     this.mqttService.publishMultipleMessages(changedData).then(() => {
-      console.log("123");
       let tempDevice;
       let device: Devices;
       tempDevice = { ...this.currentDevice };
       tempDevice.settings = this.settingsForm.value;
-      console.log("asdasd");
       if(this.currentDeviceType == FertigationSystemString) {
-        console.log("fert");
         device = new FertigationSystem().deserialize(tempDevice);
         console.log(device);
       } 
@@ -155,7 +151,6 @@ export class ControlPage implements OnInit {
         console.warn("Unable to Save to Cloud: Unkown Device Type");
         return;
       }
-      console.log("hererer");
       this.variableManagementService
         .updateDeviceSettings(device, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex)
           .subscribe(() => {

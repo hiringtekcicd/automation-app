@@ -16,7 +16,7 @@
         <ion-card-content>
           <ion-list *ngIf="currentDevice.power_outlets.length > 0">
             <div *ngFor="let powerOutlet of currentDevice.power_outlets">
-              <power-outlet [data]="powerOutlet"></power-outlet>
+              <power-outlet [data]="powerOutlet" [topicID]="this.currentDevice.topicID"></power-outlet>
             </div>
           </ion-list>
           <div *ngIf="currentDevice.power_outlets.length <= 0">
