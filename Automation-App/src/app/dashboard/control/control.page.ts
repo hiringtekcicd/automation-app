@@ -11,6 +11,7 @@ import { FertigationSystem } from 'src/app/models/fertigation-system.model';
 import { ClimateController } from 'src/app/models/climate-controller.model';
 import { PowerOutlet } from 'src/app/models/power-outlet.model';
 import { deviceSettingsTopic, deviceStatusTopic } from 'src/app/Services/topicKeys';
+import { AlertLoadingService } from 'src/app/Services/alert-loading.service';
 
 @Component({
   selector: 'app-control',
@@ -50,6 +51,7 @@ export class ControlPage implements OnInit {
 
   constructor(public variableManagementService: VariableManagementService, 
     public mqttService: MqttInterfaceService, 
+    private alertLoadingService: AlertLoadingService,
     private changeDetector: ChangeDetectorRef, 
     private route: ActivatedRoute,
     private alertController: AlertController) { 
@@ -95,16 +97,25 @@ export class ControlPage implements OnInit {
   }
 
   onBootButtonClick() {
-    this.mqttService.publishMessage(deviceStatusTopic + "/" + this.currentDevice.topicID, this.currentDevice.device_started? "1" : "0").then(() => {
-      this.variableManagementService.updateDeviceStartedStatus(!this.currentDevice.device_started, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex).subscribe(() => {
+    let outletState = "off";
+    let isDeviceStarted = !this.currentDevice.device_started;
+    if(isDeviceStarted) outletState = "on";
+    this.alertLoadingService.presentLoadingScreen("Turning " + this.currentDevice.name + " " + outletState);
+
+    this.mqttService.publishMessage(deviceStatusTopic + "/" + this.currentDevice.topicID, isDeviceStarted? "1" : "0").then(() => {
+      this.alertLoadingService.dismissLoadingScreen();
+      this.variableManagementService.updateDeviceStartedStatus(isDeviceStarted, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex).subscribe(() => {
+        this.presentDeviceToggledDialog(isDeviceStarted, this.currentDevice.name);
         console.log("Published Device Status");
       }, (error) => {
         console.warn(error);
-        this.presentDeviceStartedError(this.currentDevice.device_started);
+        this.alertLoadingService.dismissLoadingScreen();
+        this.presentDeviceStartedError(isDeviceStarted);
       });
     }).catch(error => {
-      console.warn(error);
-      this.presentDeviceStartedError(this.currentDevice.device_started);
+      console.warn("asddddddddd", error);
+      this.alertLoadingService.dismissLoadingScreen();
+      this.presentDeviceStartedError(isDeviceStarted);
     });
   }
    
@@ -116,7 +127,6 @@ export class ControlPage implements OnInit {
       this.presentInvalidSubmitDialog();
       return;
     }
-    console.log("onSubmit valid");
     
     var changedData = [];
     for(var key in this.settingsForm.value) {
@@ -140,6 +150,8 @@ export class ControlPage implements OnInit {
       console.warn("Attempted to save with even though no data changed");
       return;
     }
+
+    this.alertLoadingService.presentLoadingScreen("Saving Data");
     
     console.log(changedData);
     this.mqttService.publishMultipleMessages(changedData).then(() => {
@@ -164,10 +176,17 @@ export class ControlPage implements OnInit {
           .subscribe(() => {
             this.currentDevice = device;
             this.isDirty = false;
+            this.alertLoadingService.dismissLoadingScreen();
             this.presentValidSubmitDialog();
-          }, (error) => {console.warn(error)});
+          }, (error) => {
+            this.alertLoadingService.dismissLoadingScreen();
+            this.alertLoadingService.presentMongoPushError();
+            console.warn(error);
+          });
     },
     (error) => {
+      this.alertLoadingService.dismissLoadingScreen();
+      this.alertLoadingService.presentPushSettingsToDeviceError();
       console.warn(error);
     });
   }
@@ -185,6 +204,19 @@ export class ControlPage implements OnInit {
     const alert = await this.alertController.create({
       header: "Successfully Saved",
       message: "The information has been successfully saved.",
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  async presentDeviceToggledDialog(state: boolean, name: string){
+    let outletState = 'off';
+    if(state) {
+      outletState = 'on';
+    } 
+    const alert = await this.alertController.create({
+      header: "Saved",
+      message: name + " was turned " + outletState,
       buttons: ['OK']
     });
     await alert.present();

@@ -92,14 +92,18 @@ export class IdentifyDevicePage implements OnInit {
   }
 
   onWiFiChangeClick() {
-    this.mqttInterfaceService.connectToBroker([wifiConnectStatusTopic + "/" + this.uniqueDeviceId]);
+    console.log("change wifi");
+    this.mqttInterfaceService.subscribeToTopic(wifiConnectStatusTopic + "/" + this.uniqueDeviceId);
     this.mqttInterfaceService.wifiConnectStatus.pipe(take(1)).subscribe(resData => {
+      console.log("asdddddddddddd");
       if(resData == true) {
         switch(this.deviceType) {
           case "Hydrotek Fertigation System":
+            console.log("Fertigation System Identified");
             this.modalController.dismiss({ type: "fertigation-system", topicId: this.uniqueDeviceId });
             break;
           case "Hydrotek Climate Controller":
+            console.log("climate controller identified");
             this.modalController.dismiss({ type: "climate-controller", topicId: this.uniqueDeviceId });
             break;
           default:

@@ -11,7 +11,6 @@ const PORT = 9001;
 @Injectable({providedIn: "root"})
 
 export class MqttInterfaceService {
-  private status: string[] = ['uninitialized', 'connecting', 'connected', 'disconnected'];
   public mqttStatus = new BehaviorSubject<ConnectionStatus>(ConnectionStatus.UNINITIALIZED);
 
   public deviceLiveData = new Subject<string>();
@@ -131,18 +130,21 @@ export class MqttInterfaceService {
       qos ? message.retained = retained : message.retained = false;
 
       let messageConfirmationPromise = new Promise<void>((resolve, reject) => {
-        this.messageConfirmation.pipe(timeout(10 * 10000),filter((message) => message == payload), take(1)).subscribe(() => {
+        this.messageConfirmation.pipe(timeout(10 * 1000),filter((message) => message == payload), take(1)).subscribe(() => {
           console.log('Successfully published: msg, topic', topic, payload);
           resolve();
         },
         (error) => {
+          console.log(error);
           reject(error);
         });
       });
 
-      this.client.publish(message);
+      let publishPromise = new Promise(() => {
+        this.client.publish(message);
+      });
 
-      return messageConfirmationPromise;
+      return Promise.race([messageConfirmationPromise, publishPromise]);
   };
 
   public onMessageDelivered(ResponseObject) {
