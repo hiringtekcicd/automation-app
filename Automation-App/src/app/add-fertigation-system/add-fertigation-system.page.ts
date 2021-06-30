@@ -50,7 +50,6 @@ export class AddFertigationSystemPage implements OnInit {
       this.isLoading = false;
     }
     this.fertigationSystemForm = this.fb.group({
-      'name': this.fb.control(null),
      // 'plant_name': this.fb.control(null),
       'settings': this.settingsForm
     });
@@ -74,7 +73,7 @@ export class AddFertigationSystemPage implements OnInit {
     this.mqttService.publishMultipleMessages(messages).then((index) => {
       if(index == messages.length) {
         let fertigationSystem = {
-          name: this.fertigationSystemForm.get("name").value,
+          name: this.fertigationSystemForm.get(["general_settings", "name"]).value,
           topicID: this.topicId,
           type: "fertigation-system",
           settings: this.settingsForm.value,
