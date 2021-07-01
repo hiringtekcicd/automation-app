@@ -86,7 +86,6 @@ export class MqttInterfaceService {
       path?: string,
     }): any {
     return this._load('paho_mqtt').then(() => {
-      this.mqttStatus.next(ConnectionStatus.CONNECTING);
       this.client = new Paho.Client(MQTT_CONFIG.host, Number(MQTT_CONFIG.port) || PORT, MQTT_CONFIG.path || "/mqtt", MQTT_CONFIG.clientId || CLIENTID);
       this.client.onConnectionLost = this.onConnectionLost.bind(this);
       this.client.onMessageArrived = this.onMessageArrived.bind(this);
@@ -100,12 +99,18 @@ export class MqttInterfaceService {
   public connectToBroker(topic: string[]) {
     console.log(topic);
     console.log(this.client);
-    return this.client.connect(
-      {
-        onSuccess: this._onConnect.bind(this, topic),
-        onFailure: this._onConnectionFailure.bind(this, topic),
-        reconnect: true
-    });
+    this.mqttStatus.next(ConnectionStatus.CONNECTING);
+    try {
+      return this.client.connect(
+        {
+          onSuccess: this._onConnect.bind(this, topic),
+          onFailure: this._onConnectionFailure.bind(this, topic),
+          reconnect: true
+      });
+    } catch (error) {
+      console.warn(error);
+      return error; 
+    }
   }
   
   public async publishMultipleMessages(messagesArray: {topic: string, payload: string, qos?: number, retained?: boolean}[]) {
@@ -214,6 +219,7 @@ export class MqttInterfaceService {
   }
 
   private _onConnect(topic: string[]) {
+    this.reconnectDelay = 3000;
     topic.forEach((tp) => {
       this.client.subscribe(tp);
     });
@@ -240,9 +246,15 @@ export class MqttInterfaceService {
     }  
   }
 
-  public disconnectClient() {
-    this.client.disconnect();
-    this.mqttStatus.next(ConnectionStatus.DISCONNECTED);
+  public async disconnectClient() {
+    try {
+      await this.client.disconnect();
+      this.mqttStatus.next(ConnectionStatus.DISCONNECTED);
+      return true;
+    } catch (error) {
+      console.warn(error);
+      throw error;
+    }
   }
 }
 
