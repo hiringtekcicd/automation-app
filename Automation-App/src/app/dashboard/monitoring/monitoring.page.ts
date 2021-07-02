@@ -21,7 +21,7 @@ export class MonitoringPage implements OnInit {
   liveData: string[];
 
   deviceName: string;
-  timestamp: string;
+  timestamp: string = "N/A";
   noDevices: boolean;
 
   equipmentStatus: EquipmentStatus;

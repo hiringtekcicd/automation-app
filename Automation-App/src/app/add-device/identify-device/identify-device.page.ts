@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { filter, take } from 'rxjs/operators';
@@ -31,8 +31,8 @@ export class IdentifyDevicePage implements OnInit {
   
   constructor(private modalController: ModalController, private http: HttpClient, private alertController: AlertController, private router: Router, private fb: FormBuilder, private mqttInterfaceService: MqttInterfaceService, private varmanService: VariableManagementService) { 
     this.wifiSettingsForm = this.fb.group({
-      'wifi_ssid': this.fb.control(null),
-      'wifi_password': this.fb.control(null)
+      'wifi_ssid': this.fb.control(null, [Validators.required]),
+      'wifi_password': this.fb.control(null, [Validators.required])
     });
   }
 

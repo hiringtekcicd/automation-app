@@ -6,7 +6,7 @@ import { FertigationSystem } from '../models/fertigation-system.model';
 import { PowerOutlet } from '../models/power-outlet.model';
 import { MqttInterfaceService } from '../Services/mqtt-interface.service';
 import { deviceSettingsTopic } from '../Services/topicKeys';
-import { VariableManagementService, plant } from '../Services/variable-management.service';
+import { VariableManagementService } from '../Services/variable-management.service';
 
 @Component({
   selector: 'add-fertigation-system',
@@ -27,30 +27,15 @@ export class AddFertigationSystemPage implements OnInit {
   powerOutlets: PowerOutlet[] = [];
   growLightArray: PowerOutlet[] = [];
 
-  plantName: string;
-
   fertigationSystem: FertigationSystem;
 
   fertigationSystemForm: FormGroup = new FormGroup({});
   settingsForm: FormGroup = new FormGroup({});
 
-  plantAlertOptions: any = {
-    header: "Plant Name"
-  }
-
   isLoading: boolean = false;
 
   constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private mqttService: MqttInterfaceService, private modalController: ModalController, private alertController: AlertController) { 
-    if(this.variableManagementService.plants.length == 0){
-      this.isLoading = true;
-      this.variableManagementService.getPlants().subscribe(() => {
-        this.isLoading = false;
-      });
-    } else {
-      this.isLoading = false;
-    }
     this.fertigationSystemForm = this.fb.group({
-     // 'plant_name': this.fb.control(null),
       'settings': this.settingsForm
     });
   }
@@ -98,24 +83,6 @@ export class AddFertigationSystemPage implements OnInit {
       this.presentDevicePushError();
     });
   }
-
-  // addRecommendedSettings(value: plant){
-  //   var temp = { ...value.settings };
-  //   for(var key of Object.keys(temp)){
-  //     temp[key] = {
-  //       "monitoring_only": false,
-  //       "alarm_min":  temp[key].alarm_min,
-  //       "alarm_max": temp[key].alarm_max,
-  //       "control": {
-  //         "target_value": temp[key].target_value,
-  //         "day_and_night": temp[key].day_and_night,
-  //         "day_target_value": temp[key].day_target_value,
-  //         "night_target_value": temp[key].night_target_value
-  //       }
-  //     }
-  //   }
-  //   this.settingsForm.patchValue(temp);
-  // }
 
   onAddPowerOutlet(newPowerOutlet: PowerOutlet) {
     this.powerOutlets.push(newPowerOutlet);
