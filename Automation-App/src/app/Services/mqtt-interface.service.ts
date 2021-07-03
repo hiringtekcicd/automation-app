@@ -209,7 +209,8 @@ export class MqttInterfaceService {
   }
 
   public unsubscribeToTopic(topic: string) {
-    this.client.unsubscribe(topic);
+    console.log("here");
+    this.client.unsubscribe(topic, { onSuccess: () => {console.log("success");}, onFailure: () => {console.log("fail");}});
   }
 
   public unsubscribeToTopics(topics: string[]) {

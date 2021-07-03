@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AddPowerOutletPage } from 'src/app/add-power-outlet/add-power-outlet.page';
 import { PowerOutlet } from 'src/app/models/power-outlet.model';
@@ -41,8 +41,8 @@ export class GrowLightsComponent implements OnInit {
 
   ngOnInit() {
     this.growLightsForm = this.fb.group({
-      'lights_on': this.fb.control(null),
-      'lights_off': this.fb.control(null),
+      'lights_on': this.fb.control(null, [Validators.required]),
+      'lights_off': this.fb.control(null, [Validators.required]),
       'power_outlets': this.fb.array([])
     });
     this.parentForm.addControl('grow_lights', this.growLightsForm);

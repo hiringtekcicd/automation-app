@@ -2,7 +2,7 @@
   <div class="content">
  
     <div *ngIf="!noDevices">
-      <h2 class="h2_title">Sensors</h2>
+      <h2 class="h2_title">{{ this.currentDevice.name }}</h2>
       <div class="timestamp-div">
         <h6>Last Updated: {{ timestamp }}</h6>
       </div>

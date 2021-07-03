@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Plant } from 'src/app/models/plant';
 import { VariableManagementService } from 'src/app/Services/variable-management.service';
 
@@ -31,11 +31,12 @@ export class GeneralSettingsComponent implements OnInit {
         this.plants = plantArray;
       });
     } else {
+      this.plants = this.variableManagementService.plants;
       this.isLoading = false;
     }
 
     this.generalSettingsForm = this.fb.group({
-      'name': this.fb.control(null),
+      'name': this.fb.control(null, [Validators.required]),
       'plant_name': this.fb.control(null)
     });
 

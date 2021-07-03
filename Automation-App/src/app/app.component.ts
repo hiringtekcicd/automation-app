@@ -115,25 +115,6 @@ export class AppComponent implements OnInit, OnDestroy {
     return await modal.present();
   }
 
-
-
-  
-  // async presentAddPowerOutletModal(powerOutletName: string) {
-  //   const modal = await this.modalController.create({
-  //     component: AddPowerOutletPage,
-  //     componentProps: {
-  //       'powerOutletName': powerOutletName
-  //     }
-  //   });
-
-  //   modal.onWillDismiss().then((returnValue) => {
-  //     if(returnValue.data && !this.isPowerOutletSetup(powerOutletName)) {
-  //       this.newPowerOutletEvent.emit(returnValue.data);
-  //     }
-  //   });
-  //   return await modal.present();
-  // }
-
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();

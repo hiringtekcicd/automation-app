@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { FertigationSystem } from '../models/fertigation-system.model';
 import { PowerOutlet } from '../models/power-outlet.model';
@@ -13,7 +13,7 @@ import { VariableManagementService } from '../Services/variable-management.servi
   templateUrl: './add-fertigation-system.page.html',
   styleUrls: ['./add-fertigation-system.page.scss'],
 })
-export class AddFertigationSystemPage implements OnInit {
+export class AddFertigationSystemPage implements OnInit, AfterViewInit {
 
   @Input() topicId: string;
 
@@ -34,7 +34,7 @@ export class AddFertigationSystemPage implements OnInit {
 
   isLoading: boolean = false;
 
-  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private mqttService: MqttInterfaceService, private modalController: ModalController, private alertController: AlertController) { 
+  constructor(public variableManagementService: VariableManagementService, private fb: FormBuilder, private mqttService: MqttInterfaceService, private modalController: ModalController, private alertController: AlertController, private changeDetectorRef: ChangeDetectorRef) { 
     this.fertigationSystemForm = this.fb.group({
       'settings': this.settingsForm
     });
@@ -89,8 +89,12 @@ export class AddFertigationSystemPage implements OnInit {
   }
 
   // Close modal and return the index of the new device
-  dismiss(){
+  dismiss() {
     this.modalController.dismiss(this.variableManagementService.fertigationSystemSettings.value.length - 1);
+  }
+
+  ngAfterViewInit() {
+    this.changeDetectorRef.detectChanges();
   }
 
   async presentDevicePushError() {
