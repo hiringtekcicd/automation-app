@@ -3,11 +3,12 @@ import { Display } from "../dashboard/display";
 
 import { BehaviorSubject, forkJoin, Observable, of, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { map, switchMap, tap } from 'rxjs/operators';
+import { first, map, switchMap, tap } from 'rxjs/operators';
 import * as _ from "lodash";
 import { FertigationSystem } from "../models/fertigation-system.model";
 import { ClimateController } from "../models/climate-controller.model";
 import { IonicStorageService } from "./ionic-storage.service";
+import { DatepickerModule } from "ngx-date-picker";
 
 @Injectable({
   providedIn: "root",
@@ -242,7 +243,22 @@ export class VariableManagementService {
       this.plants = plants;
     }));
   }
+
+  //this is only called on page change
+  public getHistoricData(topicID: string, firstTimestamp: Date, lastTimestamp: Date){
+    let firstTimeStr = firstTimestamp.toISOString();
+    let lastTimeStr = lastTimestamp.toISOString();
+    //use array of BehaviorSubject's
+    //check if local copy exists
+
+    //get latest, append latest and discard anything (oldest data) exceeding set period
+    return this.http.get<analytics_data>(this.dbURL + "/get_sensor_data/" + topicID + "/" + firstTimeStr + "/" + lastTimeStr);//.pipe(tap(analyticsData => {
+      //store the data in the corresponding behaviorsubject (.next(newData))
+    //}));
+    
+  }
 }
+
 
 // format of brief_info data coming from backend
 
@@ -282,41 +298,21 @@ export interface plant {
   }
 }
 
-interface sensor_info{
-  //time: String,
-  //value:Number,
-  sensor_info:[sensor_data],
-  //all_info:[all_info]
-}
 
-interface Sample{
-  time: String,
-  value: Number
+//make interface for analytics, not model (no functions)
+interface analytics_data{
+  firstTimestamp: Date,
+  lastTimestamp: Date,
+  length: Number,
+  sensor_info: [sensor_data]
 }
 
 interface sensor_data{
-  //_id: [Sample],
   _id: Date,
-  sensors:[sensor_array]
-  //time: String,
-  //value:Number
-}
-
-
-interface all_info{
-  //
-  // name:String,
-  // value:Number
-  sensors:[sensor_array]
-}
-
-interface sensor_array{
-  // _id: Date,
-  sensor_array:[sensor_details]
+  sensors:[sensor_details]
 }
 
 interface sensor_details{
-  //_id:Date,
   name:String,
   value:Number
 }
