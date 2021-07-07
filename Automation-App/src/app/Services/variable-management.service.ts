@@ -1,14 +1,14 @@
+import { analytics_data } from './../models/historical-data-interface';
 import { Injectable } from "@angular/core";
 import { Display } from "../dashboard/display";
 
 import { BehaviorSubject, forkJoin, Observable, of, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { first, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import * as _ from "lodash";
 import { FertigationSystem } from "../models/fertigation-system.model";
 import { ClimateController } from "../models/climate-controller.model";
 import { IonicStorageService } from "./ionic-storage.service";
-import { DatepickerModule } from "ngx-date-picker";
 
 @Injectable({
   providedIn: "root",
@@ -21,9 +21,6 @@ export class VariableManagementService {
   public fertigationSystemSettings = new BehaviorSubject<FertigationSystem[]>(null);
   public climateControllerSettings = new BehaviorSubject<ClimateController[]>(null);
  
-  public sensor_data_array: sensor_data[];
-  
-  public all_sensor_data_array: sensor_data[];
   public start_date: string;
   public end_date: string;
 
@@ -67,7 +64,10 @@ export class VariableManagementService {
       }
     });
   }
-
+  // Omkar's previous code 
+  //public sensor_data_array: sensor_data[];
+  //
+  //public all_sensor_data_array: sensor_data[];
   // public getSensorData(){
   //   this.sensorsTimeData=[];
   //   this.sensorsValueData=[];
@@ -299,20 +299,3 @@ export interface plant {
 }
 
 
-//make interface for analytics, not model (no functions)
-interface analytics_data{
-  firstTimestamp: Date,
-  lastTimestamp: Date,
-  length: Number,
-  sensor_info: [sensor_data]
-}
-
-interface sensor_data{
-  _id: Date,
-  sensors:[sensor_details]
-}
-
-interface sensor_details{
-  name:String,
-  value:Number
-}

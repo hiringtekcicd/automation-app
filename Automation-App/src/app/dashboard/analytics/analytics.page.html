@@ -4,9 +4,12 @@
       <h2>Analytics</h2>
     </ion-toolbar>  
   </div>
-  <div><!--add ngIf-->
-    <div><!--add ngFor-->
-      <sensor-graph></sensor-graph>
-    </div>
+  <div id="graph_container" *ngIf="existingSensors">
+    <sensor-graph *ngIf="existingSensors?.indexOf('ph') > -1" [historicalData]="historicalData" sensorType="ph" sensorDisplay="PH"></sensor-graph>
+    <sensor-graph *ngIf="existingSensors?.indexOf('ec') > -1" [historicalData]="historicalData" sensorType="ec" sensorDisplay="EC"></sensor-graph>
+    <sensor-graph *ngIf="existingSensors?.indexOf('water_temp') > -1" [historicalData]="historicalData" sensorType="water_temp" sensorDisplay="Water Temperature"></sensor-graph>
+    <sensor-graph *ngIf="existingSensors?.indexOf('air_temp') > -1" [historicalData]="historicalData" sensorType="air_temp" sensorDisplay="Air Temperature"></sensor-graph>
+    <sensor-graph *ngIf="existingSensors?.indexOf('humidity') > -1" [historicalData]="historicalData" sensorType="humidity" sensorDisplay="Humidity"></sensor-graph>
+    <sensor-graph *ngIf="existingSensors?.indexOf('co2') > -1" [historicalData]="historicalData" sensorType="co2" sensorDisplay="CO2"></sensor-graph>
   </div>
 </ion-content>
