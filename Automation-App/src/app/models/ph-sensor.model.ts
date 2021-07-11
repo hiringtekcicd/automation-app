@@ -2,7 +2,8 @@ import { Deserializable } from "./deserializable";
 import { Sensor } from "./sensor.model";
 
 export class PhSensor extends Sensor implements Deserializable {
-    
+    //DO NOT ADD VARIABLES IN THE SENSOR MODELS
+    //You can add functions though.
     control: {
         d_n_enabled: boolean;
         day_tgt: number;
