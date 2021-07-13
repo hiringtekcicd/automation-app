@@ -31,6 +31,14 @@ export class MqttInterfaceService {
     }
   ];
 
+  resetMqttService() {
+    this.disconnectClient();
+    this.mqttStatus = new BehaviorSubject<ConnectionStatus>(ConnectionStatus.UNINITIALIZED);
+    this.equipmentStatus = new BehaviorSubject<EquipmentStatus>(null);
+    this.client = null;
+    this.reconnectDelay = 3000;
+  }
+
   constructor() {
     this.ScriptStore.forEach((script: any) => {
         this.scripts[script.name] = {

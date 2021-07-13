@@ -28,6 +28,7 @@ export class MonitoringPage implements OnInit {
   constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private router: Router) { }
  
   ngOnInit() {
+    console.log("loaded");
     this.variableManagementService.fertigationSystemSettings.subscribe(resData =>{
       console.log(resData);
     });
