@@ -1,8 +1,7 @@
-import { delay } from 'rxjs/operators';
+import { delay } from "rxjs/operators";
 import { analytics_data } from "./../../models/historical-data-interface";
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import * as d3 from "d3";
-
 
 @Component({
   selector: "sensor-graph",
@@ -17,15 +16,27 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   @Input() sensorDisplay: string;
 
   aspectRatio = 500 / 300;
+  dimensions = {
+    width: 500,
+    height: 225,
+    margin: {
+      top: 0,
+      right: 0,
+      bottom: 20,
+      left: 40,
+    },
+    boundedWidth: 0,
+    boundedHeight: 0,
+  };
 
   sensorDataset: sensor_data_compiled[]; //compileData() will put a dataset here, which d3js will then use
   constructor() {}
 
-  ngOnInit(){
+  ngOnInit() {
     this.downsampleCompileData(5);
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     this.buildGraph();
   }
 
@@ -36,7 +47,6 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   //Currently following https://vizartpandey.com/creating-simple-line-charts-using-d3-js-part-01/
   async buildGraph() {
     const dataset = this.sensorDataset;
-    
 
     //X/Y access functions
     const yAccessor = (d) => +d.value; //This needs to be a number, not a string, otherwise scaling is weird
@@ -44,44 +54,33 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     const xAccessor = (d) => dateParser(d.timestamp);
 
     //Dimensions on page for the graph
-    let dimensions = {
-      width: 500,
-      height: 225,
-      margin: {
-        top: 0,
-        right: 0,
-        bottom: 20,
-        left: 40,
-      },
-      boundedWidth: 0,
-      boundedHeight: 0,
-    };
-    dimensions.boundedWidth =
-      dimensions.width - dimensions.margin.left - dimensions.margin.right;
-    dimensions.boundedHeight =
-      dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
     
-    
+    this.dimensions.boundedWidth =
+      this.dimensions.width - this.dimensions.margin.left - this.dimensions.margin.right;
+    this.dimensions.boundedHeight =
+      this.dimensions.height - this.dimensions.margin.top - this.dimensions.margin.bottom;
+
     //Wrapper and bounds divs
-    //const container = d3.select("#" + this.sensorType);  
+    //const container = d3.select("#" + this.sensorType);
     //const wrapper = d3.select("#" + this.sensorType + "-svg");
-    const bounds = d3.select("#" + this.sensorType + "-g")
+    const bounds = d3
+      .select("#" + this.sensorType + "-g")
       .style(
         "transform",
-        `translate(${dimensions.margin.left}px,${dimensions.margin.top}px)`
+        `translate(${this.dimensions.margin.left}px,${this.dimensions.margin.top}px)`
       );
 
     //Scaling functions
     const yScale = d3
       .scaleLinear()
       .domain(d3.extent(dataset, yAccessor))
-      .range([dimensions.boundedHeight, 0]);
+      .range([this.dimensions.boundedHeight, 0]);
 
     //console.warn(d3.max(dataset, yAccessor));
     const xScale = d3
       .scaleTime()
       .domain(d3.extent(dataset, xAccessor))
-      .range([0, dimensions.boundedWidth]);
+      .range([0, this.dimensions.boundedWidth]);
 
     //Line generation (data points)
     const lineGenerator = d3
@@ -107,14 +106,27 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     //xAxisGenerator.tickSize(-100); //negative tick size = grid-like, goes into the graph
     const xAxis = bounds
       .append("g")
-      .style("transform", `translate(0px,${dimensions.boundedHeight}px)`) //make it an actual bottom x-axis
+      .style("transform", `translate(0px,${this.dimensions.boundedHeight}px)`) //make it an actual bottom x-axis
       .call(xAxisGenerator);
     xAxis.select(".domain").remove(); // Will have just labels and ticks, no horizontal line
     yAxis.select(".domain").remove();
-    //Dashed line: make .style("stroke-dasharray", ("3, 3"))
+    this.drawAlarmLine(true);
+    
   }
   //downsample: 100 data points, take avg per each group
   //dot colors if there are points within group that exceed alarm limits (do last)
+
+  drawAlarmLine(isRed: boolean) {
+    const wrapper = d3.select("#" + this.sensorType + "-svg");
+        wrapper
+      .append("line")
+      .style("stroke", isRed ? "red" : "grey")
+      .style("stroke-dasharray", ("3, 3"))//Dashed line
+      .attr("x1", this.dimensions.margin.left)
+      .attr("y1", 10)
+      .attr("x2", this.dimensions.width)
+      .attr("y2", 10);
+  }
 
   compileData() {
     this.sensorDataset = [];
@@ -129,27 +141,32 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   }
 
   //Use whole numbers!!
-  downsampleCompileData(ratio: number){
+  downsampleCompileData(ratio: number) {
     this.sensorDataset = [];
     let i = 0;
     let currentSum = 0;
     let firstGroupTimestamp: Date;
-    for(let element of this.historicalData.sensor_info){
+    for (let element of this.historicalData.sensor_info) {
       let currentValue = element.sensors.find(
         (item) => item.name == this.sensorType
       ).value;
       currentSum += +currentValue;
-      if(i == ratio-1){ //reached last element of the group, record it
-        let avgValue = +currentSum / (i+1);
+      if (i == ratio - 1) {
+        //reached last element of the group, record it
+        let avgValue = +currentSum / (i + 1);
         currentSum = 0;
         i = -1; //this means i will be 0 at end of loop
-        this.sensorDataset.push({ timestamp: firstGroupTimestamp, value: +avgValue });
-      }else if(i == 0){ //first run of the group, log the first timestamp
+        this.sensorDataset.push({
+          timestamp: firstGroupTimestamp,
+          value: +avgValue,
+        });
+      } else if (i == 0) {
+        //first run of the group, log the first timestamp
         firstGroupTimestamp = element._id;
       }
       i++;
     }
-    
+
     //console.warn(this.sensorDataset);
   }
 }

@@ -16,7 +16,7 @@ export class AnalyticsPage implements OnInit {
 
   lastTimestamp: Date;
   firstTimestamp: Date;
-  durationSeconds = 10000 * 60; // 10 mins of data right now = 600 seconds
+  durationSeconds = 100000 * 60; // 10 mins of data right now = 600 seconds
 
   existingSensors: string[]; //will contain list of sensor names that exist in the fetched data
 
@@ -40,6 +40,7 @@ export class AnalyticsPage implements OnInit {
         );
         
         this.topicID = this.currentDevice.topicID;
+        this.topicID = "9f4ZD";
       } else {
         console.warn("No info about current device!");
       }
