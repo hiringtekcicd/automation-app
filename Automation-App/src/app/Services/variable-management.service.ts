@@ -182,10 +182,8 @@ export class VariableManagementService {
     let $fertigationSystems: Observable<FertigationSystem[]> = this.storageService.get('fertigationSystems');
     let $climateControllers: Observable<ClimateController[]> = this.storageService.get('climateControllers');
 
-    console.log("inside function");
     return forkJoin([$fertigationSystems, $climateControllers]).pipe(switchMap(settings => {
       let settingsObservables: [Observable<FertigationSystem[]>, Observable<ClimateController[]>] = [null, null];
-      
       if(settings[0]) {
         settingsObservables[0] = of(settings[0]);
       } else {

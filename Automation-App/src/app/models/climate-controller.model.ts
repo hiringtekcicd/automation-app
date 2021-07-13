@@ -29,16 +29,17 @@ export class ClimateController extends Device implements Deserializable {
         }
 
         if(input.power_outlets !== undefined) {
-            for(let powerOutlet of this.power_outlets) {
+            this.power_outlets = [];
+            console.log(input.power_outlets);
+            for(let powerOutlet of input.power_outlets) {
+                console.log(powerOutlet);
                 this.power_outlets.push(new PowerOutlet().deserialize(powerOutlet));
             }
         }
 
         if(input.cameras !== undefined) {
             this.cameras = [];
-            //console.log(input.cameras);
             for(let camera of input.cameras) {
-                //console.log(camera);
                 this.cameras.push(new Camera().deserialize(camera));
             }
         }

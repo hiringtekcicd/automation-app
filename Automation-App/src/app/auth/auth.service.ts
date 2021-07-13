@@ -82,7 +82,6 @@ export class AuthService {
   fetchServerIPsFromLocalStorage() {
     return this.storageService.get('serverAddresses').pipe(switchMap(data => {
       if(data) {
-        console.log("hererere");
         this.variableManagementService.setRESTServerURL(data['restServer']);
         return this.variableManagementService.fetchDevices().pipe(tap(() => {
           let mqttHost = data['mqttBroker'];
