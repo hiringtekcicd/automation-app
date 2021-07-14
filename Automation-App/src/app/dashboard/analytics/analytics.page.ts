@@ -14,11 +14,27 @@ export class AnalyticsPage implements OnInit {
   currentDevice: Devices;
   historicalData: analytics_data;
 
-  lastTimestamp: Date;
-  firstTimestamp: Date;
-  durationSeconds = 100000 * 60; // 10 mins of data right now = 600 seconds
-
   existingSensors: string[]; //will contain list of sensor names that exist in the fetched data
+
+
+  //Timeframe options dropdown: See https://forum.ionicframework.com/t/ion-select-and-default-values-ionic-4-solved/177550/2
+  timeframeOptions = [ //Insert more timeframe options as needed in the future.
+    {value: 1, label: "1 Hour"},
+    {value: 6, label: "6 Hours"},
+    {value: 9, label: "9 Hours"},
+    {value: 24, label: "1 Day"},
+    {value: 168, label: "1 Week"},
+    {value: 5040, label: "1 Month"}
+  ];
+  defaultTimeframeValue = 1; //default to 1 hr
+  currentTimeframeValue = 1;
+
+  onSelectChange(event: any){
+    console.log("Select changed to", event.detail.value);
+    this.currentTimeframeValue = event.detail.value;
+    this.fetchHistoricData(this.currentTimeframeValue);
+  }
+
 
   //see control page - ngOnInit about getting device settings and then getting topicID
   constructor(
@@ -46,21 +62,7 @@ export class AnalyticsPage implements OnInit {
       }
     });
     //last timestamp = right now. First timestamp = last timestamp minus duration
-    this.lastTimestamp = new Date();
-    this.firstTimestamp = new Date();
-    this.firstTimestamp.setTime(
-      this.firstTimestamp.getTime() - this.durationSeconds * 1000
-    );
-    console.warn("before subscribe");
-    this.varman
-      .getHistoricData(this.topicID, this.firstTimestamp, this.lastTimestamp)
-      .subscribe((result) => {
-        this.historicalData = result;
-        console.warn(result);
-        if (this.historicalData.length > 0) {
-          this.setCardFlags();
-        }
-      });
+    this.fetchHistoricData(this.currentTimeframeValue);
   }
 
   //uses fetched data to decide which sensor-graph components need to be displayed and calculate their data
@@ -70,5 +72,24 @@ export class AnalyticsPage implements OnInit {
     ///let sensorSample = this.historicalData.sensor_info[this.historicalData.sensor_info.length - 1].sensors; //this has array of sensor data with 'name': <type>
     //sensorSample.map((element) => {this.existingSensors.push(element.name)});
     console.warn(this.existingSensors);
+  }
+
+  fetchHistoricData(durationHrs: number){
+    let lastTimestamp = new Date();
+    let firstTimestamp = new Date();
+    firstTimestamp.setTime(
+      firstTimestamp.getTime() - durationHrs * 60 * 60 * 1000 //3600 secs in hour * 1000ms in sec
+    );
+    this.varman
+      .getHistoricData(this.topicID, firstTimestamp, lastTimestamp)
+      .subscribe((result) => {
+        this.historicalData = result;
+        console.warn("Fetched for",durationHrs,"hours:", result);
+        if (this.historicalData.length > 0) {
+          this.setCardFlags();
+        }else{
+          this.existingSensors = null;
+        }
+      });
   }
 }

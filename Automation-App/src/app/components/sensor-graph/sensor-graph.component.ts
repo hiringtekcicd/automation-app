@@ -11,7 +11,11 @@ import * as d3 from "d3";
 export class SensorGraphComponent implements OnInit, AfterViewInit {
   // Each instance of this uses D3JS to create a graph (inside an ionic card component).
   // When we are ready for actual data, have an @Input() to bind to a specific sensor
-  @Input() historicalData: analytics_data; //this is a reference to the analytics page data
+  @Input() _historicalData: analytics_data; //this is a reference to the analytics page data
+  @Input() set historicalData(historicalData: analytics_data) {
+    console.log("Setter called with ", historicalData);
+    this._historicalData = historicalData;
+  }
   @Input() sensorType: string;
   @Input() sensorDisplay: string;
 
@@ -54,11 +58,15 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     const xAccessor = (d) => dateParser(d.timestamp);
 
     //Dimensions on page for the graph
-    
+
     this.dimensions.boundedWidth =
-      this.dimensions.width - this.dimensions.margin.left - this.dimensions.margin.right;
+      this.dimensions.width -
+      this.dimensions.margin.left -
+      this.dimensions.margin.right;
     this.dimensions.boundedHeight =
-      this.dimensions.height - this.dimensions.margin.top - this.dimensions.margin.bottom;
+      this.dimensions.height -
+      this.dimensions.margin.top -
+      this.dimensions.margin.bottom;
 
     //Wrapper and bounds divs
     //const container = d3.select("#" + this.sensorType);
@@ -111,17 +119,16 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     xAxis.select(".domain").remove(); // Will have just labels and ticks, no horizontal line
     yAxis.select(".domain").remove();
     this.drawAlarmLine(true);
-    
   }
   //downsample: 100 data points, take avg per each group
   //dot colors if there are points within group that exceed alarm limits (do last)
 
   drawAlarmLine(isRed: boolean) {
     const wrapper = d3.select("#" + this.sensorType + "-svg");
-        wrapper
+    wrapper
       .append("line")
       .style("stroke", isRed ? "red" : "grey")
-      .style("stroke-dasharray", ("3, 3"))//Dashed line
+      .style("stroke-dasharray", "3, 3") //Dashed line
       .attr("x1", this.dimensions.margin.left)
       .attr("y1", 10)
       .attr("x2", this.dimensions.width)
@@ -130,7 +137,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
 
   compileData() {
     this.sensorDataset = [];
-    this.historicalData.sensor_info.map((element) => {
+    this._historicalData.sensor_info.map((element) => {
       let currentTime = element._id;
       let currentValue = element.sensors.find(
         (item) => item.name == this.sensorType
@@ -146,25 +153,29 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     let i = 0;
     let currentSum = 0;
     let firstGroupTimestamp: Date;
-    for (let element of this.historicalData.sensor_info) {
-      let currentValue = element.sensors.find(
-        (item) => item.name == this.sensorType
-      ).value;
-      currentSum += +currentValue;
-      if (i == ratio - 1) {
-        //reached last element of the group, record it
-        let avgValue = +currentSum / (i + 1);
-        currentSum = 0;
-        i = -1; //this means i will be 0 at end of loop
-        this.sensorDataset.push({
-          timestamp: firstGroupTimestamp,
-          value: +avgValue,
-        });
-      } else if (i == 0) {
-        //first run of the group, log the first timestamp
-        firstGroupTimestamp = element._id;
+    if (this._historicalData) {
+      for (let element of this._historicalData.sensor_info) {
+        let currentValue = element.sensors.find(
+          (item) => item.name == this.sensorType
+        ).value;
+        currentSum += +currentValue;
+        if (i == ratio - 1) {
+          //reached last element of the group, record it
+          let avgValue = +currentSum / (i + 1);
+          currentSum = 0;
+          i = -1; //this means i will be 0 at end of loop
+          this.sensorDataset.push({
+            timestamp: firstGroupTimestamp,
+            value: +avgValue,
+          });
+        } else if (i == 0) {
+          //first run of the group, log the first timestamp
+          firstGroupTimestamp = element._id;
+        }
+        i++;
       }
-      i++;
+    }else{
+      console.warn("downSample null historicalData!", this._historicalData);
     }
 
     //console.warn(this.sensorDataset);
