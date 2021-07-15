@@ -6,46 +6,60 @@
   </div>
   <ion-item no-lines id="timeframe">
     <ion-label style="color: white">Graph Timeframe</ion-label>
-    <ion-select (ionChange)="onSelectChange($event)" value={{defaultTimeframeValue}}>
-      <ion-select-option *ngFor="let option of timeframeOptions" value="{{option.value}}">{{option.label}}</ion-select-option>
+    <ion-select
+      (ionChange)="onSelectChange($event)"
+      value="{{defaultTimeframeValue}}"
+    >
+      <ion-select-option
+        *ngFor="let option of timeframeOptions"
+        value="{{option.value}}"
+        >{{option.label}}</ion-select-option
+      >
     </ion-select>
   </ion-item>
-  <div id="graph_container" *ngIf="existingSensors">
-    <sensor-graph
-      *ngIf="existingSensors?.indexOf('ph') > -1"
-      [historicalData]="historicalData"
-      sensorType="ph"
-      sensorDisplay="PH"
-    ></sensor-graph>
-    <sensor-graph
-      *ngIf="existingSensors?.indexOf('ec') > -1"
-      [historicalData]="historicalData"
-      sensorType="ec"
-      sensorDisplay="EC"
-    ></sensor-graph>
-    <sensor-graph
-      *ngIf="existingSensors?.indexOf('water_temp') > -1"
-      [historicalData]="historicalData"
-      sensorType="water_temp"
-      sensorDisplay="Water Temperature"
-    ></sensor-graph>
-    <sensor-graph
-      *ngIf="existingSensors?.indexOf('air_temp') > -1"
+  <div *ngIf="existingSensors">
+    <div *ngIf="deviceIsFertigation">
+      <sensor-graph
+        [historicalData]="historicalData"
+        sensorType="ph"
+        sensorDisplay="PH"
+        [timeframe]="currentTimeframeValue"
+      ></sensor-graph>
+      <sensor-graph
+        [historicalData]="historicalData"
+        sensorType="ec"
+        sensorDisplay="EC"
+        [timeframe]="currentTimeframeValue"
+      ></sensor-graph>
+      <sensor-graph
+        [historicalData]="historicalData"
+        sensorType="water_temp"
+        sensorDisplay="Water Temperature"
+        [timeframe]="currentTimeframeValue"
+      ></sensor-graph>
+    </div>
+    <div *ngIf="!deviceIsFertigation">
+      <sensor-graph
       [historicalData]="historicalData"
       sensorType="air_temp"
       sensorDisplay="Air Temperature"
+      [timeframe]="currentTimeframeValue"
     ></sensor-graph>
     <sensor-graph
-      *ngIf="existingSensors?.indexOf('humidity') > -1"
       [historicalData]="historicalData"
       sensorType="humidity"
       sensorDisplay="Humidity"
+      [timeframe]="currentTimeframeValue"
     ></sensor-graph>
     <sensor-graph
-      *ngIf="existingSensors?.indexOf('co2') > -1"
       [historicalData]="historicalData"
       sensorType="co2"
       sensorDisplay="CO2"
+      [timeframe]="currentTimeframeValue"
     ></sensor-graph>
+    </div>
   </div>
+  <p *ngIf="!existingSensors" class="text_center" style="color: white">
+    No historical data found in this timeframe!
+  </p>
 </ion-content>

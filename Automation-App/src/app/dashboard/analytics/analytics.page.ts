@@ -3,7 +3,7 @@ import { analytics_data } from "./../../models/historical-data-interface";
 import { VariableManagementService } from "./../../Services/variable-management.service";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Devices } from './../../Services/variable-management.service';
+import { Devices, FertigationSystemString } from './../../Services/variable-management.service';
 @Component({
   selector: "app-analytics",
   templateUrl: "./analytics.page.html",
@@ -16,15 +16,17 @@ export class AnalyticsPage implements OnInit {
 
   existingSensors: string[]; //will contain list of sensor names that exist in the fetched data
 
+  deviceIsFertigation: boolean; //Since the text for fert/clim systems is hard to get to from a *ngIf directive, store this in a boolean and make it read from that
 
   //Timeframe options dropdown: See https://forum.ionicframework.com/t/ion-select-and-default-values-ionic-4-solved/177550/2
   timeframeOptions = [ //Insert more timeframe options as needed in the future.
     {value: 1, label: "1 Hour"},
     {value: 6, label: "6 Hours"},
-    {value: 9, label: "9 Hours"},
+    {value: 12, label: "12 Hours"},
     {value: 24, label: "1 Day"},
     {value: 168, label: "1 Week"},
-    {value: 5040, label: "1 Month"}
+    {value: 744, label: "1 Month"}, //31 days
+    {value: 2232, label: "3 Months"} //93 days
   ];
   defaultTimeframeValue = 1; //default to 1 hr
   currentTimeframeValue = 1;
@@ -50,6 +52,13 @@ export class AnalyticsPage implements OnInit {
       let currentDeviceIndex = params["deviceIndex"];
 
       if ((currentDeviceType && currentDeviceIndex) != null) {
+
+        if(currentDeviceType == FertigationSystemString){
+          this.deviceIsFertigation = true; //we could shortcut this but eh
+        }else{
+          this.deviceIsFertigation = false;
+        }
+
         this.currentDevice = this.varman.getCurrentDeviceSettings(
           currentDeviceType,
           currentDeviceIndex

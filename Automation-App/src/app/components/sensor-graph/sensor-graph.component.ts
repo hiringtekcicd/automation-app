@@ -1,4 +1,3 @@
-import { delay } from "rxjs/operators";
 import { analytics_data } from "./../../models/historical-data-interface";
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import * as d3 from "d3";
@@ -15,11 +14,22 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   @Input() set historicalData(historicalData: analytics_data) {
     console.log("Setter called with ", historicalData);
     this._historicalData = historicalData;
+    this.downsampleCompileData(5);
+    console.warn("Compile in setter");
+    this.buildGraph();
+    console.warn("Build in setter");
   }
   @Input() sensorType: string;
   @Input() sensorDisplay: string;
 
-  aspectRatio = 500 / 300;
+  @Input() _timeframe: number;
+  @Input() set timeframe(timeframe: number){
+    this._timeframe = timeframe;
+    this.buildGraph();
+    console.warn("Build in timeframe setter");
+  }
+
+  aspectRatio = 500 / 225;
   dimensions = {
     width: 500,
     height: 225,
@@ -38,10 +48,12 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.downsampleCompileData(5);
+    console.warn("Compile In NgOnInit");
   }
 
   ngAfterViewInit() {
     this.buildGraph();
+    console.warn("Build in AfterViewInit");
   }
 
   //had https://bl.ocks.org/mbostock/3883245
@@ -84,10 +96,13 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .domain(d3.extent(dataset, yAccessor))
       .range([this.dimensions.boundedHeight, 0]);
 
-    //console.warn(d3.max(dataset, yAccessor));
+    //X Axis: setting the domain of the X Axis according to the date range, NOT based on the data.
+    let currentDate = new Date(); //this is the current time anytime the page updates/refreshes
+    let oldDate = new Date();
+    oldDate.setTime(currentDate.getTime() - 1000 * 60 * 60 * this._timeframe); //current time minus hours * 60mins/hr * 60secs/min * 1000ms/s
     const xScale = d3
       .scaleTime()
-      .domain(d3.extent(dataset, xAccessor))
+      .domain([oldDate, currentDate]) //use time range
       .range([0, this.dimensions.boundedWidth]);
 
     //Line generation (data points)
@@ -154,6 +169,16 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     let currentSum = 0;
     let firstGroupTimestamp: Date;
     if (this._historicalData) {
+      //Check if there is data for this sensor. If there are none, quit it
+      let firstElem = this._historicalData.sensor_info[0].sensors;
+      let hasData = false;
+      for(let element of firstElem){
+        if(element.name == this.sensorType){
+          hasData = true;
+        }
+      }
+      if(!hasData) return; //return with empty dataset.
+
       for (let element of this._historicalData.sensor_info) {
         let currentValue = element.sensors.find(
           (item) => item.name == this.sensorType
