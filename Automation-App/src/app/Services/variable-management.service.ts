@@ -177,8 +177,8 @@ export class VariableManagementService {
       }));
   }
 
-  public setRESTServerURL(ip: string) {
-    this.dbURL = "http://" + ip;
+  public setRESTServerURL(domain: string) {
+    this.dbURL = domain;
   }
 
   public fetchDevices() {
