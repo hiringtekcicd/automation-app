@@ -41,10 +41,14 @@ export class MonitoringPage implements OnInit {
   // Check if query params have changed
   hasQueryParamsChanged = (params: Params) => {
     if(this.currentDeviceType != params['deviceType'] || this.currentDeviceIndex != params['deviceIndex']) {
+      // Query Params have changed
       return true;
-    } else {
-      return false;
-    }
+    } 
+    // If query params are null return true as the user might be no devices
+    if(params['deviceType'] == null || params['deviceIndex'] == null) return true;
+    
+    // Query Params have not changed
+    return false;
   }
 
   ngOnInit() {
