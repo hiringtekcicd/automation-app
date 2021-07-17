@@ -24,6 +24,8 @@ export class MqttInterfaceService {
 
   private reconnectDelay = 3000;
 
+  public subscribedTopics: string[] = [];
+
   private scripts: any = {};
   private ScriptStore: Scripts[] = [
     {
@@ -187,7 +189,7 @@ export class MqttInterfaceService {
         break;
       }
       default: {
-        console.log("Unkown Level 0 Case for MQTT Topic");
+        console.log("Unkown Level 0 Case for MQTT Topic: " + topicParam[0]);
         break;
       }
     }
@@ -206,25 +208,52 @@ export class MqttInterfaceService {
     this.client.publish(message);
   }
 
-  public subscribeToTopic(topic: string) {
-    this.client.subscribe(topic);
-  }
+  public subscribeToTopic(topic: string, qos?: number) {
+    var clientRef = this.client;
 
-  public subscribeToTopics(topics: string[]) {
-    topics.forEach(topic => {
-      this.client.subscribe(topic);
+    // Check if topic is already subscribed
+    for(let subscribedTopic of this.subscribedTopics) {
+      if(topic == subscribedTopic) {
+        console.warn("Already Subscribed to topic: " + topic);
+        return Promise.resolve();
+      }
+    }
+    // Create promise for topic subscribe function
+    let promise = new Promise(function(resolve, reject) {
+      clientRef.subscribe(topic, { qos: qos? qos : 1, onSuccess: resolve(topic), onFailure: reject });
+    });
+
+   return promise.then((topic: string) => {
+      // If subscribe is successful then push topic to subscribed topics
+      this.subscribedTopics.push(topic);
+      console.log(this.subscribedTopics);
     });
   }
 
-  public unsubscribeToTopic(topic: string) {
-    console.log("here");
-    this.client.unsubscribe(topic, { onSuccess: () => {console.log("success");}, onFailure: () => {console.log("fail");}});
-  }
-
-  public unsubscribeToTopics(topics: string[]) {
-    topics.forEach(topic => {
-      this.client.unsubscribe(topic);
+  public unsubscribeFromTopic(topic: string) {
+    var clientRef = this.client;
+    // Check if topic is already not subscribed
+    let index = this.subscribedTopics.findIndex((subscribedTopic) => subscribedTopic == topic);
+    
+    if(index == -1) {
+      console.warn("Already not subscribed to topic: " + topic);
+      return Promise.resolve();
+    }
+    // Create promise for topic unsubscribe function
+    let promise = new Promise(function(resolve, reject) {
+      clientRef.unsubscribe(topic, { onSuccess: resolve(topic), onFailure: reject });
     });
+
+    return promise.then((topic: string) => {
+      // Since this callback is async, find index again incase subscribedTopics array was modified 
+      let index = this.subscribedTopics.findIndex((subscribedTopic) => subscribedTopic == topic);
+      if(index == -1) {
+        console.warn("Already deleted topic: " + topic);
+        return;
+      }
+      // If unsubscribe is successful then delete topic from subscribed topics
+      this.subscribedTopics.splice(index, 1);
+    }).catch((error) => console.log(error));
   }
 
   private _onConnect(topic: string[]) {
