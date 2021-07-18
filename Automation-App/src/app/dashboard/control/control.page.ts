@@ -113,7 +113,7 @@ export class ControlPage implements OnInit {
         this.presentDeviceStartedError(isDeviceStarted);
       });
     }).catch(error => {
-      console.warn("asddddddddd", error);
+      console.warn(error);
       this.alertLoadingService.dismissLoadingScreen();
       this.presentDeviceStartedError(isDeviceStarted);
     });
