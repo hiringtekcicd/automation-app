@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { filter } from "rxjs/operators";
 import { ConnectionStatus, MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
@@ -6,6 +6,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Devices } from 'src/app/Services/variable-management.service';
 import { SensorMonitoringWidget } from 'src/app/components/sensor-display/sensor-display.component';
 import { equipmentStatusTopic, liveDataTopic } from "src/app/Services/topicKeys";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-monitoring",
@@ -22,12 +23,15 @@ export class MonitoringPage implements OnInit {
   currentDeviceSettings: SensorMonitoringWidget[];
   liveData: string[];
   noDevices: boolean;
+  mqttStatusSubscription: Subscription;
+  equipmentStatusSubscription: Subscription;
+  deviceLiveDataSubscription: Subscription;
   
   timestamp: string = this.defaultTimestamp;
 
   constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private router: Router) { }
 
-  // Reset Monitoring Class Variables 
+  // Reset monitoring class variables and unsubscribe from previous subscriptions
   resetPage() {
     this.currentDevice = null;
     this.currentDeviceType = null;
@@ -36,6 +40,8 @@ export class MonitoringPage implements OnInit {
     this.liveData = null;
     this.timestamp = this.defaultTimestamp;
     this.noDevices = null;
+    if(this.mqttStatusSubscription) this.mqttStatusSubscription.unsubscribe();
+    if(this.equipmentStatusSubscription) this.equipmentStatusSubscription.unsubscribe();
   }
   
   // Check if query params have changed
@@ -73,7 +79,7 @@ export class MonitoringPage implements OnInit {
           }
         }
 
-        this.mqttService.equipmentStatus.pipe(filter(equipmentStatus => equipmentStatus != null)).subscribe(equipmentStatus => {
+        this.equipmentStatusSubscription = this.mqttService.equipmentStatus.pipe(filter(equipmentStatus => equipmentStatus != null)).subscribe(equipmentStatus => {
           let rfArray = Object.keys(equipmentStatus.rf);
           this.currentDevice.power_outlets.forEach(powerOutlet => {
             for(let i = 0; i < rfArray.length; i++){
@@ -98,6 +104,7 @@ export class MonitoringPage implements OnInit {
     });
 
     this.mqttService.deviceLiveData.subscribe(resData => {
+      console.log("hereeeee");
       // Try parsing system MQTT string as JSON Data
       try {
         var jsonSensorData = JSON.parse(resData);
@@ -127,7 +134,7 @@ export class MonitoringPage implements OnInit {
 
   // TODO: If mqtt data is needed across dashboard tabs then move this function to dashboard page
   startMqttProcessing() {
-    this.mqttService.mqttStatus.pipe().subscribe(status => {
+    this.mqttStatusSubscription = this.mqttService.mqttStatus.subscribe(status => {
       console.log(status);
       console.log(this.currentDevice.topicID);
       

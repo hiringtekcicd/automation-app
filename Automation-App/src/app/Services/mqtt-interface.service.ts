@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, take, timeout } from 'rxjs/operators';
+import { resolve } from "url";
 
 declare const Paho: any;
 declare const document: any;
@@ -218,16 +219,22 @@ export class MqttInterfaceService {
         return Promise.resolve();
       }
     }
+  
     // Create promise for topic subscribe function
-    let promise = new Promise(function(resolve, reject) {
-      clientRef.subscribe(topic, { qos: qos? qos : 1, onSuccess: resolve(topic), onFailure: reject });
+    let subscribePromise =  new Promise (function(resolve, reject) {
+      let success = (resData) => {
+        resolve(resData.invocationContext.topic);
+      }
+      let failure = (error) => {
+        reject(error);
+      }
+      clientRef.subscribe(topic, { invocationContext: {topic: topic}, qos: qos? qos : 1, onSuccess: (resData) => { success(resData) }, onFailure: (error) => { failure(error) }, timeout: 10 });
     });
 
-   return promise.then((topic: string) => {
-      // If subscribe is successful then push topic to subscribed topics
+    return subscribePromise.then((topic: string) => {
       this.subscribedTopics.push(topic);
       console.log(this.subscribedTopics);
-    });
+    })
   }
 
   public unsubscribeFromTopic(topic: string) {
