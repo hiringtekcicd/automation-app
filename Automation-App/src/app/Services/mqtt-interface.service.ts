@@ -228,13 +228,19 @@ export class MqttInterfaceService {
       let failure = (error) => {
         reject(error);
       }
-      clientRef.subscribe(topic, { invocationContext: {topic: topic}, qos: qos? qos : 1, onSuccess: (resData) => { success(resData) }, onFailure: (error) => { failure(error) }, timeout: 10 });
+      clientRef.subscribe(topic, { 
+        invocationContext: {topic: topic},
+        qos: qos? qos : 1, 
+        onSuccess: (resData) => { success(resData) },
+        onFailure: (error) => { failure(error) },
+        timeout: 10 
+      });
     });
 
     return subscribePromise.then((topic: string) => {
       this.subscribedTopics.push(topic);
       console.log(this.subscribedTopics);
-    })
+    });
   }
 
   public unsubscribeFromTopic(topic: string) {
@@ -247,12 +253,23 @@ export class MqttInterfaceService {
       return Promise.resolve();
     }
     // Create promise for topic unsubscribe function
-    let promise = new Promise(function(resolve, reject) {
-      clientRef.unsubscribe(topic, { onSuccess: resolve(topic), onFailure: reject });
+    let unsubscribePromise = new Promise(function(resolve, reject) {
+      let success = (resData) => {
+        resolve(resData.invocationContext.topic);
+      }
+      let failure = (error) => {
+        reject(error);
+      }
+      clientRef.unsubscribe(topic, { 
+        invocationContext: {topic: topic},
+        onSuccess: (resData) => { success(resData) },
+        onFailure: (error) => { failure(error) },
+        timeout: 10 
+      });
     });
 
-    return promise.then((topic: string) => {
-      // Since this callback is async, find index again incase subscribedTopics array was modified 
+    return unsubscribePromise.then((topic: string) => {
+      // Since this callback is async, find index again, incase subscribedTopics array was modified 
       let index = this.subscribedTopics.findIndex((subscribedTopic) => subscribedTopic == topic);
       if(index == -1) {
         console.warn("Already deleted topic: " + topic);
@@ -260,7 +277,7 @@ export class MqttInterfaceService {
       }
       // If unsubscribe is successful then delete topic from subscribed topics
       this.subscribedTopics.splice(index, 1);
-    }).catch((error) => console.log(error));
+    });
   }
 
   private _onConnect(topic: string[]) {
