@@ -10,17 +10,14 @@ export class ReservoirValidator {
   ): ValidatorFn {
     let validatorCounter = 0;
     return (form: FormGroup) => {
-      console.warn(form);
       const controlVal: boolean = form.get(isControl).value;
       if (controlVal == true) {
-        console.warn("isEnabled");
         //enabled: all other default validators function normally. We still need to check for the power outlets
         if (powerOutlets) {
           //make sure we have an array to check with
           //We need something to trigger the validators here, and only once
           //How do we have persistent storage?
           validatorCounter++;
-          console.warn(validatorCounter)
           if (validatorCounter == 1) {
             form.get("replace_date").updateValueAndValidity();
             form.get("replace_interv").updateValueAndValidity();
@@ -38,7 +35,6 @@ export class ReservoirValidator {
         }
       } else if (controlVal == false) {
         validatorCounter = 0;
-        console.warn("isDisabled");
         //clear all (not enabled, so we don't care if there are errors)
         form.get("replace_date").setErrors(null);
         form.get("replace_interv").setErrors(null);
