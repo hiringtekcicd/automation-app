@@ -22,40 +22,40 @@
       <sensor-graph
         [historicalData]="historicalData"
         sensorType="ph"
-        sensorDisplay="PH"
         [timeframe]="currentTimeframeValue"
+        [sensor]="currentDevice.settings.ph"
       ></sensor-graph>
       <sensor-graph
         [historicalData]="historicalData"
         sensorType="ec"
-        sensorDisplay="EC"
         [timeframe]="currentTimeframeValue"
+        [sensor]="currentDevice.settings.ec"
       ></sensor-graph>
       <sensor-graph
         [historicalData]="historicalData"
         sensorType="water_temp"
-        sensorDisplay="Water Temperature"
         [timeframe]="currentTimeframeValue"
+        [sensor]="currentDevice.settings.water_temp"
       ></sensor-graph>
     </div>
     <div *ngIf="!deviceIsFertigation">
       <sensor-graph
       [historicalData]="historicalData"
       sensorType="air_temp"
-      sensorDisplay="Air Temperature"
       [timeframe]="currentTimeframeValue"
+      [sensor]="currentDevice.settings.air_temp"
     ></sensor-graph>
     <sensor-graph
       [historicalData]="historicalData"
       sensorType="humidity"
-      sensorDisplay="Humidity"
       [timeframe]="currentTimeframeValue"
+      [sensor]="currentDevice.settings.humidity"
     ></sensor-graph>
     <sensor-graph
       [historicalData]="historicalData"
       sensorType="co2"
-      sensorDisplay="CO2"
       [timeframe]="currentTimeframeValue"
+      [sensor]="currentDevice.settings.co2" <!--As of July 22 this does not exist yet-->
     ></sensor-graph>
     </div>
   </div>

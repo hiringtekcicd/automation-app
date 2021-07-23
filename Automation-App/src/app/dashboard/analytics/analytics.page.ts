@@ -65,7 +65,7 @@ export class AnalyticsPage implements OnInit {
         );
         
         this.topicID = this.currentDevice.topicID;
-        this.topicID = "9f4ZD";
+        this.topicID = "a23b5";
       } else {
         console.warn("No info about current device!");
       }

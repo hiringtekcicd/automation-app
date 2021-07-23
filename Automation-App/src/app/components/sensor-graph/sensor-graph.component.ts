@@ -1,7 +1,8 @@
+import { element } from "protractor";
 import { analytics_data } from "./../../models/historical-data-interface";
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import * as d3 from "d3";
-
+import { Sensor } from "src/app/models/sensor.model";
 @Component({
   selector: "sensor-graph",
   templateUrl: "./sensor-graph.component.html",
@@ -13,14 +14,17 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   @Input() _historicalData: analytics_data; //this is a reference to the analytics page data
   @Input() set historicalData(historicalData: analytics_data) {
     this._historicalData = historicalData;
+    this.ngOnInit();
+    this.ngAfterViewInit();
   }
   @Input() sensorType: string;
-  @Input() sensorDisplay: string;
 
   @Input() _timeframe: number;
   @Input() set timeframe(timeframe: number) {
     this._timeframe = timeframe;
   }
+
+  @Input() sensor: Sensor; //We need to bind to a sensor to get alarm info anyway, and we can also get DisplayName
 
   SECONDS_PER_DATA = 10;
 
@@ -46,6 +50,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    console.log("In AfterViewInit");
     this.buildGraph();
   }
 
@@ -55,8 +60,8 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
 
   //Currently following https://vizartpandey.com/creating-simple-line-charts-using-d3-js-part-01/
   async buildGraph() {
+    if (this.sensorDataset.length == 0) return;
     const dataset = this.sensorDataset;
-
     //X/Y access functions
     const yAccessor = (d) => +d.value; //This needs to be a number, not a string, otherwise scaling is weird
     const dateParser = d3.utcParse("%Y-%m-%dT%H:%M:%S.%LZ");
@@ -90,7 +95,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .style("font-size", "25px")
       .style("text-decoration", "bold")
       .style("text-anchor", "middle")
-      .text(this.sensorDisplay);
+      .text(this.sensor.getDisplayName()); //All sensors that extend Sensor have this function, but sensor model ts does not. This will show errors but will run fine.
 
     //Scaling functions
     const yScale = d3
@@ -111,8 +116,36 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     const lineGenerator = d3
       .line()
       .x((d) => xScale(xAccessor(d)))
-      .y((d) => yScale(yAccessor(d)))
-      //.curve(d3.curveBasis);
+      .y((d) => yScale(yAccessor(d)));
+    //.curve(d3.curveBasis);
+    console.log(
+      "Alarm values",
+      this.sensor.alarm_min,
+      this.sensor.alarm_max,
+      yScale(this.sensor.alarm_min)
+    );
+    let minAlarmPoints = [
+      { x: 0, y: this.sensor.alarm_min },
+      { x: this.dimensions.boundedWidth, y: this.sensor.alarm_min },
+    ];
+    let maxAlarmPoints = [
+      { x: 0, y: this.sensor.alarm_max },
+      { x: this.dimensions.boundedWidth, y: this.sensor.alarm_max },
+    ];
+    const alarmLineGen = d3 //using d3's own line() function so that generated lines would scale properly
+      .line()
+      .x((d) => d.x)
+      .y((d) => yScale(d.y));
+    const alarmLineMin = bounds
+      .append("path")
+      .attr("d", alarmLineGen(minAlarmPoints))
+      .style("stroke", "red")
+      .style("stroke-dasharray", "3, 3");
+    const alarmLineMax = bounds
+      .append("path")
+      .attr("d", alarmLineGen(maxAlarmPoints))
+      .style("stroke", "red")
+      .style("stroke-dasharray", "3, 3");
 
     const line = bounds
       .append("path")
@@ -121,6 +154,9 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .attr("stroke", "Blue")
       .attr("stroke-width", 2);
 
+    //console.warn("Scaled alarm vals", yScale(this.sensor.alarm_min), yScale(this.sensor.alarm_max));
+    //this.drawAlarmLine(true, yScale(this.sensor.alarm_min));
+    //this.drawAlarmLine(true, yScale(this.sensor.alarm_max));
     //Axes
     //Customization: see https://ghenshaw-work.medium.com/customizing-axes-in-d3-js-99d58863738b
 
@@ -136,20 +172,6 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     //xAxis.select(".domain").remove(); // Will have just labels and ticks, no horizontal line
     //yAxis.select(".domain").remove();
   }
-  //downsample: 100 data points, take avg per each group
-  //dot colors if there are points within group that exceed alarm limits (do last)
-
-  drawAlarmLine(isRed: boolean) {
-    const wrapper = d3.select("#" + this.sensorType + "-svg");
-    wrapper
-      .append("line")
-      .style("stroke", isRed ? "red" : "grey")
-      .style("stroke-dasharray", "3, 3") //Dashed line
-      .attr("x1", this.dimensions.margin.left)
-      .attr("y1", 10)
-      .attr("x2", this.dimensions.width)
-      .attr("y2", 10);
-  }
 
   compileData() {
     this.sensorDataset = [];
@@ -162,9 +184,9 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     });
     //console.warn(this.sensorDataset);
   }
-/*
-  //Use whole numbers!!
-  downsampleCompileData(ratio: number) {
+  //Specify a desired amount of points left over on the display after downsampling.
+  //This function does not use the ACTUAL number of data points available, but instead uses the THEORETICAL amount of points in the time period selected.
+  downsampleCompileData(targetPts: number) {
     this.sensorDataset = [];
     let i = 0;
     let currentSum = 0;
@@ -180,6 +202,24 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       }
       if (!hasData) return; //return with empty dataset.
 
+      let theoreticalPts = (this._timeframe * 3600) / this.SECONDS_PER_DATA; //total seconds divided by num seconds per data point = theoretical num of pts
+      let ratio = theoreticalPts / targetPts;
+      if (ratio <= 1) ratio = 1; //If there are less theoretical points than target, leave it be
+      ratio = Math.round(ratio);
+
+      if (ratio == 1) {
+        for (let element of this._historicalData.sensor_info) {
+          let currentValue = element.sensors.find(
+            (item) => item.name == this.sensorType
+          ).value;
+          this.sensorDataset.push({
+            timestamp: element._id,
+            value: +currentValue,
+          });
+        }
+        return;
+      }
+      //For loop: computes average per every [ratio] number of samples, averages them down.
       for (let element of this._historicalData.sensor_info) {
         let currentValue = element.sensors.find(
           (item) => item.name == this.sensorType
@@ -200,64 +240,12 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
         }
         i++;
       }
-    } else {
-      console.warn("downSample null historicalData!", this._historicalData);
-    }
-
-    //console.warn(this.sensorDataset);
-  }
-*/
-
-//Specify a desired amount of points left over on the display after downsampling.
-//This function does not use the ACTUAL number of data points available, but instead uses the THEORETICAL amount of points in the time period selected.
-  downsampleCompileData(targetPts: number) {
-    this.sensorDataset = [];
-    let i = 0;
-    let currentSum = 0;
-    let firstGroupTimestamp: Date;
-    if (this._historicalData) {
-      //Check if there is data for this sensor. If there are none, quit it
-      let firstElem = this._historicalData.sensor_info[0].sensors;
-      let hasData = false;
-      for (let element of firstElem) {
-        if (element.name == this.sensorType) {
-          hasData = true;
-        }
-      }
-      if (!hasData) return; //return with empty dataset.
-
-      let theoreticalPts = this._timeframe * 3600 / this.SECONDS_PER_DATA; //total seconds divided by num seconds per data point = theoretical num of pts
-      let ratio = theoreticalPts / targetPts;
-      if(ratio <= 1) ratio = 1; //If there are less theoretical points than target, leave it be
-      console.warn("Rounding from ratio", ratio);
-      ratio = Math.round(ratio);
-
-      //For loop: computes average per every [ratio] number of samples, averages them down.
-      for (let element of this._historicalData.sensor_info) {
-        let currentValue = element.sensors.find(
-          (item) => item.name == this.sensorType
-        ).value;
-        currentSum += +currentValue;
-        if (i == ratio - 1) {
-          //reached last element of the group, record it
-          let avgValue = +currentSum / (i + 1);
-          currentSum = 0;
-          i = -1; //this means i will be 0 at end of loop
-          this.sensorDataset.push({
-            timestamp: firstGroupTimestamp,
-            value: +avgValue
-          });
-        } else if (i == 0) {
-          //first run of the group, log the first timestamp
-          firstGroupTimestamp = element._id;
-        }
-        i++;
-      }
-      if(i != 0){ //this means the for loop ended in the middle of a group. Make this into one final data point
+      if (i != 0) {
+        //this means the for loop ended in the middle of a group. Make this into one final data point
         let avgValue = +currentSum / (i + 1);
         this.sensorDataset.push({
           timestamp: firstGroupTimestamp,
-          value: +avgValue
+          value: +avgValue,
         });
       }
     } else {
