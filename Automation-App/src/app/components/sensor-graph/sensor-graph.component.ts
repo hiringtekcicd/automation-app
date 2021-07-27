@@ -27,6 +27,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   @Input() sensor: Sensor; //We need to bind to a sensor to get alarm info anyway, and we can also get DisplayName
 
   SECONDS_PER_DATA = 10;
+  YSCALE_SPACE_PCT = 0.1; // Y scaling: percentage of space left empty both above and below the min/max pts of the graph. Valid between 0 and 0.5.
 
   aspectRatio = 500 / 300;
   dimensions = {
@@ -98,9 +99,19 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .text(this.sensor.getDisplayName()); //All sensors that extend Sensor have this function, but sensor model ts does not. This will show errors but will run fine.
 
     //Scaling functions
+
+    //y Scaling: an equal amount percentage of space left empty above/below the min/max of data.
+    
+    const YSCALE_REMAIN_PCT = 1 - 2 * this.YSCALE_SPACE_PCT; //Pct of screen left for data
+
+    const extentData = d3.extent(dataset, yAccessor);
+    const extentRange = extentData[1] - extentData[0];
+    extentData[0] -= extentRange / YSCALE_REMAIN_PCT * this.YSCALE_SPACE_PCT;
+    extentData[1] += extentRange / YSCALE_REMAIN_PCT * this.YSCALE_SPACE_PCT;
+    console.warn("Y axis rescaled to",extentData);
     const yScale = d3
       .scaleLinear()
-      .domain(d3.extent(dataset, yAccessor))
+      .domain(extentData)
       .range([this.dimensions.boundedHeight, 0]);
 
     //X Axis: setting the domain of the X Axis according to the date range, NOT based on the data.
