@@ -37,7 +37,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       top: 50,
       right: 0,
       bottom: 25,
-      left: 40,
+      left: 50,
     },
     boundedWidth: 0,
     boundedHeight: 0,
@@ -188,9 +188,10 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
 
     //const firstTick = d3.select("#xAxis" + this.sensorType).select("g").attr("color", "red"); //selects the first tick of the xAxis
 
-    const modifyXAxisText = d3.select("#xAxis"+this.sensorType).selectAll(".tick text").style("transform", "translate(0px, 5px)"); //moves all xAxis text down a bit
+    const modifyXAxisText = d3.select("#xAxis"+this.sensorType).selectAll(".tick text").style("transform", "translate(0px, 5px)").style("font-size", "150%"); //moves all xAxis text down a bit
+    const modifyYAxisText = d3.select("#yAxis"+this.sensorType).selectAll(".tick text").style("font-size", "150%");
     //.style("transform", "rotate(90deg) translate(22px, -12px)") //makes the axis text vertical (looks bad)
-    //Don't forget to change bottom margin in this.dimensions
+    //Don't forget to change bottom or left margins in this.dimensions
   }
 
   compileData() {
