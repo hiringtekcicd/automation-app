@@ -17,7 +17,7 @@ export class AnalyticsPage implements OnInit {
   existingSensors: string[]; //will contain list of sensor names that exist in the fetched data
 
   deviceIsFertigation: boolean; //Since the text for fert/clim systems is hard to get to from a *ngIf directive, store this in a boolean and make it read from that
-
+  isLoading = false;
   //Timeframe options dropdown: See https://forum.ionicframework.com/t/ion-select-and-default-values-ionic-4-solved/177550/2
   timeframeOptions = [ //Insert more timeframe options as needed in the future.
     {value: 1, label: "1 Hour"},
@@ -89,11 +89,13 @@ export class AnalyticsPage implements OnInit {
     firstTimestamp.setTime(
       firstTimestamp.getTime() - durationHrs * 60 * 60 * 1000 //3600 secs in hour * 1000ms in sec
     );
+    this.isLoading = true;
     this.varman
       .getHistoricData(this.topicID, firstTimestamp, lastTimestamp)
       .subscribe((result) => {
         this.historicalData = result;
         console.warn("Fetched for",durationHrs,"hours:", result);
+        this.isLoading = false;
         if (this.historicalData.length > 0) {
           this.setCardFlags();
         }else{
