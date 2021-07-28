@@ -36,7 +36,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     margin: {
       top: 50,
       right: 0,
-      bottom: 20,
+      bottom: 25,
       left: 40,
     },
     boundedWidth: 0,
@@ -101,14 +101,14 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     //Scaling functions
 
     //y Scaling: an equal amount percentage of space left empty above/below the min/max of data.
-    
+
     const YSCALE_REMAIN_PCT = 1 - 2 * this.YSCALE_SPACE_PCT; //Pct of screen left for data
 
     const extentData = d3.extent(dataset, yAccessor);
     const extentRange = extentData[1] - extentData[0];
-    extentData[0] -= extentRange / YSCALE_REMAIN_PCT * this.YSCALE_SPACE_PCT;
-    extentData[1] += extentRange / YSCALE_REMAIN_PCT * this.YSCALE_SPACE_PCT;
-    console.warn("Y axis rescaled to",extentData);
+    extentData[0] -= (extentRange / YSCALE_REMAIN_PCT) * this.YSCALE_SPACE_PCT;
+    extentData[1] += (extentRange / YSCALE_REMAIN_PCT) * this.YSCALE_SPACE_PCT;
+    console.warn("Y axis rescaled to", extentData);
     const yScale = d3
       .scaleLinear()
       .domain(extentData)
@@ -165,23 +165,32 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .attr("stroke", "Blue")
       .attr("stroke-width", 2);
 
-    //console.warn("Scaled alarm vals", yScale(this.sensor.alarm_min), yScale(this.sensor.alarm_max));
-    //this.drawAlarmLine(true, yScale(this.sensor.alarm_min));
-    //this.drawAlarmLine(true, yScale(this.sensor.alarm_max));
     //Axes
     //Customization: see https://ghenshaw-work.medium.com/customizing-axes-in-d3-js-99d58863738b
+    //.tickValues([..., ..., ...]) sets actual tick values (called on Axis generator)
+    //.tick(num) sets number of ticks present on an axis (called on Axis generator)
 
-    const yAxisGenerator = d3.axisLeft().scale(yScale).ticks(5); //make sure there is enough margin so it doesn't cut off digits (margin left)
-    const yAxis = bounds.append("g").call(yAxisGenerator);
-    const xAxisGenerator = d3.axisBottom().scale(xScale);
-    //xAxisGenerator.ticks(5); //Sets number of auto-gen'd ticks
-    //xAxisGenerator.tickSize(-100); //negative tick size = grid-like, goes into the graph
+    const yAxisGenerator = d3.axisLeft().scale(yScale).ticks(5);
+    const yAxis = bounds
+      .append("g")
+      .attr("id", "yAxis" + this.sensorType)
+      .call(yAxisGenerator);
+    const xAxisGenerator = d3.axisBottom().scale(xScale).ticks(7);
+
     const xAxis = bounds
       .append("g")
-      .style("transform", `translate(0px,${this.dimensions.boundedHeight}px)`) //make it an actual bottom x-axis
+      .style("transform", `translate(0px,${this.dimensions.boundedHeight}px)`) //make it an actual bottom x-axis by translating it down
+      .attr("id", "xAxis" + this.sensorType)
       .call(xAxisGenerator);
-    //xAxis.select(".domain").remove(); // Will have just labels and ticks, no horizontal line
+
+    //xAxis.select(".domain").remove(); //Removes axes' horizontal line
     //yAxis.select(".domain").remove();
+
+    //const firstTick = d3.select("#xAxis" + this.sensorType).select("g").attr("color", "red"); //selects the first tick of the xAxis
+
+    const modifyXAxisText = d3.select("#xAxis"+this.sensorType).selectAll(".tick text").style("transform", "translate(0px, 5px)"); //moves all xAxis text down a bit
+    //.style("transform", "rotate(90deg) translate(22px, -12px)") //makes the axis text vertical (looks bad)
+    //Don't forget to change bottom margin in this.dimensions
   }
 
   compileData() {
