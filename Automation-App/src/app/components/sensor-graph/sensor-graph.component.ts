@@ -11,7 +11,7 @@ import { Sensor } from "src/app/models/sensor.model";
 export class SensorGraphComponent implements OnInit, AfterViewInit {
   // Each instance of this uses D3JS to create a graph (inside an ionic card component).
   // When we are ready for actual data, have an @Input() to bind to a specific sensor
-  @Input() _historicalData: analytics_data; //this is a reference to the analytics page data
+  _historicalData: analytics_data; //this is a reference to the analytics page data
   @Input() set historicalData(historicalData: analytics_data) {
     this._historicalData = historicalData;
     this.ngOnInit();
@@ -19,7 +19,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   }
   @Input() sensorType: string;
 
-  @Input() _timeframe: number;
+  _timeframe: number;
   @Input() set timeframe(timeframe: number) {
     this._timeframe = timeframe;
   }
@@ -51,7 +51,6 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log("In AfterViewInit");
     this.buildGraph();
   }
 
@@ -186,10 +185,17 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     //xAxis.select(".domain").remove(); //Removes axes' horizontal line
     //yAxis.select(".domain").remove();
 
-    //const firstTick = d3.select("#xAxis" + this.sensorType).select("g").attr("color", "red"); //selects the first tick of the xAxis
+    //const firstTick = d3.select("#xAxis" + this.sensorType).select("g").remove(); //selects the first tick of the xAxis
 
-    const modifyXAxisText = d3.select("#xAxis"+this.sensorType).selectAll(".tick text").style("transform", "translate(0px, 5px)").style("font-size", "150%"); //moves all xAxis text down a bit
-    const modifyYAxisText = d3.select("#yAxis"+this.sensorType).selectAll(".tick text").style("font-size", "150%");
+    const modifyXAxisText = d3
+      .select("#xAxis" + this.sensorType)
+      .selectAll(".tick text")
+      .style("transform", "translate(0px, 5px)")
+      .style("font-size", "150%"); //moves all xAxis text down a bit
+    const modifyYAxisText = d3
+      .select("#yAxis" + this.sensorType)
+      .selectAll(".tick text")
+      .style("font-size", "150%");
     //.style("transform", "rotate(90deg) translate(22px, -12px)") //makes the axis text vertical (looks bad)
     //Don't forget to change bottom or left margins in this.dimensions
   }
@@ -212,65 +218,65 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     let i = 0;
     let currentSum = 0;
     let firstGroupTimestamp: Date;
-    if (this._historicalData) {
-      //Check if there is data for this sensor. If there are none, quit it
-      let firstElem = this._historicalData.sensor_info[0].sensors;
-      let hasData = false;
-      for (let element of firstElem) {
-        if (element.name == this.sensorType) {
-          hasData = true;
-        }
+    if (!this._historicalData) {
+      console.warn("downSample null historicalData!", this._historicalData);
+      return;
+    }
+    //Check if there is data for this sensor. If there are none, quit it
+    let firstElem = this._historicalData.sensor_info[0].sensors;
+    let hasData = false;
+    for (let element of firstElem) {
+      if (element.name == this.sensorType) {
+        hasData = true;
       }
-      if (!hasData) return; //return with empty dataset.
+    }
+    if (!hasData) return; //return with empty dataset.
 
-      let theoreticalPts = (this._timeframe * 3600) / this.SECONDS_PER_DATA; //total seconds divided by num seconds per data point = theoretical num of pts
-      let ratio = theoreticalPts / targetPts;
-      if (ratio <= 1) ratio = 1; //If there are less theoretical points than target, leave it be
-      ratio = Math.round(ratio);
+    let theoreticalPts = (this._timeframe * 3600) / this.SECONDS_PER_DATA; //total seconds divided by num seconds per data point = theoretical num of pts
+    let ratio = theoreticalPts / targetPts;
+    if (ratio <= 1) ratio = 1; //If there are less theoretical points than target, leave it be
+    ratio = Math.round(ratio);
 
-      if (ratio == 1) {
-        for (let element of this._historicalData.sensor_info) {
-          let currentValue = element.sensors.find(
-            (item) => item.name == this.sensorType
-          ).value;
-          this.sensorDataset.push({
-            timestamp: element._id,
-            value: +currentValue,
-          });
-        }
-        return;
-      }
-      //For loop: computes average per every [ratio] number of samples, averages them down.
+    if (ratio == 1) {
       for (let element of this._historicalData.sensor_info) {
         let currentValue = element.sensors.find(
           (item) => item.name == this.sensorType
         ).value;
-        currentSum += +currentValue;
-        if (i == ratio - 1) {
-          //reached last element of the group, record it
-          let avgValue = +currentSum / (i + 1);
-          currentSum = 0;
-          i = -1; //this means i will be 0 at end of loop
-          this.sensorDataset.push({
-            timestamp: firstGroupTimestamp,
-            value: +avgValue,
-          });
-        } else if (i == 0) {
-          //first run of the group, log the first timestamp
-          firstGroupTimestamp = element._id;
-        }
-        i++;
+        this.sensorDataset.push({
+          timestamp: element._id,
+          value: +currentValue,
+        });
       }
-      if (i != 0) {
-        //this means the for loop ended in the middle of a group. Make this into one final data point
+      return;
+    }
+    //For loop: computes average per every [ratio] number of samples, averages them down.
+    for (let element of this._historicalData.sensor_info) {
+      let currentValue = element.sensors.find(
+        (item) => item.name == this.sensorType
+      ).value;
+      currentSum += +currentValue;
+      if (i == ratio - 1) {
+        //reached last element of the group, record it
         let avgValue = +currentSum / (i + 1);
+        currentSum = 0;
+        i = -1; //this means i will be 0 at end of loop
         this.sensorDataset.push({
           timestamp: firstGroupTimestamp,
           value: +avgValue,
         });
+      } else if (i == 0) {
+        //first run of the group, log the first timestamp
+        firstGroupTimestamp = element._id;
       }
-    } else {
-      console.warn("downSample null historicalData!", this._historicalData);
+      i++;
+    }
+    if (i != 0) {
+      //this means the for loop ended in the middle of a group. Make this into one final data point
+      let avgValue = +currentSum / (i + 1);
+      this.sensorDataset.push({
+        timestamp: firstGroupTimestamp,
+        value: +avgValue,
+      });
     }
   }
 }
