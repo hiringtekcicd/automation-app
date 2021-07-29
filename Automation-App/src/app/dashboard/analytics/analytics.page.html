@@ -62,6 +62,5 @@
   <p *ngIf="!existingSensors && !isLoading" class="text_center" style="color: white">
     No historical data found in this timeframe!
   </p>
-  <p *ngIf="isLoading" class="text_center" style="color: white">Loading historical data graphs...</p>
-  <ion-spinner *ngIf="isLoading" class="text_center" color="white"></ion-spinner>
+    <p *ngIf="isLoading" style="color: white;" class="text_center">Loading historical data graphs...</p>
 </ion-content>
