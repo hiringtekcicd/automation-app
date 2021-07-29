@@ -12,6 +12,7 @@ import { Devices, FertigationSystemString } from './../../Services/variable-mana
 export class AnalyticsPage implements OnInit {
   topicID: string;
   currentDevice: Devices;
+  prevDeviceIndex: number;
   historicalData: analytics_data;
 
   existingSensors: string[]; //will contain list of sensor names that exist in the fetched data
@@ -50,7 +51,14 @@ export class AnalyticsPage implements OnInit {
     this.route.queryParams.subscribe((params) => {
       let currentDeviceType = params["deviceType"];
       let currentDeviceIndex = params["deviceIndex"];
-
+      if(this.prevDeviceIndex == null){
+        this.prevDeviceIndex = currentDeviceIndex;
+      }else if(this.prevDeviceIndex != currentDeviceIndex){
+        //user left previous device screen and is in a new device - reload.
+        this.prevDeviceIndex = currentDeviceIndex;
+        console.warn("Reloading, fetching for ", this.currentTimeframeValue);
+        this.fetchHistoricData(this.currentTimeframeValue);
+      }
       if ((currentDeviceType && currentDeviceIndex) != null) {
 
         if(currentDeviceType == FertigationSystemString){
@@ -77,9 +85,6 @@ export class AnalyticsPage implements OnInit {
   setCardFlags() {
     console.warn(this.currentDevice)
     this.existingSensors = Object.keys((this.currentDevice.settings))
-    ///let sensorSample = this.historicalData.sensor_info[this.historicalData.sensor_info.length - 1].sensors; //this has array of sensor data with 'name': <type>
-    //sensorSample.map((element) => {this.existingSensors.push(element.name)});
-    console.warn(this.existingSensors);
   }
 
   fetchHistoricData(durationHrs: number){
