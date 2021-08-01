@@ -105,6 +105,8 @@ export class AnalyticsPage implements OnInit {
         }else{
           this.existingSensors = null;
         }
+      }, (error)=>{
+        console.error(error);
       });
   }
 }

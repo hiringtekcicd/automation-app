@@ -107,7 +107,6 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     const extentRange = extentData[1] - extentData[0];
     extentData[0] -= (extentRange / YSCALE_REMAIN_PCT) * this.YSCALE_SPACE_PCT;
     extentData[1] += (extentRange / YSCALE_REMAIN_PCT) * this.YSCALE_SPACE_PCT;
-    console.warn("Y axis rescaled to", extentData);
     const yScale = d3
       .scaleLinear()
       .domain(extentData)
@@ -128,12 +127,6 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .x((d) => xScale(xAccessor(d)))
       .y((d) => yScale(yAccessor(d)));
     //.curve(d3.curveBasis);
-    console.log(
-      "Alarm values",
-      this.sensor.alarm_min,
-      this.sensor.alarm_max,
-      yScale(this.sensor.alarm_min)
-    );
     let minAlarmPoints = [
       { x: 0, y: this.sensor.alarm_min },
       { x: this.dimensions.boundedWidth, y: this.sensor.alarm_min },

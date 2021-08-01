@@ -57,7 +57,7 @@ export class VariableManagementService {
 
   public plants: plant[] = [];
 
-  private analyticsDataArray; //[{topicID, analytics_data}]
+  public analyticsDataArray;
 
   constructor(
     private http: HttpClient,
@@ -319,13 +319,13 @@ export class VariableManagementService {
       })
     );
   }
-
+  //---------------------------------------------Analytics page - historic data management------------------------------------------------
   //this is only called on page change
   public getHistoricData(
     topicID: string,
     firstTimestamp: Date,
     lastTimestamp: Date
-  ) {
+  ): Observable<analytics_data> {
     //Check if array itself exists (if not, initialize)
     if (!this.analyticsDataArray) this.analyticsDataArray = [];
     //Check if item exists (disregarding timeframe)
@@ -333,59 +333,38 @@ export class VariableManagementService {
       (item) => item.topicID == topicID
     );
     if (!currentTarget) {
-      this.analyticsDataArray.push({ topicID: topicID, analyticsData: null });
+      this.analyticsDataArray.push({ topicID: topicID, analyticsData: this.makeAnalyticsData(null) });
       console.log("Case 1: no current entry");
     } else {
       //What if the data is already there, all of it? return the data in of()
       let currentAData: analytics_data = currentTarget.analyticsData;
-      console.warn(currentTarget)
-      if (
-        currentAData && currentAData.firstTimestamp.getTime() <= firstTimestamp.getTime() &&
-        currentAData.lastTimestamp.getTime() >= lastTimestamp.getTime()
-      ) {
-        console.log("Case 2: entry exists, returning slice");
-        //Slice the data and return it, we still need to process first/last timestamps and length
-        let result: analytics_data = {
-          firstTimestamp: firstTimestamp,
-          lastTimestamp: lastTimestamp,
-          length: 0,
-          sensor_info: [null],
-        };
-        let firstIdx = currentAData.sensor_info.findIndex(item => item._id == firstTimestamp);
-        let lastIdx = currentAData.sensor_info.findIndex(item => item._id == lastTimestamp);
-        if (firstIdx < 0 || lastIdx < 0)
-          console.error(
-            "Existing sensor data but findIndex() returned: ",
-            firstIdx,
-            lastIdx
-          );
-        result.length = lastIdx - firstIdx + 1;
-        let resultArray: sensor_data[] = currentAData.sensor_info.slice(
-          firstIdx,
-          lastIdx + 1
-        );
-        if (!resultArray) {
-          resultArray = [null];
-          length = 0;
+      if (currentAData && currentAData.length > 0) {//checking null
+        let firstTimestampDate = new Date(currentAData.firstTimestamp);
+        let lastTimestampDate = new Date(currentAData.lastTimestamp);
+        if (
+          firstTimestampDate.getTime() <= firstTimestamp.getTime() &&
+          lastTimestampDate.getTime() >= lastTimestamp.getTime()
+        ) {
+          console.log("Case 2: entry exists, returning slice");
+          //Slice the data and return it since we have it already
+          return of(this.getSlice(topicID, firstTimestamp));
         }
-        result.sensor_info = resultArray;
-        return of(result);
       }
     }
-
+    //Here, case 2 is not met, meaning we have partial match
     //updateHistoricalDataStorage should return an Observable, which is returned to analytics page where it is subscribed
-    // this.http.get<analytics_data>(this.dbURL + "/get_sensor_data/" + topicID + "/" + firstTimeStr + "/" + lastTimeStr).pipe(tap((x) => // store x into an array)).sub
     return this.updateHistoricalDataStorage(topicID, firstTimestamp);
   }
 
   //Takes current value of the behaviorsubject, and 'patches' it with data from the backend to make it store from
   //firstTimestamp til now (new Date() ).
-  private updateHistoricalDataStorage(topicID: string, firstTimestamp: Date) {
-    let currentDate = new Date();
+  private updateHistoricalDataStorage(topicID: string, earliestTargetDate: Date) : Observable<analytics_data>{
+    let currentTargetDate = new Date();
     let currentAData: analytics_data = this.analyticsDataArray.find(
       (item) => item.topicID == topicID
     ).analyticsData; //this should be the subject?
-    if (!currentAData) {
+    console.warn("Current target AData", currentAData);
+    if (!currentAData || currentAData.length == 0) {
       console.log("Case 3: Data null, fetching all data");
       //no data cached or just created. Fetch the full thing
       return this.http
@@ -394,28 +373,31 @@ export class VariableManagementService {
             "/get_sensor_data/" +
             topicID +
             "/" +
-            firstTimestamp.toISOString() +
+            earliestTargetDate.toISOString() +
             "/" +
-            currentDate.toISOString()
+            currentTargetDate.toISOString()
         )
         .pipe(
           tap((resData) => {
-            currentAData = resData; //both are the same type, so just store it and return Observable
+            console.warn("Case 3: fetched",resData);
+            this.analyticsDataArray.find(
+              (item) => item.topicID == topicID
+            ).analyticsData = { ...resData }; //both are the same type, so just store it
+            //No need to map it, just store it; obs returned is the http request
+            //No need to slice because this is a request for exact amount needed
           })
         );
     } else {
       //Append at front, back, or both?
+      let currentDataEarliestDate = new Date(currentAData.firstTimestamp);
+      let currentDataLatestDate = new Date(currentAData.lastTimestamp);
       let frontFlag: boolean =
-        currentAData.firstTimestamp.getTime() <= firstTimestamp.getTime();
+      currentDataEarliestDate.getTime() <= earliestTargetDate.getTime();
       let backFlag: boolean =
-        currentAData.lastTimestamp.getTime() >= currentDate.getTime();
-      let result: analytics_data = {
-        firstTimestamp: firstTimestamp,
-        lastTimestamp: currentDate,
-        length: 0,
-        sensor_info: [null],
-      };
-      if (frontFlag && backFlag) {
+      currentDataLatestDate.getTime() >= currentTargetDate.getTime();
+      //Flag is true -> do not fetch, Flag false -> send request to patch cache
+      console.log(currentDataEarliestDate, earliestTargetDate, currentDataLatestDate, currentTargetDate);
+      if (!frontFlag && !backFlag) {
         console.log("Case 4: Back and front append to array");
         //Data missing at both ends!
         let frontReq = this.http.get<analytics_data>(
@@ -423,73 +405,124 @@ export class VariableManagementService {
             "/get_sensor_data/" +
             topicID +
             "/" +
-            firstTimestamp.toISOString() +
+            earliestTargetDate.toISOString() +
             "/" +
-            currentAData.firstTimestamp.toISOString()
+            currentAData.firstTimestamp
         ); //fetch the difference
         let backReq = this.http.get<analytics_data>(
           this.dbURL +
             "/get_sensor_data/" +
             topicID +
             "/" +
-            currentAData.lastTimestamp.toISOString() +
+            currentAData.lastTimestamp+
             "/" +
-            currentDate.toISOString()
+            currentTargetDate.toISOString()
         );
         return forkJoin([frontReq, backReq]).pipe(
           switchMap((resData) => {
-            let mergedArray = [
+            this.analyticsDataArray.find(
+              (item) => item.topicID == topicID
+            ).analyticsData = this.makeAnalyticsData([
               ...resData[0].sensor_info,
               ...currentAData.sensor_info,
               ...resData[1].sensor_info,
-            ];
-            result.sensor_info = mergedArray;
-            result.length = mergedArray.length;
-            currentAData = result;
-            return of(currentAData);
+            ]);
+            return of(this.getSlice(topicID, earliestTargetDate));
           })
         ); //[0] is front, [1] is back.
-      } else if (frontFlag && !backFlag) {
+      } else if (!frontFlag && backFlag) {
         //append at front only
-        console.log("Case 5: Just append front");
+        console.log("Case 5: Just append earlier data");
         return this.http
           .get<analytics_data>(
             this.dbURL +
               "/get_sensor_data/" +
               topicID +
               "/" +
-              firstTimestamp.toISOString() +
+              earliestTargetDate.toISOString() +
               "/" +
-              currentAData.firstTimestamp.toISOString()
+              currentAData.firstTimestamp
           )
-          .pipe(tap((resData) => {
-            let mergedArray = [...resData.sensor_info, ...currentAData.sensor_info];
-            result.sensor_info = mergedArray;
-            result.length = mergedArray.length;
-            currentAData = result;
-          }));
-      }else if (backFlag && !frontFlag){
-        console.log("Case 6: Just append back");
+          .pipe(
+            map((resData) => {
+              this.analyticsDataArray.find(
+                (item) => item.topicID == topicID
+              ).analyticsData = this.makeAnalyticsData([
+                ...resData.sensor_info,
+                ...currentAData.sensor_info,
+              ]);
+              return (this.getSlice(topicID, earliestTargetDate));
+            })
+          );
+      } else if (!backFlag && frontFlag) {
+        console.log("Case 6: Just append latest");
         return this.http
           .get<analytics_data>(
             this.dbURL +
               "/get_sensor_data/" +
               topicID +
               "/" +
-              currentAData.lastTimestamp.toISOString() +
+              currentAData.lastTimestamp +
               "/" +
-              currentDate.toISOString()
+              currentTargetDate.toISOString()
           )
-          .pipe(tap((resData) => {
-            let mergedArray = [...currentAData.sensor_info, ...resData.sensor_info];
-            result.sensor_info = mergedArray;
-            result.length = mergedArray.length;
-            currentAData = result;
-          }));
+          .pipe(
+            map((resData) => {
+              this.analyticsDataArray.find(
+                (item) => item.topicID == topicID
+              ).analyticsData = this.makeAnalyticsData([
+                ...currentAData.sensor_info,
+                ...resData.sensor_info,
+              ]);
+              return (this.getSlice(topicID, earliestTargetDate));
+            })
+          );
+      }else{
+        console.log("How did we get here?");
       }
     }
     //We ASSUME that the data previously fetched is in 1 contiguous chunk (a.k.a. if there is anything cached, there are no holes inside making us fetch for a tiny period of time).
     //This is for simplicity, and also just because this is how the backend works - it returns the whole span of data.
+  }
+
+  private getSlice(topicID: string, firstTimestamp: Date){
+    //Gets the cached data and returns the portion that ranges from firstTimestamp to now
+    let lastTimestamp = new Date();
+    let currentAData = this.analyticsDataArray.find(
+      (item) => item.topicID == topicID
+    ).analyticsData;
+    console.log("Slice from: ", currentAData);
+
+    let firstIdx = currentAData.sensor_info.findIndex(
+      (item) => item._id == firstTimestamp
+    );
+    let lastIdx = currentAData.sensor_info.findIndex(
+      (item) => item._id == lastTimestamp
+    );
+    // firstTimestampDate.getTime() <= firstTimestamp.getTime() &&
+    //lastTimestampDate.getTime() >= lastTimestamp.getTime()
+      
+    let resultArray: sensor_data[] = currentAData.sensor_info.slice(
+      firstIdx,
+      lastIdx + 1
+    );
+    return this.makeAnalyticsData(resultArray);
+  }
+
+  private makeAnalyticsData(sensorInfoArr: sensor_data[]){
+    let result: analytics_data = {
+      firstTimestamp: null,
+      lastTimestamp: null,
+      length: 0,
+      sensor_info: [],
+    };
+    if(!sensorInfoArr || sensorInfoArr.length == 0) return result; //null/no data
+
+    result.sensor_info = sensorInfoArr;
+    result.firstTimestamp = sensorInfoArr[0]._id;
+    result.lastTimestamp = sensorInfoArr[sensorInfoArr.length-1]._id;
+    result.length = sensorInfoArr.length;
+    return result;
   }
 }
 
