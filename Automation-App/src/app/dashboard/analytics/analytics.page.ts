@@ -95,7 +95,7 @@ export class AnalyticsPage implements OnInit {
     );
     this.isLoading = true;
     this.varman
-      .getHistoricData(this.topicID, firstTimestamp, lastTimestamp)
+      .getHistoricData(this.topicID, firstTimestamp, lastTimestamp, 10)
       .subscribe((result) => {
         this.historicalData = result;
         console.warn("Fetched for",durationHrs,"hours:", result);

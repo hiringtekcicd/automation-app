@@ -59,6 +59,8 @@ export class VariableManagementService {
 
   public analyticsDataArray;
 
+  public SENSOR_INTERVAL_SECONDS = 10; //seconds per historicData sensor values
+
   constructor(
     private http: HttpClient,
     private storageService: IonicStorageService
@@ -324,9 +326,13 @@ export class VariableManagementService {
   public getHistoricData(
     topicID: string,
     firstTimestamp: Date,
-    lastTimestamp: Date
+    lastTimestamp: Date, sensorInterval: number
   ): Observable<analytics_data> {
+    this.roundTimestamp(firstTimestamp);
+    this.roundTimestamp(lastTimestamp);
+    //let currentTargetDate = new Date();//round this in 10- or 30-second periods
     //Check if array itself exists (if not, initialize)
+    this.SENSOR_INTERVAL_SECONDS = sensorInterval;
     if (!this.analyticsDataArray) this.analyticsDataArray = [];
     //Check if item exists (disregarding timeframe)
     let currentTarget = this.analyticsDataArray.find(
@@ -347,19 +353,19 @@ export class VariableManagementService {
         ) {
           console.log("Case 2: entry exists, returning slice");
           //Slice the data and return it since we have it already
-          return of(this.getSlice(topicID, firstTimestamp));
+          return of(this.getSlice(topicID, firstTimestamp, lastTimestamp));
         }
       }
     }
     //Here, case 2 is not met, meaning we have partial match
     //updateHistoricalDataStorage should return an Observable, which is returned to analytics page where it is subscribed
-    return this.updateHistoricalDataStorage(topicID, firstTimestamp);
+    return this.updateHistoricalDataStorage(topicID, firstTimestamp, lastTimestamp);
   }
 
   //Takes current value of the behaviorsubject, and 'patches' it with data from the backend to make it store from
   //firstTimestamp til now (new Date() ).
-  private updateHistoricalDataStorage(topicID: string, earliestTargetDate: Date) : Observable<analytics_data>{
-    let currentTargetDate = new Date();
+  private updateHistoricalDataStorage(topicID: string, earliestTargetDate: Date, currentTargetDate: Date) : Observable<analytics_data>{
+
     let currentAData: analytics_data = this.analyticsDataArray.find(
       (item) => item.topicID == topicID
     ).analyticsData; //this should be the subject?
@@ -396,9 +402,12 @@ export class VariableManagementService {
       let backFlag: boolean =
       currentDataLatestDate.getTime() >= currentTargetDate.getTime();
       //Flag is true -> do not fetch, Flag false -> send request to patch cache
-      console.log(currentDataEarliestDate, earliestTargetDate, currentDataLatestDate, currentTargetDate);
       if (!frontFlag && !backFlag) {
         console.log("Case 4: Back and front append to array");
+        let requestFirstTimestamp = new Date(currentAData.lastTimestamp);
+        requestFirstTimestamp.setSeconds(requestFirstTimestamp.getSeconds() + this.SENSOR_INTERVAL_SECONDS); //fetch next timestamp to avoid duplicates
+        let requestLastTimestamp = new Date(currentAData.firstTimestamp);
+        requestLastTimestamp.setSeconds(requestLastTimestamp.getSeconds() - this.SENSOR_INTERVAL_SECONDS); //fetch prev timestamp to avoid duplicates
         //Data missing at both ends!
         let frontReq = this.http.get<analytics_data>(
           this.dbURL +
@@ -407,14 +416,14 @@ export class VariableManagementService {
             "/" +
             earliestTargetDate.toISOString() +
             "/" +
-            currentAData.firstTimestamp
+            requestLastTimestamp
         ); //fetch the difference
         let backReq = this.http.get<analytics_data>(
           this.dbURL +
             "/get_sensor_data/" +
             topicID +
             "/" +
-            currentAData.lastTimestamp+
+            requestFirstTimestamp + 
             "/" +
             currentTargetDate.toISOString()
         );
@@ -422,17 +431,19 @@ export class VariableManagementService {
           switchMap((resData) => {
             this.analyticsDataArray.find(
               (item) => item.topicID == topicID
-            ).analyticsData = this.makeAnalyticsData([
+            ).analyticsData = this.makeAnalyticsData([ //de-dupe 2x overlap!
               ...resData[0].sensor_info,
               ...currentAData.sensor_info,
               ...resData[1].sensor_info,
             ]);
-            return of(this.getSlice(topicID, earliestTargetDate));
+            return of(this.getSlice(topicID, earliestTargetDate, currentTargetDate));
           })
         ); //[0] is front, [1] is back.
       } else if (!frontFlag && backFlag) {
         //append at front only
         console.log("Case 5: Just append earlier data");
+        let requestLastTimestamp = new Date(currentAData.firstTimestamp);
+        requestLastTimestamp.setSeconds(requestLastTimestamp.getSeconds() - this.SENSOR_INTERVAL_SECONDS); //fetch prev timestamp to avoid duplicates
         return this.http
           .get<analytics_data>(
             this.dbURL +
@@ -441,28 +452,30 @@ export class VariableManagementService {
               "/" +
               earliestTargetDate.toISOString() +
               "/" +
-              currentAData.firstTimestamp
+              requestLastTimestamp
           )
           .pipe(
             map((resData) => {
               this.analyticsDataArray.find(
                 (item) => item.topicID == topicID
-              ).analyticsData = this.makeAnalyticsData([
+              ).analyticsData = this.makeAnalyticsData([ //de-dupe 1x overlap!
                 ...resData.sensor_info,
                 ...currentAData.sensor_info,
               ]);
-              return (this.getSlice(topicID, earliestTargetDate));
+              return (this.getSlice(topicID, earliestTargetDate, currentTargetDate));
             })
           );
       } else if (!backFlag && frontFlag) {
         console.log("Case 6: Just append latest");
+        let requestFirstTimestamp = new Date(currentAData.lastTimestamp);
+        requestFirstTimestamp.setSeconds(requestFirstTimestamp.getSeconds() + this.SENSOR_INTERVAL_SECONDS); //fetch next timestamp to avoid duplicates
         return this.http
           .get<analytics_data>(
             this.dbURL +
               "/get_sensor_data/" +
               topicID +
               "/" +
-              currentAData.lastTimestamp +
+              requestFirstTimestamp +
               "/" +
               currentTargetDate.toISOString()
           )
@@ -474,7 +487,7 @@ export class VariableManagementService {
                 ...currentAData.sensor_info,
                 ...resData.sensor_info,
               ]);
-              return (this.getSlice(topicID, earliestTargetDate));
+              return (this.getSlice(topicID, earliestTargetDate, currentTargetDate));
             })
           );
       }else{
@@ -485,22 +498,33 @@ export class VariableManagementService {
     //This is for simplicity, and also just because this is how the backend works - it returns the whole span of data.
   }
 
-  private getSlice(topicID: string, firstTimestamp: Date){
+  private getSlice(topicID: string, firstTimestamp: Date, lastTimestamp: Date){
     //Gets the cached data and returns the portion that ranges from firstTimestamp to now
-    let lastTimestamp = new Date();
-    let currentAData = this.analyticsDataArray.find(
+
+
+
+    let currentAData: analytics_data = this.analyticsDataArray.find(
       (item) => item.topicID == topicID
     ).analyticsData;
+    console.log("Slice timeframe: ", firstTimestamp, lastTimestamp);
     console.log("Slice from: ", currentAData);
-
+    if(new Date(currentAData.lastTimestamp).getTime() < firstTimestamp.getTime()){
+      //all cached data is before our earliest time - return null
+      return this.makeAnalyticsData(null);
+    }
     let firstIdx = currentAData.sensor_info.findIndex(
-      (item) => item._id == firstTimestamp
+      (item) => new Date(item._id).toISOString() == firstTimestamp.toISOString()
     );
+    if(firstIdx < 0){
+      //exact point not available - use first elem of array instead
+      firstIdx = 0;
+    }
     let lastIdx = currentAData.sensor_info.findIndex(
-      (item) => item._id == lastTimestamp
+      (item) => new Date(item._id).toISOString() == lastTimestamp.toISOString()
     );
-    // firstTimestampDate.getTime() <= firstTimestamp.getTime() &&
-    //lastTimestampDate.getTime() >= lastTimestamp.getTime()
+    if(lastIdx < 0){
+      lastIdx = currentAData.sensor_info.length - 1;
+    }
       
     let resultArray: sensor_data[] = currentAData.sensor_info.slice(
       firstIdx,
@@ -523,6 +547,13 @@ export class VariableManagementService {
     result.lastTimestamp = sensorInfoArr[sensorInfoArr.length-1]._id;
     result.length = sensorInfoArr.length;
     return result;
+  }
+
+  private roundTimestamp(timestamp: Date){
+    //uses sensor time interval to round the timestamp to the nearest interval
+    //ex. if timestamp is 00:01:53.999, and the interval is 10seconds per sensor data, this goes to 00:01:50.
+    //assumes intervalSeconds is less than 60!
+    timestamp.setSeconds(Math.round(timestamp.getSeconds() / this.SENSOR_INTERVAL_SECONDS) * this.SENSOR_INTERVAL_SECONDS, 0);
   }
 }
 
