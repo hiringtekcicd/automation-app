@@ -330,6 +330,10 @@ export class VariableManagementService {
   ): Observable<analytics_data> {
     this.roundTimestamp(firstTimestamp);
     this.roundTimestamp(lastTimestamp);
+
+    //Debug output to help sending apiserver debug data inserts
+    //console.log("Current target topicID", topicID);
+    //console.log("Now is", lastTimestamp.toISOString());
     //let currentTargetDate = new Date();//round this in 10- or 30-second periods
     //Check if array itself exists (if not, initialize)
     this.SENSOR_INTERVAL_SECONDS = sensorInterval;
