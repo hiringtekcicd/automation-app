@@ -135,6 +135,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       { x: 0, y: this.sensor.alarm_max },
       { x: this.dimensions.boundedWidth, y: this.sensor.alarm_max },
     ];
+    /*
     const alarmLineGen = d3 //using d3's own line() function so that generated lines would scale properly
       .line()
       .x((d) => d.x)
@@ -148,7 +149,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .append("path")
       .attr("d", alarmLineGen(maxAlarmPoints))
       .style("stroke", "red")
-      .style("stroke-dasharray", "3, 3");
+      .style("stroke-dasharray", "3, 3");*/
 
     const line = bounds
       .append("path")
@@ -167,8 +168,9 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .append("g")
       .attr("id", "yAxis" + this.sensorType)
       .call(yAxisGenerator);
-    const xAxisGenerator = d3.axisBottom().scale(xScale).ticks(7);
+    const xAxisGenerator = d3.axisBottom().scale(xScale);
 
+    this.genXAxisTicks(xAxisGenerator);
     const xAxis = bounds
       .append("g")
       .style("transform", `translate(0px,${this.dimensions.boundedHeight}px)`) //make it an actual bottom x-axis by translating it down
@@ -191,6 +193,72 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       .style("font-size", "150%");
     //.style("transform", "rotate(90deg) translate(22px, -12px)") //makes the axis text vertical (looks bad)
     //Don't forget to change bottom or left margins in this.dimensions
+  }
+
+  genXAxisTicks(xAxisGenerator: any) {
+    let resultTickValuesArray: Date[] = [];
+    let currentTime = new Date();
+    switch (+this._timeframe) {
+      case 1:
+        currentTime.setMinutes(
+          Math.floor(currentTime.getMinutes() / 10) * 10,
+          0,
+          0
+        ); //Get first tick time as the most recent timestamp with multiple of 10 minutes (:00, :10, etc.)
+        for (var i = 0; i < 6; ++i) {
+          resultTickValuesArray.push(new Date(currentTime));
+          currentTime.setTime(currentTime.getTime() - 1000 * 60 * 10); //remove 10 minutes (1000ms * 60s * 10 minutes)
+        }
+        break;
+      case 6:
+        currentTime.setMinutes(0, 0, 0); //floor to the start of the hour
+        for (var i = 0; i < 6; ++i) {
+          resultTickValuesArray.push(new Date(currentTime));
+          currentTime.setTime(currentTime.getTime() - 1000 * 60 * 60); //remove 1 hour
+        }
+        break;
+      case 12:
+        currentTime.setMinutes(0, 0, 0); //floor to the start of the hour
+        for (var i = 0; i < 6; ++i) {
+          resultTickValuesArray.push(new Date(currentTime));
+          currentTime.setTime(currentTime.getTime() - 1000 * 60 * 60 * 2); //remove 2 hours
+        }
+        break;
+      case 24:
+        currentTime.setMinutes(0, 0, 0); //floor to the start of the hour
+        for (var i = 0; i < 6; ++i) {
+          resultTickValuesArray.push(new Date(currentTime));
+          currentTime.setTime(currentTime.getTime() - 1000 * 60 * 60 * 4); //remove 4 hours
+        }
+        break;
+      case 168:
+        currentTime.setHours(0, 0, 0, 0); //floor to the start of the day
+        for (var i = 0; i < 7; ++i) {
+          resultTickValuesArray.push(new Date(currentTime));
+          currentTime.setTime(currentTime.getTime() - 1000 * 60 * 60 * 24); //remove 1 day
+        }
+        break;
+      case 744:
+        currentTime.setHours(0, 0, 0, 0); //no set method for day of week/month, same approach as above
+        for (var i = 0; i < 7; ++i) {
+          //TODO: is this right?
+          resultTickValuesArray.push(new Date(currentTime));
+          currentTime.setTime(currentTime.getTime() - 1000 * 60 * 60 * 24 * 5); //remove 5 days
+        }
+        break;
+      case 2232:
+        currentTime.setHours(0, 0, 0, 0); //floor to the start of the day, same as above
+        for (var i = 0; i < 7; ++i) {
+          resultTickValuesArray.push(new Date(currentTime));
+          currentTime.setTime(currentTime.getTime() - 1000 * 60 * 60 * 24 * 14); //remove 2 weeks
+        }
+        break;
+      default:
+        xAxisGenerator.ticks(6);
+        break;
+    }
+    if(resultTickValuesArray.length == 0) return; //default case
+    xAxisGenerator.tickValues(resultTickValuesArray);
   }
 
   compileData() {
