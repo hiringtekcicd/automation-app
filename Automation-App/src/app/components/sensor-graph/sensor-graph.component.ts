@@ -36,7 +36,7 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
     margin: {
       top: 50,
       right: 0,
-      bottom: 25,
+      bottom: 35,
       left: 50,
     },
     boundedWidth: 0,
@@ -256,6 +256,11 @@ export class SensorGraphComponent implements OnInit, AfterViewInit {
       default:
         xAxisGenerator.ticks(6);
         break;
+    }
+    if(this._timeframe <= 24){
+      xAxisGenerator.tickFormat(d3.timeFormat("%H:%M"));
+    }else{
+      xAxisGenerator.tickFormat(d3.timeFormat("%b %-d"));
     }
     if(resultTickValuesArray.length == 0) return; //default case
     xAxisGenerator.tickValues(resultTickValuesArray);
