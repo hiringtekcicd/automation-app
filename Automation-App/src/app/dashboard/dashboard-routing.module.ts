@@ -25,13 +25,13 @@ const routes: Routes = [
     path: 'control/:deviceType/:deviceIndex',
     loadChildren: () => import('./control/control.module').then( m => m.ControlPageModule)
   },
-  /*{
-    path: 'warnings',
-    loadChildren: () => import('./warnings/warnings.module').then( m => m.WarningsPageModule)
-  },*/
   {
     path: 'cameras',
     loadChildren: () => import('./cameras/cameras.module').then( m => m.CamerasPageModule)
+  },
+  {
+    path: 'analytics',
+    loadChildren: () => import('./analytics/analytics.module').then( m => m.AnalyticsPageModule)
   },
   {
     path: '',
@@ -40,12 +40,6 @@ const routes: Routes = [
   }
  ]
 },
-  
-  // {
-  //   path: '',
-  //   redirectTo: '',
-  //   pathMatch: 'full'
-  // },
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -1,5 +1,6 @@
+import { SensorGraphComponent } from './sensor-graph/sensor-graph.component';
 import { CameraComponent } from './camera/camera.component';
-import { NgModule, Component } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { SensorDisplayComponent } from './sensor-display/sensor-display.component';
 import { IonicModule } from '@ionic/angular';
 import { PhComponent } from './ph/ph.component';
@@ -18,9 +19,9 @@ import { Co2Component } from './co2/co2.component';
 import { ConnectionStatusComponent } from './connection-status/connection-status.component';
 
 @NgModule({
-    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent],
+    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent, SensorGraphComponent],
     imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule],
-    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent]
+    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent, SensorGraphComponent]
 })
 
 export class ComponentsModule {}

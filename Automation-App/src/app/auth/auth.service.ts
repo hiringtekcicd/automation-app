@@ -30,11 +30,9 @@ export class AuthService {
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(map(user =>{
       if(user){
-        console.log("true");
         return !!user.token; //Two exclamation marks are added to convert the token to boolean.
       }
       else {
-        console.log("false");
         return false;
       }
     })); 
@@ -84,7 +82,6 @@ export class AuthService {
   fetchServerIPsFromLocalStorage() {
     return this.storageService.get('serverAddresses').pipe(switchMap(data => {
       if(data) {
-        console.log("hererere");
         this.variableManagementService.setRESTServerURL(data['restServer']);
         return this.variableManagementService.fetchDevices().pipe(tap(() => {
           let mqttHost = data['mqttBroker'];

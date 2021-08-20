@@ -1,0 +1,10 @@
+<ion-card class="dashboard-card">
+  <ion-card-content>
+    <div id="{{sensorType}}">
+      <!-- viewBox and preserveAspectRatio is what makes this scale nice. See https://riptutorial.com/svg/example/23518/preserveaspectratio#:~:text=preserveAspectRatio%20is%20an%20attribute%20that%20indicates%20whether%20the,none%2C%20the%20icon%20stretches%20to%20fit%20the%20box%3A-->
+      <svg id="{{sensorType + '-svg'}}" viewBox = "0 0 500 300" preserveAspectRatio="xMidYMid">
+        <g id="{{sensorType + '-g'}}"></g>
+      </svg>
+    </div>
+  </ion-card-content>
+</ion-card>

@@ -10,9 +10,15 @@ import { Co2Sensor } from './co2-sensor.model';
 export class ClimateController extends Device implements Deserializable {
 
     settings: {
-        air_temp?: AirTempSensor,
-        humidity?: HumiditySensor,
-        co2?: Co2Sensor
+        air_temp: AirTempSensor,
+        humidity: HumiditySensor,
+        co2: Co2Sensor,
+        ph: never,
+        ec: never,
+        water_temp?: never,
+        grow_lights?: never,
+        irrigation?: never,
+        reservoir?: never
     }
 
     power_outlets: PowerOutlet[] = [];
