@@ -19,6 +19,9 @@ export class FertigationSystem extends Device implements Deserializable {
         grow_lights?: GrowlightsSettings,
         irrigation?: IrrigationSettings,
         reservoir?: ReservoirSettings
+        air_temp: never,
+        humidity: never,
+        co2: never
     }
 
     power_outlets: PowerOutlet[] = [];

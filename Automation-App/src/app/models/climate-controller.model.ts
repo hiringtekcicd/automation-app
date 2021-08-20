@@ -10,7 +10,14 @@ export class ClimateController extends Device implements Deserializable {
 
     settings: {
         air_temp: AirTempSensor,
-        humidity: HumiditySensor
+        humidity: HumiditySensor,
+        co2: never,
+        ph: never,
+        ec: never,
+        water_temp?: never,
+        grow_lights?: never,
+        irrigation?: never,
+        reservoir?: never
     }
 
     power_outlets: PowerOutlet[] = [];
@@ -20,7 +27,6 @@ export class ClimateController extends Device implements Deserializable {
         Object.assign(this, input);
         
         if(input.settings.air_temp !== undefined) {
-            console.log("here");
             this.settings.air_temp = new AirTempSensor().deserialize(input.settings.air_temp);
         }
 

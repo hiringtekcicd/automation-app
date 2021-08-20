@@ -3,10 +3,7 @@ import { analytics_data } from "./../../models/historical-data-interface";
 import { VariableManagementService } from "./../../Services/variable-management.service";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  Devices,
-  FertigationSystemString,
-} from "./../../Services/variable-management.service";
+import { Devices, FertigationSystemString} from "./../../Services/variable-management.service";
 @Component({
   selector: "app-analytics",
   templateUrl: "./analytics.page.html",

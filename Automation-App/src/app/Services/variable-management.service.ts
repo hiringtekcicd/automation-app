@@ -7,12 +7,11 @@ import { Display } from "../dashboard/display";
 
 import { BehaviorSubject, forkJoin, Observable, of, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { first, map, switchMap, tap } from "rxjs/operators";
+import { map, switchMap, tap } from "rxjs/operators";
 import * as _ from "lodash";
 import { FertigationSystem } from "../models/fertigation-system.model";
 import { ClimateController } from "../models/climate-controller.model";
 import { IonicStorageService } from "./ionic-storage.service";
-import { reduce } from "lodash";
 
 @Injectable({
   providedIn: "root",
@@ -494,8 +493,8 @@ export class VariableManagementService {
               return (this.getSlice(topicID, earliestTargetDate, currentTargetDate));
             })
           );
-      }else{
-        console.log("How did we get here?");
+      } else{
+        console.log("Analytics Error");
       }
     }
     //We ASSUME that the data previously fetched is in 1 contiguous chunk (a.k.a. if there is anything cached, there are no holes inside making us fetch for a tiny period of time).
@@ -504,9 +503,6 @@ export class VariableManagementService {
 
   private getSlice(topicID: string, firstTimestamp: Date, lastTimestamp: Date){
     //Gets the cached data and returns the portion that ranges from firstTimestamp to now
-
-
-
     let currentAData: analytics_data = this.analyticsDataArray.find(
       (item) => item.topicID == topicID
     ).analyticsData;

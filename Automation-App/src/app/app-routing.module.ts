@@ -11,7 +11,8 @@ const routes: Routes = [
   //Lazyloading is used to load pages.
   {
     path: 'auth', 
-    loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule) 
+    loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule),
+    canLoad: [AuthGuard]
   },
   {
     path: 'analytics',

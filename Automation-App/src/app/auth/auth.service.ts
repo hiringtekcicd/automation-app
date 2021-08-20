@@ -29,11 +29,9 @@ export class AuthService {
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(map(user =>{
       if(user){
-        console.log("true");
         return !!user.token; //Two exclamation marks are added to convert the token to boolean.
       }
       else {
-        console.log("false");
         return false;
       }
     })); 

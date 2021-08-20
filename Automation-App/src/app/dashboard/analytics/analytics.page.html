@@ -1,8 +1,5 @@
 <ion-content class="gradient_background">
   <div class="content">
-    <ion-toolbar>
-      <h2>Analytics</h2>
-    </ion-toolbar>
   </div>
   <ion-item no-lines id="timeframe">
     <ion-label style="color: white">Graph Timeframe</ion-label>
@@ -55,12 +52,15 @@
       [historicalData]="historicalData"
       sensorType="co2"
       [timeframe]="currentTimeframeValue"
-      [sensor]="currentDevice.settings.co2" <!--As of July 22 this does not exist yet-->
+      [sensor]="currentDevice.settings.co2" 
     ></sensor-graph>
     </div>
   </div>
   <p *ngIf="!existingSensors && !isLoading" class="text_center" style="color: white">
     No historical data found in this timeframe!
   </p>
-    <p *ngIf="isLoading" style="color: white;" class="text_center">Loading historical data graphs...</p>
+  <div *ngIf="isLoading" class="text_center spinner">
+    <ion-spinner color="secondary"></ion-spinner>
+    <p style="color: white;">Loading historical data graphs...</p>
+  </div>
 </ion-content>
