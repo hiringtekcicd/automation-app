@@ -40,8 +40,10 @@ export class AuthService {
   
   get userId() {
     return this._user.asObservable().pipe(map(user => {
-      if(user)
-      { user.id}
+      if(user) { 
+        console.log(user.id);
+        return user.id 
+      }
     else return null;}));
   }
 
@@ -67,7 +69,7 @@ export class AuthService {
         return this.variableManagementService.fetchDevices().pipe(tap(() => {
           let mqttHost = userData['mqttBroker'];
           let topics: string[] = [];
-          this.mqttService.createClient(topics, { host: mqttHost, port: 8000, clientId: this._user.value.id });
+          this.mqttService.createClient(topics, { host: mqttHost, port: 8000 });
         }, (error: any) => {
           console.log(error);
         }));
@@ -86,7 +88,7 @@ export class AuthService {
         return this.variableManagementService.fetchDevices().pipe(tap(() => {
           let mqttHost = data['mqttBroker'];
           let topics: string[] = [];
-          this.mqttService.createClient(topics, { host: mqttHost, port: 8000, clientId: this._user.value.id });
+          this.mqttService.createClient(topics, { host: mqttHost, port: 8000 });
         }, (error: any) => {
           console.log(error);
         }));

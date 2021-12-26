@@ -5,12 +5,13 @@ import { filter, take, timeout } from 'rxjs/operators';
 declare const Paho: any;
 declare const document: any;
 
-const CLIENTID = "Hydrotek App";
+
 const PORT = 9001;
 
 @Injectable({providedIn: "root"})
 
 export class MqttInterfaceService {
+  private CLIENTID = "Hydrotek App";
   public mqttStatus = new BehaviorSubject<ConnectionStatus>(ConnectionStatus.UNINITIALIZED);
 
   public deviceLiveData = new Subject<string>();
@@ -42,6 +43,8 @@ export class MqttInterfaceService {
   }
 
   constructor() {
+    this.CLIENTID = this.randomString(10);
+    console.log("clientid: " + this.CLIENTID);
     this.ScriptStore.forEach((script: any) => {
         this.scripts[script.name] = {
             loaded: false,
@@ -96,7 +99,7 @@ export class MqttInterfaceService {
       path?: string,
     }): any {
     return this._load('paho_mqtt').then(() => {
-      this.client = new Paho.Client(MQTT_CONFIG.host, Number(MQTT_CONFIG.port) || PORT, MQTT_CONFIG.path || "/mqtt", MQTT_CONFIG.clientId || CLIENTID);
+      this.client = new Paho.Client(MQTT_CONFIG.host, Number(MQTT_CONFIG.port) || PORT, MQTT_CONFIG.path || "/mqtt", MQTT_CONFIG.clientId || this.CLIENTID);
       this.client.onConnectionLost = this.onConnectionLost.bind(this);
       this.client.onMessageArrived = this.onMessageArrived.bind(this);
       this.client.onMessageDelivered = this.onMessageDelivered.bind(this);
@@ -316,6 +319,13 @@ export class MqttInterfaceService {
       console.warn(error);
       throw error;
     }
+  }
+
+  private randomString(length) {
+    let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
   }
 }
 
