@@ -29,7 +29,9 @@ export class MonitoringPage implements OnInit {
   
   timestamp: string = this.defaultTimestamp;
 
-  constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private router: Router) { }
+  constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private router: Router) { 
+    this.variableManagementService.checkForDeviceUpdates();
+  }
 
   // Reset monitoring class variables and unsubscribe from previous subscriptions
   resetPage() {

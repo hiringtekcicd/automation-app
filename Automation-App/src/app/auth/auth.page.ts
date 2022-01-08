@@ -7,6 +7,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { PasswordStrengthValidator } from './password';
 import { Observable } from 'rxjs';
 import { FcmService } from '../Services/fcm.service';
+import { VariableManagementService } from '../Services/variable-management.service';
 
 @Component({
   selector: 'app-auth',
@@ -20,7 +21,7 @@ export class AuthPage implements OnInit {
   isLoading = false; //set to false as a default.
   isLogin = true; //set to true as a default.
   //Parameters injected to trigger the necessary methods.
-  constructor(private authService: AuthService, private router : Router, private loadingCtrl: LoadingController, public formbuilder: FormBuilder, private alertCtrl: AlertController, private fcmService: FcmService) {  
+  constructor(private authService: AuthService, private router : Router, private loadingCtrl: LoadingController, public formbuilder: FormBuilder, private alertCtrl: AlertController, private fcmService: FcmService, private varmanService: VariableManagementService) {  
     this.formgroup = this.formbuilder.group(
       {
         email: new FormControl('', Validators.compose([Validators.required, Validators.email])), 
@@ -65,7 +66,7 @@ export class AuthPage implements OnInit {
                 this.fcmService.initPush();
                 setTimeout(() => {
                   window.location.href = window.location.protocol + '//' + window.location.host + '/dashboard/monitoring';
-                }, 10000);
+                }, 1000);
               }
             });
           },

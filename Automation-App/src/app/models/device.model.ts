@@ -4,4 +4,5 @@ export class Device{
     type: string;
     topicID: string;
     device_started: boolean;
+    version: number;
 }

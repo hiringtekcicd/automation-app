@@ -13,6 +13,8 @@ import { FertigationSystem } from "../models/fertigation-system.model";
 import { ClimateController } from "../models/climate-controller.model";
 import { IonicStorageService } from "./ionic-storage.service";
 import { Plant } from "../models/plant";
+import { AngularFirestore } from "@angular/fire/firestore";
+import { AlertLoadingService } from "./alert-loading.service";
 
 @Injectable({
   providedIn: "root",
@@ -63,7 +65,9 @@ export class VariableManagementService {
 
   constructor(
     private http: HttpClient,
-    private storageService: IonicStorageService
+    private storageService: IonicStorageService,
+    private fireStore: AngularFirestore,
+    private alertLoadingService: AlertLoadingService
   ) {
     this.fertigationSystemSettings.subscribe((fertigationSystemArray) => {
       if (fertigationSystemArray) {
@@ -311,6 +315,24 @@ export class VariableManagementService {
       });
       return of(this.plants);
     }));
+  }
+
+  public checkForDeviceUpdates() {
+    console.log("test 1");
+    this.fireStore.collection("deviceVersions").doc("fertigation-system").valueChanges().subscribe((responseData: {version: number, endpoint: string}) => {
+      console.log("test 2");
+      let latestVersion = responseData.version;
+      console.log(latestVersion);
+      let fertigationSystemUpdate = false;
+      this.fertigationSystemSettings.value.forEach(device => {
+        console.log(device.version);
+        if(device.version <= latestVersion) fertigationSystemUpdate = true;
+      });
+      console.log(fertigationSystemUpdate);
+      if(fertigationSystemUpdate) {
+        this.alertLoadingService.presentFertigationUpdateAlert(responseData.endpoint);
+      }
+    });
   }
 
   //---------------------------------------------Analytics page - historic data management------------------------------------------------
