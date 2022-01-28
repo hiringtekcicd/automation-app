@@ -12,9 +12,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CamerasPage implements OnInit {
   cameras: Camera[] = [];
-  noCameras: boolean;
+  noCameras: boolean = true;
   currentDeviceType: string;
   currentDeviceIndex: number;
+  numCams: number = 0;
 
   constructor(private varman: VariableManagementService,
               private route: ActivatedRoute,
@@ -28,6 +29,7 @@ export class CamerasPage implements OnInit {
         if(this.currentDeviceType === FertigationSystemString){
           this.varman.fertigationSystemSettings.subscribe((fertArr)=>{
             this.cameras = fertArr[this.currentDeviceIndex].cameras;
+            
           });
         }else{
           this.varman.climateControllerSettings.subscribe((climArr) => {
@@ -52,6 +54,10 @@ export class CamerasPage implements OnInit {
         'url': ""
       }
     });
+    this.numCams = this.numCams + 1;
+    if (this.numCams > 0){
+      this.noCameras = false;
+    }
     return await modal.present();
   }
 }
