@@ -25,6 +25,9 @@
       <ion-tab-button (click)="navigateToTab('cameras')">
         <ion-icon name="camera-outline"></ion-icon> Cameras
       </ion-tab-button>
+      <ion-tab-button (click)="navigateToTab('testing')">
+        <ion-icon name="bug-outline"></ion-icon> Testing
+      </ion-tab-button>
     </ion-tab-bar> 
     <div slot="top">
       <connection-status [mqttStatus]="mqttService.mqttStatus.value"></connection-status>

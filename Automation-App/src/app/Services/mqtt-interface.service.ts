@@ -16,6 +16,8 @@ export class MqttInterfaceService {
 
   public deviceLiveData = new Subject<string>();
   public wifiConnectStatus = new Subject<boolean>();
+  public testPumpData = new Subject<string>();
+  
 
   public equipmentStatus = new BehaviorSubject<EquipmentStatus>(null);
 
@@ -189,6 +191,10 @@ export class MqttInterfaceService {
       case 'equipment_status': {
         var equipmentStatusObject = JSON.parse(ResponseObject.payloadString);
         this.equipmentStatus.next(equipmentStatusObject);
+        break;
+      }
+      case 'test_motor_topic':{
+        this.testPumpData.next(ResponseObject.payloadString);
         break;
       }
       default: {

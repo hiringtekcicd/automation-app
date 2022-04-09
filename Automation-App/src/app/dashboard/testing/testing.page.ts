@@ -4,16 +4,17 @@ import { ConnectionStatus, MqttInterfaceService } from "src/app/Services/mqtt-in
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Devices } from 'src/app/Services/variable-management.service';
-import { SensorMonitoringWidget } from 'src/app/components/sensor-display/sensor-display.component';
+import { SensorMonitoringWidget } from 'src/app/components/sensor-testing/sensor-testing.component';
 import { equipmentStatusTopic, liveDataTopic } from "src/app/Services/topicKeys";
 import { Subscription } from "rxjs";
+import { Pump } from "src/app/models/pump-testing.model";
 
 @Component({
-  selector: "app-monitoring",
-  templateUrl: "./monitoring.page.html",
-  styleUrls: ["./monitoring.page.scss"],
+  selector: 'app-testing',
+  templateUrl: './testing.page.html',
+  styleUrls: ['./testing.page.scss'],
 })
-export class MonitoringPage implements OnInit {
+export class TestingPage implements OnInit {
 
   private readonly defaultTimestamp: string = "N/A";
 
@@ -26,6 +27,44 @@ export class MonitoringPage implements OnInit {
   mqttStatusSubscription: Subscription;
   equipmentStatusSubscription: Subscription;
   deviceLiveDataSubscription: Subscription;
+  pumps = [
+    {
+      "id":"1",
+      "name":"Pump 1",
+      "logo":"water-outline",
+      "currentValue":false,
+      "currentState":0
+    },
+    {
+      "id":"2",
+      "name":"Pump 2",
+      "logo":"water-outline",
+      "currentValue":false,
+      "currentState":0
+    },
+    {
+      "id":"3",
+      "name":"Pump 3",
+      "logo":"water-outline",
+      "currentValue":false,
+      "currentState":0
+    },
+    {
+      "id":"4",
+      "name":"Pump 4",
+      "logo":"water-outline",
+      "currentValue":false,
+      "currentState":0
+    },
+    {
+      "id":"5",
+      "name":"Pump 5",
+      "logo":"water-outline",
+      "currentValue":false,
+      "currentState":0
+    }
+  ];
+  
   
   timestamp: string = this.defaultTimestamp;
 
@@ -58,6 +97,7 @@ export class MonitoringPage implements OnInit {
   }
 
   ngOnInit() {
+    
     this.route.queryParams.pipe(filter(this.hasQueryParamsChanged)).subscribe(params => {
       this.resetPage();
       this.currentDeviceType = params['deviceType'];
@@ -101,7 +141,19 @@ export class MonitoringPage implements OnInit {
           this.noDevices = true;
         }
       }
+      
+      
     });
+    
+    this.mqttService.testPumpData.subscribe(message => {
+     var messageJSON = JSON.parse(message);
+      console.log(messageJSON);
+      for(let i = 0; i < this.pumps.length; i++){
+        if (this.pumps[i].id == messageJSON.choice.toString()){
+          this.pumps[i].currentState = messageJSON.switch_status;
+        }
+      }
+   });
 
     this.mqttService.deviceLiveData.subscribe(resData => {
       // Try parsing system MQTT string as JSON Data
@@ -143,6 +195,7 @@ export class MonitoringPage implements OnInit {
           this.unsubscribeFromPreviousDevice(this.currentDevice.topicID);
           this.mqttService.subscribeToTopic(liveDataTopic + '/' + this.currentDevice.topicID).catch(error => console.log(error));
           this.mqttService.subscribeToTopic(equipmentStatusTopic + '/' + this.currentDevice.topicID).catch(error => console.log(error));
+          this.mqttService.subscribeToTopic("test_motor_response/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
           break;
         }
       }
@@ -158,6 +211,9 @@ export class MonitoringPage implements OnInit {
       } 
     }
   }
-}
+
+
+  }
+
 
 
