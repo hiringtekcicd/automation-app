@@ -193,7 +193,7 @@ export class MqttInterfaceService {
         this.equipmentStatus.next(equipmentStatusObject);
         break;
       }
-      case 'test_motor_topic':{
+      case 'test_motor_response':{
         this.testPumpData.next(ResponseObject.payloadString);
         break;
       }
