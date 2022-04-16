@@ -33,7 +33,7 @@ export class PumpTestingComponent implements OnInit {
     
 
     let outletObj = {
-      "choice":this.data.id,
+      "choice":parseInt(this.data.id),
       //"switch_status":!this.data.currentValue
       "switch_status":this.numState
       //[this.data.id]: !this.data.currentValue 
