@@ -19,11 +19,12 @@ import { Co2Component } from './co2/co2.component';
 import { ConnectionStatusComponent } from './connection-status/connection-status.component';
 import { SensorTestingComponent } from './sensor-testing/sensor-testing.component';
 import { PumpTestingComponent } from './pump-testing/pump-testing.component';
+import { PoTestingComponent } from './po-testing/po-testing.component';
 
 @NgModule({
-    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent, SensorGraphComponent,SensorTestingComponent, PumpTestingComponent ],
+    declarations: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent, SensorGraphComponent,SensorTestingComponent, PumpTestingComponent, PoTestingComponent],
     imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule],
-    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent, SensorGraphComponent, SensorTestingComponent, PumpTestingComponent]
+    exports: [SensorDisplayComponent, PhComponent, EcComponent, AirTemperatureComponent, HumidityComponent, WaterTempComponent, ReservoirComponent, GrowLightsComponent, GeneralSettingsComponent, IrrigationComponent, PowerOutletComponent, CameraComponent, Co2Component, ConnectionStatusComponent, SensorGraphComponent, SensorTestingComponent, PumpTestingComponent, PoTestingComponent]
 })
 
 export class ComponentsModule {}

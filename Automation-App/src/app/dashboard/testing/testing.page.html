@@ -7,7 +7,7 @@
         <ion-card-content>
           <ion-list *ngIf="currentDevice.power_outlets.length > 0">
             <div *ngFor="let powerOutlet of currentDevice.power_outlets">
-              <power-outlet [data]="powerOutlet" [topicID]="this.currentDevice.topicID"></power-outlet>
+              <po-testing [data]="powerOutlet" [topicID]="this.currentDevice.topicID"></po-testing>
             </div>
           </ion-list>
           <div *ngIf="currentDevice.power_outlets.length <= 0">
@@ -40,7 +40,7 @@
       <h2 class="h2_title">Sensors</h2>
    </div>
     <span *ngFor="let sensorSettings of currentDeviceSettings">
-      <sensor-testing [sensor]="sensorSettings" [allLiveData]="liveData"></sensor-testing>
+      <sensor-testing [sensor]="sensorSettings" [allLiveData]="liveData" [topicID]="this.currentDevice.topicID"></sensor-testing>
     </span>
     </div>
 </ion-content>

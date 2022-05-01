@@ -4,10 +4,12 @@ import { ConnectionStatus, MqttInterfaceService } from "src/app/Services/mqtt-in
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Devices } from 'src/app/Services/variable-management.service';
-import { SensorMonitoringWidget } from 'src/app/components/sensor-testing/sensor-testing.component';
+import { SensorTestingWidget } from 'src/app/components/sensor-testing/sensor-testing.component';
 import { equipmentStatusTopic, liveDataTopic } from "src/app/Services/topicKeys";
 import { Subscription } from "rxjs";
 import { Pump } from "src/app/models/pump-testing.model";
+import { OutletTest } from "src/app/models/outlet-testing.model";
+import { Sensor } from "src/app/models/sensor.model";
 
 @Component({
   selector: 'app-testing',
@@ -21,7 +23,7 @@ export class TestingPage implements OnInit {
   currentDevice: Devices;
   currentDeviceType: string;
   currentDeviceIndex: number;
-  currentDeviceSettings: SensorMonitoringWidget[];
+  currentDeviceSettings: SensorTestingWidget[];
   liveData: string[];
   noDevices: boolean;
   mqttStatusSubscription: Subscription;
@@ -113,9 +115,13 @@ export class TestingPage implements OnInit {
               display_name: this.currentDevice.settings[sensor].getDisplayName(),
               sensorUnit: this.currentDevice.settings[sensor].getSensorUnit(),
               monit_only: this.currentDevice.settings[sensor].monit_only,
-              tgt: this.currentDevice.settings[sensor].control.tgt,
-              alarm_min: this.currentDevice.settings[sensor].alarm_min,
-              alarm_max: this.currentDevice.settings[sensor].alarm_max });
+              //tgt: this.currentDevice.settings[sensor].control.tgt,
+              //alarm_min: this.currentDevice.settings[sensor].alarm_min,
+              //alarm_max: this.currentDevice.settings[sensor].alarm_max,
+              test_toggle: false,
+              test_status: 0
+             });
+              
           }
         }
 
@@ -141,10 +147,12 @@ export class TestingPage implements OnInit {
           this.noDevices = true;
         }
       }
+      this.currentDevice.power_outlets.forEach(outlet => outlet.currentState = 0);
+      
       
       
     });
-    
+    //mqtt subscriptions
     this.mqttService.testPumpData.subscribe(message => {
      var messageJSON = JSON.parse(message);
       console.log(messageJSON);
@@ -154,6 +162,26 @@ export class TestingPage implements OnInit {
         }
       }
    });
+   this.mqttService.testPOData.subscribe(message => {
+    var messageJSON = JSON.parse(message);
+     console.log(messageJSON);
+     for(let i = 0; i < this.currentDevice.power_outlets.length; i++){
+       if (this.currentDevice.power_outlets[i].id == messageJSON.choice.toString()){
+         this.currentDevice.power_outlets[i].currentState = messageJSON.switch_status;
+       }
+     }
+  });
+
+  //ask ajay
+  this.mqttService.testSensorData.subscribe(message => {
+    var messageJSON = JSON.parse(message);
+     console.log(messageJSON);
+     for(let i = 0; i < 3; i++){
+       if (this.currentDevice.settings[i].name == messageJSON.choice){
+         this.currentDevice.settings[i].test_status = messageJSON.switch_status;
+       }
+     }
+  });
 
     this.mqttService.deviceLiveData.subscribe(resData => {
       // Try parsing system MQTT string as JSON Data
@@ -196,6 +224,8 @@ export class TestingPage implements OnInit {
           this.mqttService.subscribeToTopic(liveDataTopic + '/' + this.currentDevice.topicID).catch(error => console.log(error));
           this.mqttService.subscribeToTopic(equipmentStatusTopic + '/' + this.currentDevice.topicID).catch(error => console.log(error));
           this.mqttService.subscribeToTopic("test_motor_response/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
+          this.mqttService.subscribeToTopic("test_outlet_response/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
+          this.mqttService.subscribeToTopic("test_sensor_response/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
           break;
         }
       }

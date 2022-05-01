@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
 
 @Component({
   selector: 'sensor-testing',
@@ -6,7 +8,10 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./sensor-testing.component.scss'],
 })
 export class SensorTestingComponent implements OnInit {
-  @Input() sensor: SensorMonitoringWidget;
+  num_state: number;
+  @Input() topicID: string;
+  @Input() sensor: SensorTestingWidget;
+ 
 
   @Input() 
   set allLiveData(allLiveData: string[]) {
@@ -22,18 +27,58 @@ export class SensorTestingComponent implements OnInit {
 
   currentVal: number = 0;
 
-  constructor() { }
+  constructor(private mqttService: MqttInterfaceService, private alertController: AlertController) { }
 
   ngOnInit() {}
 
+  onToggleClick(){
+    if(this.sensor.test_toggle == false){
+      this.num_state = 1
+    }
+    else{
+      this.num_state = 0
+    }
+    let outletObj = {
+      "choice": this.sensor.name,
+      "switch_status": this.num_state
+    }
+    console.log(this.sensor.test_toggle);
+    
+    let outletJsonString = JSON.stringify(outletObj);
+    
+
+    this.mqttService.publishMessage("test_sensor_request/" + this.topicID, outletJsonString, 1, false).catch((error) => {
+      console.log(error);
+      this.presentSensorToggleError(this.sensor.test_toggle, this.sensor.name);
+      this.sensor.test_toggle = !this.sensor.test_toggle; 
+    });  
+
+  }
+
+  async presentSensorToggleError(state: boolean, outletName: string) {
+    let outletState = 'off';
+    if(state) {
+      outletState = 'on';
+    } 
+
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Unable to turn ' + outletState + ' ' + outletName,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
 }
 
-export interface SensorMonitoringWidget {
+export interface SensorTestingWidget {
+  test_status: number;
+  test_toggle: boolean;
   name: string,
   display_name: string;
   sensorUnit: string;
   monit_only: boolean;
-  tgt: number;
-  alarm_min: number;
-  alarm_max: number;
+  // tgt: number;
+  // alarm_min: number;
+  // alarm_max: number;
 }

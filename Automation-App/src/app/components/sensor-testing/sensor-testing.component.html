@@ -13,16 +13,20 @@
         </ion-col>
         <ion-col offset="1" size="5" class="details no_padding">
             <div *ngIf="!sensor.monit_only">
-              <ion-label class="title">Target Value</ion-label>
-              <div>
-                <ion-icon name="locate-sharp"></ion-icon>
-                <ion-label class="value">{{ sensor.tgt }} {{sensor.sensorUnit}}</ion-label>
+              <ion-label class="title">Current Status</ion-label>
+              <div class="value">
+                <ion-text *ngIf="sensor.test_status == 0" slot="end" class="gray"> Off </ion-text>
+                <ion-text *ngIf="sensor.test_status == 1" slot="end" color="success"> On </ion-text>
+                <ion-text *ngIf="sensor.test_status == -1" slot="end" color="danger"> Err </ion-text>
+                <!-- <ion-icon name="locate-sharp"></ion-icon>
+                <ion-label class="value">{{ sensor.tgt }} {{sensor.sensorUnit}}</ion-label> -->
               </div>
             </div>
-            <ion-label class="title">Alarm Settings</ion-label>
+            <ion-label class="title">On/Off</ion-label>
             <div>
-              <ion-icon name="alarm"></ion-icon>
-              <ion-label class="value">{{ sensor.alarm_min + ' - ' + sensor.alarm_max }}</ion-label>
+              <!-- <ion-icon name="alarm"></ion-icon> -->
+              <ion-toggle [(ngModel)]="sensor.test_toggle" slot="start" (click)="onToggleClick()"></ion-toggle>
+              <!-- <ion-label class="value">{{ sensor.alarm_min + ' - ' + sensor.alarm_max }}</ion-label> -->
             </div>
         </ion-col>
       </ion-row>
