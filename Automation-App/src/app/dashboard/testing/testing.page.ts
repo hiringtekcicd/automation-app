@@ -1,15 +1,17 @@
 import { Component, OnInit } from "@angular/core";
-import { filter } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { ConnectionStatus, MqttInterfaceService } from "src/app/Services/mqtt-interface.service";
 import { ClimateControllerString, FertigationSystemString, VariableManagementService } from 'src/app/Services/variable-management.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Devices } from 'src/app/Services/variable-management.service';
 import { SensorTestingWidget } from 'src/app/components/sensor-testing/sensor-testing.component';
-import { equipmentStatusTopic, liveDataTopic } from "src/app/Services/topicKeys";
+import { deviceStatusTopic, equipmentStatusTopic, fsTestReqTopic, fsTestResTopic, liveDataTopic, motorTestReqTopic, motorTestResTopic, outletTestReqTopic, outletTestResTopic, sensorTestReqTopic, sensorTestResTopic } from "src/app/Services/topicKeys";
 import { Subscription } from "rxjs";
-import { Pump } from "src/app/models/pump-testing.model";
-import { OutletTest } from "src/app/models/outlet-testing.model";
-import { Sensor } from "src/app/models/sensor.model";
+import { AlertController } from "@ionic/angular";
+// import { Pump } from "src/app/models/pump-testing.model";
+// import { OutletTest } from "src/app/models/outlet-testing.model";
+// import { Sensor } from "src/app/models/sensor.model";
+// import { stringify } from "querystring";
 
 @Component({
   selector: 'app-testing',
@@ -26,41 +28,58 @@ export class TestingPage implements OnInit {
   currentDeviceSettings: SensorTestingWidget[];
   liveData: string[];
   noDevices: boolean;
+  testState: boolean = false;
   mqttStatusSubscription: Subscription;
   equipmentStatusSubscription: Subscription;
   deviceLiveDataSubscription: Subscription;
+  floatSwitches = [
+    {
+      "id":"1",
+      "name":"Top",
+      "logo":"beaker-outline",
+      "currentValue":false,
+      "currentState":0
+    },
+    {
+      "id":"0",
+      "name":"Bottom",
+      "logo":"beaker-outline",
+      "currentValue":false,
+      "currentState":0
+    }
+  ];
   pumps = [
     {
       "id":"1",
-      "name":"Pump 1",
+      "name":"Motor 1",
       "logo":"water-outline",
       "currentValue":false,
       "currentState":0
     },
     {
       "id":"2",
-      "name":"Pump 2",
+      "name":"Motor 2",
       "logo":"water-outline",
       "currentValue":false,
       "currentState":0
     },
     {
       "id":"3",
-      "name":"Pump 3",
+      "name":"Motor 3",
       "logo":"water-outline",
       "currentValue":false,
       "currentState":0
     },
     {
       "id":"4",
-      "name":"Pump 4",
+      "name":"Motor 4",
       "logo":"water-outline",
       "currentValue":false,
       "currentState":0
     },
     {
       "id":"5",
-      "name":"Pump 5",
+      "name":"Motor 5",
       "logo":"water-outline",
       "currentValue":false,
       "currentState":0
@@ -70,7 +89,74 @@ export class TestingPage implements OnInit {
   
   timestamp: string = this.defaultTimestamp;
 
-  constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private router: Router) { }
+  constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private router: Router, private alertController: AlertController) { }
+
+  onToggleTesting(){
+    // this.currentDevice.device_started = false;
+    let isDeviceStarted = false;
+    this.testState = !this.testState;
+    if(this.testState){
+      this.mqttService.publishMessage(deviceStatusTopic + "/" + this.currentDevice.topicID, isDeviceStarted? "1" : "0").then(() => {
+        this.variableManagementService.updateDeviceStartedStatus(isDeviceStarted, this.currentDeviceType, this.currentDevice._id, this.currentDeviceIndex).pipe(take(1)).subscribe(() => {
+          
+          console.log("Published Device Status");
+          this.currentDevice.device_started = false;
+        });
+      }).catch(error => {
+        console.warn(error);
+        this.presentDeviceStartedError(isDeviceStarted);
+      });
+      console.log("testing mode initiated, currentDevice.device_started:", this.currentDevice.device_started);
+    }
+    else{
+      for(let powerOutlet of this.currentDevice.power_outlets){
+        if(powerOutlet.currentValue){
+          powerOutlet.currentValue = false;
+          let outletObj = {
+            "choice":parseInt(powerOutlet.id),
+            "switch_status":0
+          }
+          let outletJsonString = JSON.stringify(outletObj);
+          this.mqttService.publishMessage(outletTestReqTopic+"/" + this.currentDevice.topicID, outletJsonString, 1, false)
+        }
+      };
+      for(let pump of this.pumps){
+        if(pump.currentValue){
+          pump.currentValue = false;
+          let outletObj = {
+            "choice":parseInt(pump.id),
+            "switch_status":0
+          }
+          let outletJsonString = JSON.stringify(outletObj);
+          this.mqttService.publishMessage(motorTestReqTopic+"/" + this.currentDevice.topicID, outletJsonString, 1, false)
+        }
+      };
+      for(let floatSwitch of this.floatSwitches){
+        if(floatSwitch.currentValue){
+          floatSwitch.currentValue = false;
+          let outletObj = {
+            "choice":parseInt(floatSwitch.id),
+            "switch_status":0
+          }
+          let outletJsonString = JSON.stringify(outletObj);
+          this.mqttService.publishMessage(fsTestReqTopic+"/" + this.currentDevice.topicID, outletJsonString, 1, false)
+        }
+      };
+      for(let sensorSettings of this.currentDeviceSettings){
+        if(sensorSettings.test_toggle){
+          sensorSettings.test_toggle = false;
+          let outletObj = {
+            "choice":sensorSettings.name,
+            "switch_status":0
+          }
+          let outletJsonString = JSON.stringify(outletObj);
+          this.mqttService.publishMessage(sensorTestReqTopic+"/" + this.currentDevice.topicID, outletJsonString, 1, false)
+        }
+      };
+      console.log("exiting testing mode");
+    }
+    
+  }
 
   // Reset monitoring class variables and unsubscribe from previous subscriptions
   resetPage() {
@@ -172,13 +258,23 @@ export class TestingPage implements OnInit {
      }
   });
 
-  //ask ajay
+  
   this.mqttService.testSensorData.subscribe(message => {
     var messageJSON = JSON.parse(message);
      console.log(messageJSON);
-     for(let i = 0; i < 3; i++){
-       if (this.currentDevice.settings[i].name == messageJSON.choice){
-         this.currentDevice.settings[i].test_status = messageJSON.switch_status;
+     for(let sensor of this.currentDeviceSettings){
+       if(sensor.name == messageJSON.choice){
+         sensor.test_status == messageJSON.switch_status;
+       }
+     }
+  });
+
+  this.mqttService.testFSData.subscribe(message => {
+    var messageJSON = JSON.parse(message);
+     console.log(messageJSON);
+     for(let FloatSwitch of this.floatSwitches){
+       if(FloatSwitch.name == messageJSON.choice){
+         FloatSwitch.currentState == messageJSON.switch_status;
        }
      }
   });
@@ -223,9 +319,10 @@ export class TestingPage implements OnInit {
           this.unsubscribeFromPreviousDevice(this.currentDevice.topicID);
           this.mqttService.subscribeToTopic(liveDataTopic + '/' + this.currentDevice.topicID).catch(error => console.log(error));
           this.mqttService.subscribeToTopic(equipmentStatusTopic + '/' + this.currentDevice.topicID).catch(error => console.log(error));
-          this.mqttService.subscribeToTopic("test_motor_response/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
-          this.mqttService.subscribeToTopic("test_outlet_response/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
-          this.mqttService.subscribeToTopic("test_sensor_response/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
+          this.mqttService.subscribeToTopic(motorTestResTopic+"/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
+          this.mqttService.subscribeToTopic(outletTestResTopic+"/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
+          this.mqttService.subscribeToTopic(sensorTestResTopic+"/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
+          this.mqttService.subscribeToTopic(fsTestResTopic+"/" + this.currentDevice.topicID,1).catch(error=> console.log(error));
           break;
         }
       }
@@ -240,6 +337,20 @@ export class TestingPage implements OnInit {
         this.mqttService.unsubscribeFromTopic(topic).catch(error => console.log(error));
       } 
     }
+  }
+
+  async presentDeviceStartedError(state: boolean) {
+    let outletState = 'off';
+    if(state) {
+      outletState = 'on';
+    } 
+
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Unable to turn ' + outletState + ' device',
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
 

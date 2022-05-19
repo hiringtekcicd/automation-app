@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
+import { sensorTestReqTopic } from 'src/app/Services/topicKeys';
 
 @Component({
   selector: 'sensor-testing',
@@ -47,7 +48,7 @@ export class SensorTestingComponent implements OnInit {
     let outletJsonString = JSON.stringify(outletObj);
     
 
-    this.mqttService.publishMessage("test_sensor_request/" + this.topicID, outletJsonString, 1, false).catch((error) => {
+    this.mqttService.publishMessage(sensorTestReqTopic+"/" + this.topicID, outletJsonString, 1, false).catch((error) => {
       console.log(error);
       this.presentSensorToggleError(this.sensor.test_toggle, this.sensor.name);
       this.sensor.test_toggle = !this.sensor.test_toggle; 

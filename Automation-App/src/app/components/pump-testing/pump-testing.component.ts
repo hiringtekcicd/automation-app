@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Pump } from 'src/app/models/pump-testing.model';
 import { MqttInterfaceService } from 'src/app/Services/mqtt-interface.service';
-import { manualRfControlTopic } from 'src/app/Services/topicKeys';
+import { manualRfControlTopic, motorTestReqTopic } from 'src/app/Services/topicKeys';
 
 @Component({
   selector: 'pump-testing',
@@ -42,7 +42,7 @@ export class PumpTestingComponent implements OnInit {
     let outletJsonString = JSON.stringify(outletObj);
     //test_motor_request
     //test_motor_response
-    this.mqttService.publishMessage("test_motor_request/" + this.topicID, outletJsonString, 1, false).catch((error) => {
+    this.mqttService.publishMessage(motorTestReqTopic+"/" + this.topicID, outletJsonString, 1, false).catch((error) => {
       console.log(error);
       this.presentPumpToggleError(this.data.currentValue, this.data.name);
       this.data.currentValue = !this.data.currentValue; 

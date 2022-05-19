@@ -19,6 +19,7 @@ export class MqttInterfaceService {
   public testPumpData = new Subject<string>();
   public testPOData = new Subject<string>();
   public testSensorData = new Subject<string>();
+  public testFSData = new Subject<string>();
   
 
   public equipmentStatus = new BehaviorSubject<EquipmentStatus>(null);
@@ -205,6 +206,10 @@ export class MqttInterfaceService {
       }
       case 'test_sensor_response':{
         this.testSensorData.next(ResponseObject.payloadString);
+        break;
+      }
+      case 'test_fs_response':{
+        this.testFSData.next(ResponseObject.payloadString);
         break;
       }
       default: {
