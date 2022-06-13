@@ -1,0 +1,38 @@
+<ion-content class="gradient_background">
+  <div class="content">
+    <ion-toolbar>
+      <h2>Notifications</h2>
+      <ion-buttons slot="end">
+      </ion-buttons>
+    </ion-toolbar>
+  </div>
+  <div *ngIf="noNotifs">
+    <ion-grid>
+      <ion-row>
+        <ion-col class="text_center" size="10" offset="1">
+          <h6>You have no notifications</h6>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+ 
+  
+    <button (click) = addNewItem($event)> heat waves</button>
+    <ion-item *ngIf="!noNotifs" style="color:white">You have at least {{this.unopenedCounter}} unopened notifications</ion-item>
+        <ion-item *ngFor="let not of notifs" id="saveBtn" lines = "full" button (click) = "navigateToTab2('clickedNotifications', notifs, not)" [ngStyle]="{'background-color': not.buttonColor }">
+          <ion-label>
+            <h2 style="color:black;">{{ not.notifHeader }}</h2>
+            <h3 style="color:black;"> {{ not.notifBody }}</h3>
+            <h4 style="color:black;"> {{ not.date }}</h4>
+          </ion-label>
+        </ion-item>
+        <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)" [disabled]="numTimesLeft <= 0">  
+          <ion-infinite-scroll-content  
+            loadingSpinner="bubbles"  
+            loadingText="Loading more data...">  
+          </ion-infinite-scroll-content>  
+        </ion-infinite-scroll>  
+    
+    
+    
+</ion-content>
