@@ -5,6 +5,8 @@ export class Notification{
     buttonColor: string;
     opened: boolean;
     date: string;
+    image: string;
+    
 }
 
      

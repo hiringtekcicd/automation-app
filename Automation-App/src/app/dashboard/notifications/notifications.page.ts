@@ -2,6 +2,7 @@ import { Router } from '@angular/router';
 import { Component, OnInit, Output, EventEmitter, ViewChild  } from "@angular/core";
 import { Notification } from 'src/app/models/notification.model';
 import { IonInfiniteScroll } from '@ionic/angular';
+import { ActionSheetController } from '@ionic/angular';
 
 
 
@@ -25,17 +26,25 @@ export class NotificationsPage implements OnInit {
 
   //see control page - ngOnInit about getting device settings and then getting topicID
   constructor(
-    public router: Router,
+    public router: Router, public actionSheetCtrl: ActionSheetController
 
   ) {}
 
 
+ 
 
   ngOnInit() {
-    this.notifs = [{"date": new Date().toLocaleString(), "buttonColor": '#bbdefb', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"date": new Date().toLocaleString(), "buttonColor": '#bbdefb', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"date": new Date().toLocaleString(), "buttonColor": '#bbdefb', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"date": new Date().toLocaleString(), "buttonColor": '#bbdefb', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"date": new Date().toLocaleString(), "buttonColor": '#bbdefb', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}]
+    this.notifs = [{image: null, "date": new Date().toLocaleString().replace(/(.*)\D\d+/, '$1'), "buttonColor": '#d6ecff', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"image": null, "date": new Date().toLocaleString().replace(/(.*)\D\d+/, '$1'), "buttonColor": '#d6ecff', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"image": null, "date": new Date().toLocaleString().replace(/(.*)\D\d+/, '$1'), "buttonColor": '#d6ecff', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"image": null, "date": new Date().toLocaleString().replace(/(.*)\D\d+/, '$1'), "buttonColor": '#d6ecff', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {"image": null, "date": new Date().toLocaleString().replace(/(.*)\D\d+/, '$1'), "buttonColor": '#d6ecff', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}]
     this.notifsAmount = this.notifs.length;
-    console.log('ngoninit')
     console.log(this.notifsAmount)
+
+    for(let i = 0; i < this.notifs.length; i++){
+      if(this.notifs[i].image == null){
+          this.notifs[i].image = "https://banner2.cleanpng.com/20180427/jxq/kisspng-royalty-free-copyright-valentine-s-day-heart-5ae38b80dfdf72.458658361524861824917.jpg";
+      }
+
+    }
+    
     if(this.notifsAmount == 0){
       this.noNotifs = true;
     }
@@ -78,29 +87,72 @@ export class NotificationsPage implements OnInit {
       }
     }
     this.unopenedCounter = counter;
-    console.log('this is fun'+' '+this.unopenedCounter);
+    
     
     
     
     
     
     this.router.navigate(['/dashboard/notifications/clickedNotifications'], { 
-      state: { example: notification} });
+      state: { notifi: notification} });
       
   }
 
   loadData(event) {  
-    setTimeout(() => {  
-      console.log('Done');  
-      this.addMoreItems();  
+    setTimeout(() => {   
+      this.addNotifications();  
       this.numTimesLeft -= 1;  
-      event.target.complete();  
+      event.target.complete(); 
+      let counter: number = 0;
+    for(let i = 0; i < this.notifs.length; i++){
+      if(this.notifs[i].opened == false){
+        counter++;
+      }
+    }
+    this.unopenedCounter = counter; 
     }, 500);  
   }  
-  addMoreItems() {  
+
+
+  addNotifications() {  
     for (let i = 0; i < 10; i++) {  
-      this.notifs.push({"date": new Date().toLocaleString(), "buttonColor": '#bbdefb', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."});  
+      this.notifs.push({"image": null, "date": new Date().toLocaleString().replace(/(.*)\D\d+/, '$1'), "buttonColor": '#d6ecff', "opened": false, "notifHeader": "Plant Health", "notifBody": "Your plant may have covid", "notifText": "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."});  
     }  
   
+}
+
+
+async openActionSheetController(notifArray: Notification[], notification: Notification){
+  let actionSheet = await this.actionSheetCtrl.create({
+    
+    buttons: [
+  
+  {
+    text: 'Delete Notification',
+    handler: () => {
+     let index = notifArray.indexOf(notification);
+     let removed = notifArray.splice(index, 1);
+     let counter: number = 0;
+  for(let i = 0; i < notifArray.length; i++){
+    if(notifArray[i].opened == false){
+      counter++;
+    }
+  }
+  this.unopenedCounter = counter;
+    }
+
+    
+  }, 
+  
+  {
+    text: 'Cancel',
+    handler: () => {
+      let navTransition = actionSheet.dismiss();
+      return false;
+    }
+  }]
+  });
+
+  actionSheet.present();    
 }
 }

@@ -16,16 +16,16 @@
     </ion-grid>
   </div>
  
-  
-    <button (click) = addNewItem($event)> heat waves</button>
     <ion-item *ngIf="!noNotifs" style="color:white">You have at least {{this.unopenedCounter}} unopened notifications</ion-item>
-        <ion-item *ngFor="let not of notifs" id="saveBtn" lines = "full" button (click) = "navigateToTab2('clickedNotifications', notifs, not)" [ngStyle]="{'background-color': not.buttonColor }">
-          <ion-label>
-            <h2 style="color:black;">{{ not.notifHeader }}</h2>
-            <h3 style="color:black;"> {{ not.notifBody }}</h3>
-            <h4 style="color:black;"> {{ not.date }}</h4>
+        <ion-item *ngFor="let not of notifs" id="saveBtn" lines = "full" [ngStyle]="{'background-color': not.buttonColor }">
+          <img src="https://www.seekpng.com/png/detail/250-2503958_potted-plants-clipart-transparent-background-plant-logo-free.png" width="40" height="40">
+          <ion-label button (click) = "navigateToTab2('clickedNotifications', notifs, not)">
+          
+            <h3 class="notification-text" style="color:black;"> {{ not.notifBody }}</h3>
+            <h4 class="notification-text" style="color:black;"> {{ not.date }}</h4>
           </ion-label>
-        </ion-item>
+          <ion-icon (click) = "openActionSheetController(notifs, not)" class="options" name="ellipsis-horizontal" ></ion-icon>
+          </ion-item>
         <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)" [disabled]="numTimesLeft <= 0">  
           <ion-infinite-scroll-content  
             loadingSpinner="bubbles"  

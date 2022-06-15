@@ -31,3 +31,26 @@ h6 {
     display: inline-block;
 }
 
+.options{
+
+    position: absolute;
+    right: 28px; 
+
+}
+
+.image{
+    position: absolute;
+    left: 14px;
+}
+
+ion-item {
+    --min-height: 85px;
+}
+
+.notification-text{
+    margin: 0px 10px;
+    
+}
+
+
+
