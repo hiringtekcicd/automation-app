@@ -11,7 +11,7 @@ export class DashboardPage implements OnInit {
   title: String;
   unOpened: number;
   correct = true;
-  
+  onNotification;
   constructor(private router: Router, public mqttService: MqttInterfaceService) { }
 
   ngOnInit() { //initial name
@@ -20,11 +20,17 @@ export class DashboardPage implements OnInit {
       tempRoute = tempRoute.substr(0,tempRoute.indexOf('?'));
     }
     this.title = tempRoute[0].toUpperCase() + tempRoute.substr(1);
+    this.onNotification = false;
   }
 
   navigateToTab(tabName : string){
     this.router.navigate(['/dashboard/'+tabName], { queryParamsHandling: "preserve" });
     this.title = tabName[0].toUpperCase() + tabName.substr(1); // capitalize this
+    if(tabName == 'notifications'){
+    this.onNotification = true;
+    console.log(this.onNotification);
+    }
+    console.log(this.onNotification);
   }
 
 

@@ -9,6 +9,7 @@
 <!--Navigation from one tab to other tab-->
 <ion-content padding>
   <ion-tabs>
+    <app-notification (newItemEvent)="addItem($event)"></app-notification>
     <ion-tab-bar color="primary" slot="top"> 
       <!--<ion-tab-button tab="warnings">
         <ion-label class="tab-label">Warnings</ion-label>
@@ -27,7 +28,7 @@
       </ion-tab-button>
       <ion-tab-button (click)="navigateToTab('notifications')">
         <ion-icon name="notifications-outline"></ion-icon> Notifications
-        <ion-badge  id='badge' color ='danger'>{{this.unOpened}}</ion-badge>
+        <ion-badge *ngIf="!onNotification" color ='danger'>{{this.unOpened}}</ion-badge> 
       </ion-tab-button>
     </ion-tab-bar> 
     <div slot="top">

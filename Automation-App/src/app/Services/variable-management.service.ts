@@ -12,6 +12,7 @@ import * as _ from "lodash";
 import { FertigationSystem } from "../models/fertigation-system.model";
 import { ClimateController } from "../models/climate-controller.model";
 import { IonicStorageService } from "./ionic-storage.service";
+import { Notification } from "../models/notification.model";
 import { Plant } from "../models/plant";
 
 @Injectable({
@@ -26,6 +27,11 @@ export class VariableManagementService {
   public climateControllerSettings = new BehaviorSubject<ClimateController[]>(
     null
   );
+  
+  public notification = new BehaviorSubject<Notification[]>(
+    null
+    );
+  
 
   public start_date: string;
   public end_date: string;
@@ -56,6 +62,7 @@ export class VariableManagementService {
   public noDevices: boolean = true;
 
   public plants: Plant[] = [];
+  public notifications: Notification[] = [];
 
   public analyticsDataArray;
 
@@ -75,7 +82,10 @@ export class VariableManagementService {
         storageService.set("climateControllers", climateControllerArray);
       }
     });
-  }
+    // subscribe to notificationArray to receive new notifications as they load
+    //this.notification.subscribe(())
+  
+}
   // Omkar's previous code
   //public sensor_data_array: sensor_data[];
   //
@@ -122,6 +132,7 @@ export class VariableManagementService {
       );
   }
 
+  
   public createClimateController(climateController: ClimateController): Observable<any> {
     return this.http.post(this.dbURL + "/climate-controller-settings/create", climateController)
       .pipe(map((resData: {_id: string}) => {
@@ -132,6 +143,17 @@ export class VariableManagementService {
         this.climateControllerSettings.next(climateControllerDevicesArray);
       }));
   } 
+
+  public createNotification(notification: Notification): Observable<any> {
+    return this.http.post(this.dbURL + "/climate-controller-settings/create", notification)
+      .pipe(map((resData: {_id: string}) => {
+        console.log(resData);
+        notification._id = resData._id;
+        let notificationDevicesArray: Notification[] = this.notification.value;
+        notificationDevicesArray.push(notification);
+        this.notification.next(notificationDevicesArray);
+      }));
+  }
 
   // Update grow room and system settings in backend
   public updateDeviceSettings(
@@ -211,6 +233,37 @@ export class VariableManagementService {
         }))
       }));
   }
+
+  public updateNotificationIsOpened(isOpened: boolean, deviceType: string, deviceID: string, deviceIndex: number, notification: Notification, counter: number) {
+    console.log(deviceID);
+    let endPointURL = "";
+    let localStorageKey = "";
+    let deviceSubject: BehaviorSubject<Notification[]>;
+    
+        localStorageKey = "notification";
+        endPointURL = NotificationString;
+        deviceSubject = this.notification;
+        
+    if(counter >= 10){
+    return this.http.put(this.dbURL + "/" + endPointURL + "-settings/device-started/" + deviceID, isOpened)
+      .pipe(switchMap(() => {
+        let updatedIsOpenedArray = deviceSubject.value;
+
+        for(let x = 0; x < updatedIsOpenedArray.length; x++){
+          if(updatedIsOpenedArray[x]._id = notification._id)
+          {
+            updatedIsOpenedArray[x].isRead = true;
+          }
+        }
+
+        return this.storageService.set(localStorageKey, updatedIsOpenedArray).pipe(tap(() => {
+          deviceSubject.next(updatedIsOpenedArray);
+          console.log(deviceSubject.value);
+        }))
+      }));
+    }
+  }
+  
 
   public setRESTServerURL(domain: string) {
     this.dbURL = domain;
@@ -310,6 +363,16 @@ export class VariableManagementService {
         this.plants.push(new Plant().deserialize(plant));
       });
       return of(this.plants);
+    }));
+  }
+
+  public getNotifications(){
+    return this.http.get<Notification[]>(this.dbURL + "/plants").pipe(switchMap(notifications => {
+      this.notifications = [];
+      notifications.forEach((notification) => {
+        //this.notifications.push(new Notification().deserialize(notification));
+      });
+      return of(this.notification);
     }));
   }
 
@@ -554,6 +617,7 @@ export class VariableManagementService {
 
 export const FertigationSystemString = "fertigation-system";
 export const ClimateControllerString = "climate-controller";
+export const NotificationString = 'notification'
 
 export type Devices = FertigationSystem | ClimateController;
 

@@ -1,7 +1,7 @@
 <ion-content class="gradient_background">
   <div class="content">
     <ion-toolbar>
-      <h2>Notifications</h2>
+    
       <ion-buttons slot="end">
       </ion-buttons>
     </ion-toolbar>
@@ -15,17 +15,25 @@
       </ion-row>
     </ion-grid>
   </div>
- 
+ {{addNewItem(0)}}
+
     <ion-item *ngIf="!noNotifs" style="color:white">You have at least {{this.unopenedCounter}} unopened notifications</ion-item>
-        <ion-item *ngFor="let not of notifs" id="saveBtn" lines = "full" [ngStyle]="{'background-color': not.buttonColor }">
+    <ion-item-sliding *ngFor="let not of notifs" id="saveBtn" lines = "full" [ngStyle]="{'background-color': not.isRead? '#FFFFFF': '#d6ecff' }">
+      <div *ngIf= "!not.isDeleted" >
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click) = "deleteNotification(notifs, not)">Delete</ion-item-option>
+      </ion-item-options>    
+          <ion-item >
           <img src="https://www.seekpng.com/png/detail/250-2503958_potted-plants-clipart-transparent-background-plant-logo-free.png" width="40" height="40">
           <ion-label button (click) = "navigateToTab2('clickedNotifications', notifs, not)">
           
-            <h3 class="notification-text" style="color:black;"> {{ not.notifBody }}</h3>
-            <h4 class="notification-text" style="color:black;"> {{ not.date }}</h4>
+            <h3 class="notification-text" style="color:black;"> {{ not.title }}</h3>
+            <h4 class="notification-text" style="color:black;"> {{ not.timestamp.toLocaleString()}}</h4>
           </ion-label>
           <ion-icon (click) = "openActionSheetController(notifs, not)" class="options" name="ellipsis-horizontal" ></ion-icon>
           </ion-item>
+        </div>
+        </ion-item-sliding>
         <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)" [disabled]="numTimesLeft <= 0">  
           <ion-infinite-scroll-content  
             loadingSpinner="bubbles"  

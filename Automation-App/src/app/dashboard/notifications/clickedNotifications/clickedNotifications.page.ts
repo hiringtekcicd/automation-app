@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 export class clickedNotificationsPage implements OnInit {
 
 isClicked: boolean = true;
-notification = history.state.example;
+notification = history.state.notifi;
 
 
 
