@@ -67,6 +67,7 @@ export class VariableManagementService {
   public analyticsDataArray;
 
   public SENSOR_INTERVAL_SECONDS = 10; //seconds per historicData sensor values
+  
 
   constructor(
     private http: HttpClient,
@@ -367,12 +368,15 @@ export class VariableManagementService {
   }
 
   public getNotifications(){
-    return this.http.get<Notification[]>(this.dbURL + "/plants").pipe(switchMap(notifications => {
+    //"http://localhost:443/notifications/test/0/3"
+    return this.http.get<Notification[]>("http://localhost:443/notifications/test/0/3").pipe(switchMap(notifications => {
       this.notifications = [];
       notifications.forEach((notification) => {
-        //this.notifications.push(new Notification().deserialize(notification));
+        this.notifications.push(new Notification().deserialize(notification));
+       
       });
-      return of(this.notification);
+      
+      return of(this.notifications);
     }));
   }
 

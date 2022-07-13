@@ -8,6 +8,7 @@ import { VariableManagementService } from 'src/app/Services/variable-management.
 import { Title } from '@angular/platform-browser';
 
 
+
 //IMPORTANT: temporarily changed notifs from Notification model to standard array
 @Component({
   selector: "app-notification",
@@ -16,6 +17,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class NotificationsPage implements OnInit {
   noNotifs: boolean = false;
+  loaded: boolean = false;
   notifs: Notification[] = [];
   notifs2: Notification[] = [];
   notifsAmount: number;
@@ -38,12 +40,18 @@ export class NotificationsPage implements OnInit {
  
 
   ngOnInit() {
-    this.notifs = [{_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: true, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}]
-    this.notifsAmount = this.notifs.length;
+    this.notifs = history.state.notificationArray;
+    console.log(this.variableManagementService.notifications.length);
+    
+
+    
+    //this.notifs = [{_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: true, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}, {_id: null, image: null, timestamp: new Date(), isRead: false, title: "Your plant may have covid", station: null, plant: null, isDeleted: false, deletedOn: null, deserialize: null,  body: "To test for the COVID-19 virus, a health care provider takes a sample from the nose (nasopharyngeal swab), throat (throat swab) or saliva. The samples are then sent to a lab for testing. If you're coughing up sputum, that may be sent for testing. The FDA has authorized at-home tests for the COVID-19 virus."}]
+    //this.notifsAmount = this.notifs.length;
     
     //stringify and assign backend data to notifs2
     //this.notifs2 =   this.variableManagementService.getCurrentDeviceSettings(this.currentDeviceType, this.currentDeviceIndex);
 
+    /*if(this.notifs.length != null){
     for(let i = 0; i < this.notifs.length; i++){
       if(this.notifs[i].image == null){
           this.notifs[i].image = "https://banner2.cleanpng.com/20180427/jxq/kisspng-royalty-free-copyright-valentine-s-day-heart-5ae38b80dfdf72.458658361524861824917.jpg";
@@ -58,11 +66,13 @@ export class NotificationsPage implements OnInit {
     let counter: number = 0;
     for(let i = 0; i < this.notifs.length; i++){
       if(!this.notifs[i].isRead && !this.notifs[i].isDeleted){
+        console.log("poop");
         counter++;
       }
     }
     this.unopenedCounter = counter;
-    
+    console.log(this.unopenedCounter);
+  }*/
   }
 
 
@@ -83,6 +93,7 @@ export class NotificationsPage implements OnInit {
       }
     }
     this.unopenedCounter = counter;
+   
     
     
     
@@ -167,6 +178,11 @@ deleteNotification(notifArray: Notification[], notification: Notification){
       }
     }
     this.unopenedCounter = counter;
+}
+
+convertDate(seconds: number){
+  let theDate = new Date(seconds);
+  return theDate;
 }
 
 }

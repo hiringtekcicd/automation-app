@@ -19,3 +19,5 @@ export class Plant implements Deserializable {
         return Object.assign(this, input);
     }
 }
+
+

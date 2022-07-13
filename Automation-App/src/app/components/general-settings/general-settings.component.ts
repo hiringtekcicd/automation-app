@@ -41,6 +41,7 @@ export class GeneralSettingsComponent implements OnInit {
     });
 
     this.parentForm.addControl('general_settings', this.generalSettingsForm);
+   
   }
 
   toggleAccordion() {

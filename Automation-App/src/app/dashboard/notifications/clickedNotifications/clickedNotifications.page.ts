@@ -21,7 +21,7 @@ notification = history.state.notifi;
   }
  
   ngOnInit() {
- console.log(window.history.state); 
+ 
  
  
 }

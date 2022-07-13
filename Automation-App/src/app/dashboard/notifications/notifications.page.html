@@ -1,5 +1,7 @@
+
 <ion-content class="gradient_background">
   <div class="content">
+   
     <ion-toolbar>
     
       <ion-buttons slot="end">
@@ -28,7 +30,7 @@
           <ion-label button (click) = "navigateToTab2('clickedNotifications', notifs, not)">
           
             <h3 class="notification-text" style="color:black;"> {{ not.title }}</h3>
-            <h4 class="notification-text" style="color:black;"> {{ not.timestamp.toLocaleString()}}</h4>
+            <h4 class="notification-text" style="color:black;"> {{ convertDate(not.timestamp).toLocaleString()}}</h4>
           </ion-label>
           <ion-icon (click) = "openActionSheetController(notifs, not)" class="options" name="ellipsis-horizontal" ></ion-icon>
           </ion-item>
@@ -42,5 +44,6 @@
         </ion-infinite-scroll>  
     
     
-    
+      
 </ion-content>
+
