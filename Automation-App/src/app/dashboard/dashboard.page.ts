@@ -33,7 +33,7 @@ export class DashboardPage implements OnInit {
         }
 
         if(this.notifs2.length >10){
-          console.log(this.notifs2.length);
+          
           this.unOpened = "10+";
         }        
       });

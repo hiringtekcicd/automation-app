@@ -14,10 +14,7 @@ import { ClimateController } from "../models/climate-controller.model";
 import { IonicStorageService } from "./ionic-storage.service";
 import { Plant } from "../models/plant";
 import { Notification } from "../models/notification.model";
-import { NotificationPlantGrowth } from "../models/notication-plant-growth-model";
-import { NotificationPestDetect } from "../models/notification-pest-detect.model";
-import { NotificationThermal } from "../models/notification-thermal.model";
-import { NotificationFungal } from "../models/notifications-fungal.model";
+
 
 @Injectable({
   providedIn: "root",

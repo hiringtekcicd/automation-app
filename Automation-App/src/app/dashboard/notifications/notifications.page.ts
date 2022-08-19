@@ -64,7 +64,7 @@ export class NotificationsPage implements OnInit {
     if(notification.isRead == false){
       this.readCounter++;
     }
-    console.log(notification);
+   
     if(notification.isRead == false){
     notification.isRead = true;
     this.variableManagementService.notificationsUpdate.push(notification);
