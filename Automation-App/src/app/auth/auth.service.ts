@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, from, of } from 'rxjs';
 import { User } from './user.model';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { IonicStorageService } from '../Services/ionic-storage.service';
 import { VariableManagementService } from '../Services/variable-management.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MqttInterfaceService } from '../Services/mqtt-interface.service';
 import { AlertController } from '@ionic/angular';
+
 
 export interface AuthResponseData {
   kind: string;
@@ -24,7 +25,7 @@ export interface AuthResponseData {
   providedIn: 'root'
 })
 export class AuthService {
-
+IDToken;
   private _user = new BehaviorSubject<User>(null); //Initialized with null.
 
   get userIsAuthenticated() {
@@ -47,6 +48,15 @@ export class AuthService {
     else return null;}));
   }
 
+  get userToken() {
+    return this._user.asObservable().pipe(map(user => {
+      if(user) { 
+        console.log(user.token);
+        return user.token 
+      }
+    else return null;}));
+  }
+
   constructor(private http: HttpClient, private storageService: IonicStorageService, private variableManagementService: VariableManagementService, private fireStore: AngularFirestore, private mqttService: MqttInterfaceService, private alertController: AlertController) { }
 
   signup( email: string, password: string, confirmpassword: string){
@@ -54,9 +64,24 @@ export class AuthService {
     {email: email, password: password, confirmpassword: confirmpassword, returnSecureToken: true }).pipe(tap(this.setUserData.bind(this)));
   }
 
-  delete(email: string, IDToken){
-    return this.http.post<AuthResponseData>(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${environment.firebaseConfig.apiKey}`,
-    {email: email, IDToken: IDToken, returnSecureToken: true }).pipe(tap(this.setUserData.bind(this)));
+
+  resetPassword(newPassword: string, oldPassword: string, email: string){
+
+    return this.http.post(
+      `https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=${environment.firebaseConfig.apiKey}`,
+      { email: email, oldPassword: oldPassword, newPassword: newPassword }
+    )
+
+  }
+
+  delete(){
+    this.userToken.pipe(take(1)).subscribe((userToken) => {
+      this.IDToken = userToken;
+    });
+    return this.http.post(
+      `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${environment.firebaseConfig.apiKey}`,
+      {idToken: "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVkNmJjOWRhMWFmMjM2ZjhlYTU2YTVkNjIyMzQwMWZmNGUwODdmMTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaHlkcm90ZWstMjg2MjEzIiwiYXVkIjoiaHlkcm90ZWstMjg2MjEzIiwiYXV0aF90aW1lIjoxNjYyODI2Mzk2LCJ1c2VyX2lkIjoiVjc0NEdMRW9IRE5GbGlmaFRFeERlcVlSZ1VIMyIsInN1YiI6IlY3NDRHTEVvSERORmxpZmhURXhEZXFZUmdVSDMiLCJpYXQiOjE2NjI4MjYzOTYsImV4cCI6MTY2MjgyOTk5NiwiZW1haWwiOiJvanVrd3VkZXJla0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsib2p1a3d1ZGVyZWtAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.bX0StGCBPzOqfrUL2pGqz9mqqC_DIclldl_JfSnvX8slnH9eLf-2WT6OovuijZ_BDo4nTu5Z1iq88HJ3YuC6LxLsxw-cxxxq0QRptPVAQHag3L5f463EJSVVebc6sbNKOqH9_o7x2E54Y4ydSykexsRGGBfel0IGe4-cXW_-bp5P-9Z64t3vFJ9KjQXlpbJ3s6eISZ1VtubpmrO2tSOzGqlwhjKX8F7Q0z-3H4kYYDvQUzHl1XkXVwOsY-V3-JorG4r80T3Z3aOYVec4GwBsMart4FmcVcA_MXT2h-NkC-Ew7_sSIamU92naWJnpPgbNLmntKYCPtBuRnjWfSH3ceg"},
+    )
   }
 
   login(email: string, password: string) { 

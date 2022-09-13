@@ -11,6 +11,10 @@ const routes: Routes = [
  //Routing for tabs  
 
  {
+  path: 'users',
+  loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
+},
+ {
   path: 'notifications',
   loadChildren: () => import('./notifications/notifications.module').then( m => m.NotificationsPageModule)
 },

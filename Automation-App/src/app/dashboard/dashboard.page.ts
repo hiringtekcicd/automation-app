@@ -18,6 +18,7 @@ export class DashboardPage implements OnInit {
   notifs: Notification[] = [];
   notifs2: Notification[] = [];
   loaded: boolean = false;
+  darkMode:boolean;
   constructor(private router: Router, public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public ionicStorageService: IonicStorageService) { }
 
   ngOnInit() { //initial name
@@ -44,6 +45,7 @@ export class DashboardPage implements OnInit {
     }
     this.title = tempRoute[0].toUpperCase() + tempRoute.substr(1);
     this.onNotification = false;
+    this.darkMode = JSON.parse(localStorage.getItem('darkMode'));
   }
 
   navigateToTab(tabName : string){    

@@ -21,6 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private authSubscription: Subscription;
   private previousAuthState: boolean = false;
+  darkMode: boolean;
  
   constructor(
     private platform: Platform,
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.previousAuthState = isAuth;
     });
     window.onbeforeunload = () => this.ngOnDestroy();
+    this.darkMode = JSON.parse(localStorage.getItem('darkMode'));
   }
 
   ngOnDestroy() {
@@ -76,26 +78,116 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteAccount(){
 
+  errorPopUp(){
+
+
+    this.alertController.create({
+      header: "Error",
+      subHeader: 'Your password must have at least 6 characters, a special character and an uppercase and lowercase character',
+
+      
+       buttons: [
+        {
+          text: 'Continue',
+          handler: (alertData) => {},
+        }
+      ]
+    }).then(res => {
+
+      res.present();
+
+    });
 
   }
+  
+  passwordSuccess(){
+
+
+    this.alertController.create({
+      header: "Success!",
+      subHeader: 'Your password has succesfuly been changed',
+
+      
+       buttons: [
+        {
+          text: 'Continue',
+          handler: (alertData) => {},
+        }
+      ]
+    }).then(res => {
+
+      res.present();
+
+    });
+
+  }
+
+
+
+
 
 
   deleteAccountPopUp(){
 
     this.alertController.create({
-      subHeader: 'Are you sure you want to delete your account?',
-      message: 'Doing so is irreversable.',
-       buttons: [
+      subHeader: 'Please enter your username, current password and new password',
+      inputs: [
         {
-          text: 'Yes',
-          handler: () => {
-            this.deleteAccount();
-          },
+          name: 'email',
+          placeholder: 'email'
         },
         {
-          text: 'No',
+          name: 'currentPassword',
+          placeholder: 'current password',
+          type: 'password'
+        },
+        {
+          name: 'newPassword',
+          placeholder: 'new password',
+          type: 'password'
+        }
+
+      ],
+      
+       buttons: [
+        {
+          text: 'Continue',
+          handler: (alertData) => {
+            //Subscribe
+            let num = /[0-9]/;
+            let alpha = /[a-z]/;
+            let cap = /[A-Z]/;
+            let sym = /[@#$%^&*]/;
+        if(alertData.newPassword.length >= 6){
+        if(num.test(alertData.newPassword)){
+          if (alpha.test(alertData.newPassword)){
+            if (cap.test(alertData.newPassword)){
+              if(sym.test(alertData.newPassword)){
+            
+            console.log(alertData.currentPassword);
+            console.log(alertData.newPassword);
+            console.log(alertData.email);
+            this.authService.resetPassword(alertData.newPassword, alertData.currentPassword, alertData.email).subscribe(
+              resData => {
+                console.log(resData);
+              }
+            )
+            this.passwordSuccess();
+            }
+            else{this.errorPopUp();}
+          }
+          else{this.errorPopUp();}
+        }
+        else{this.errorPopUp();}
+      }
+        else{this.errorPopUp();}
+        }
+        else{this.errorPopUp();}
+        },
+        },
+        {
+          text: 'Cancel',
           handler: () => {
           
           },
@@ -106,7 +198,6 @@ export class AppComponent implements OnInit, OnDestroy {
       res.present();
 
     });
-
   }
 
 
@@ -184,4 +275,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.splashScreen.hide();
     });
   }
+
+  
+    
 }

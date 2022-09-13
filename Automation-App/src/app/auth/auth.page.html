@@ -1,4 +1,10 @@
-<ion-header>
+<ion-header *ngIf="darkMode">
+  <ion-toolbar color="dark">   
+   <ion-title>Login</ion-title>  
+  </ion-toolbar>
+</ion-header>
+
+<ion-header *ngIf="!darkMode">
   <ion-toolbar color="primary">   
    <ion-title>Login</ion-title>  
   </ion-toolbar>

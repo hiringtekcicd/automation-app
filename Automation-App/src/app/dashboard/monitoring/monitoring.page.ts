@@ -28,7 +28,7 @@ export class MonitoringPage implements OnInit {
   deviceLiveDataSubscription: Subscription;
   
   timestamp: string = this.defaultTimestamp;
-
+  darkMode:boolean;
   constructor(public mqttService: MqttInterfaceService, public variableManagementService: VariableManagementService, public route: ActivatedRoute, private router: Router) { }
 
   // Reset monitoring class variables and unsubscribe from previous subscriptions
@@ -130,6 +130,7 @@ export class MonitoringPage implements OnInit {
         console.log(error);
       }
     });
+    this.darkMode = JSON.parse(localStorage.getItem('darkMode'));
   }
 
   // TODO: If mqtt data is needed across dashboard tabs then move this function to dashboard page

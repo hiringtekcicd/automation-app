@@ -1,4 +1,52 @@
-<ion-app>
+<ion-app *ngIf="darkMode">
+  <ion-split-pane contentId="main">
+    <ion-menu contentId="main">
+      <ion-header>
+        <ion-toolbar color="dark">
+          <ion-title>Hydrotek Farms</ion-title>
+          <ion-button (click)="logout()" fill="clear" size="large" slot="end"> 
+            <ion-icon style="color: white;" name="log-out-outline"></ion-icon>
+          </ion-button>
+        </ion-toolbar>
+      </ion-header>
+     <!--side menu options-->
+     <ion-content>
+      <ion-item (click)="newDevice()" lines="full">
+        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+        <ion-label>Setup Device</ion-label>
+      </ion-item>
+      <ion-list>
+        <ion-item lines="none">
+          <ion-title class="column-title">Fertigation Systems</ion-title>
+        </ion-item>
+        <ion-menu-toggle *ngFor="let device of (variableManagementService.fertigationSystemSettings | async); let i = index">
+          <ion-item lines="full" routerLink="/dashboard/monitoring" [queryParams]="{ deviceType: device.type, deviceIndex: i }">
+            <ion-icon name="leaf-outline" slot="start"></ion-icon>
+            <ion-label>{{ device.name }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+      <ion-list>
+        <ion-item lines="none">
+          <ion-title class="column-title">Climate Controllers</ion-title>
+        </ion-item>
+        <ion-menu-toggle *ngFor="let device of (variableManagementService.climateControllerSettings | async); let i = index">
+          <ion-item lines="full" routerLink="/dashboard/monitoring" [queryParams]="{ deviceType: device.type, deviceIndex: i }">
+            <ion-icon name="cloudy-outline" slot="start"></ion-icon>
+            <ion-label>{{ device.name }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+     </ion-content>
+    </ion-menu> 
+    <ion-router-outlet id="main"></ion-router-outlet> 
+  </ion-split-pane>
+</ion-app>
+
+
+
+
+<ion-app *ngIf="!darkMode">
   <ion-split-pane contentId="main">
     <ion-menu contentId="main">
       <ion-header>
@@ -16,12 +64,9 @@
         <ion-label>Setup Device</ion-label>
       </ion-item>
       <ion-list>
-        <ion-item lines="none">
-          <ion-title class="column-title">User Settings</ion-title>
-        </ion-item>
-        <ion-item lines="full" (click) = deleteAccountPopUp()>
-          <ion-icon name="trash-outline" slot="start"></ion-icon>
-          <ion-label>Delete Account</ion-label>
+        <ion-item lines="full">
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <a href="https://www.espn.com/">Privacy Policy</a>
         </ion-item>
         <ion-item lines="none">
           <ion-title class="column-title">Fertigation Systems</ion-title>

@@ -16,6 +16,7 @@ import { FcmService } from '../Services/fcm.service';
 export class AuthPage implements OnInit {
 
   formgroup: FormGroup;
+  darkMode: boolean;
   
   isLoading = false; //set to false as a default.
   isLogin = true; //set to true as a default.
@@ -29,7 +30,9 @@ export class AuthPage implements OnInit {
     );
    }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.darkMode = JSON.parse(localStorage.getItem('darkMode'));
+  }
 
   onSubmit(){
     if(!this.formgroup.valid) {

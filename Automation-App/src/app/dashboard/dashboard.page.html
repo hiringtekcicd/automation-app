@@ -1,4 +1,48 @@
-<ion-header class="ion-no-border">
+<ion-header *ngIf="darkMode" color="dark" class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+      <ion-title class="header">{{title}}</ion-title>
+  </ion-toolbar> 
+</ion-header>
+<!--Navigation from one tab to other tab-->
+<ion-content *ngIf="darkMode" color ='dark' padding>
+  <ion-tabs>
+ 
+    <ion-tab-bar color="dark" slot="top"> 
+      <!--<ion-tab-button tab="warnings">
+        <ion-label class="tab-label">Warnings</ion-label>
+      </ion-tab-button>-->
+      <ion-tab-button class = "icon" (click)="navigateToTab('monitoring')"> Monitoring
+        <ion-icon name="tv-outline"></ion-icon>
+      </ion-tab-button>
+      <ion-tab-button class = "icon" (click)="navigateToTab('control')"> Control
+        <ion-icon name="options-outline"></ion-icon>
+      </ion-tab-button>
+      <ion-tab-button class = "icon" (click)="navigateToTab('analytics')"> Analytics
+        <ion-icon name="analytics-outline"></ion-icon>
+      </ion-tab-button>
+      <ion-tab-button class = "icon" (click)="navigateToTab('cameras')">
+        <ion-icon name="camera-outline"></ion-icon> Cameras
+      </ion-tab-button>
+      <ion-tab-button class = "icon" (click)="navigateToTab('notifications')">
+        <ion-icon name="notifications-outline"></ion-icon> Notifications
+        <ion-badge *ngIf="!onNotification && !noNotifs"  color ='danger'>{{this.unOpened}}</ion-badge> 
+      </ion-tab-button>
+      <ion-tab-button class = "icon" (click)="navigateToTab('users')">
+        <ion-icon name="person-outline"></ion-icon> User
+      </ion-tab-button>
+    </ion-tab-bar> 
+    <div slot="top">
+      <connection-status [mqttStatus]="mqttService.mqttStatus.value"></connection-status>
+    </div>
+  </ion-tabs>
+</ion-content>
+
+
+
+<ion-header *ngIf= "!darkMode" class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
@@ -7,28 +51,31 @@
   </ion-toolbar> 
 </ion-header>
 <!--Navigation from one tab to other tab-->
-<ion-content *ngIf="loaded" padding>
+<ion-content *ngIf= "!darkMode" padding>
   <ion-tabs>
  
     <ion-tab-bar color="primary" slot="top"> 
       <!--<ion-tab-button tab="warnings">
         <ion-label class="tab-label">Warnings</ion-label>
       </ion-tab-button>-->
-      <ion-tab-button (click)="navigateToTab('monitoring')"> Monitoring
+      <ion-tab-button class = "icon" (click)="navigateToTab('monitoring')"> Monitoring
         <ion-icon name="tv-outline"></ion-icon>
       </ion-tab-button>
-      <ion-tab-button (click)="navigateToTab('control')"> Control
+      <ion-tab-button class = "icon" (click)="navigateToTab('control')"> Control
         <ion-icon name="options-outline"></ion-icon>
       </ion-tab-button>
-      <ion-tab-button (click)="navigateToTab('analytics')"> Analytics
+      <ion-tab-button class = "icon" (click)="navigateToTab('analytics')"> Analytics
         <ion-icon name="analytics-outline"></ion-icon>
       </ion-tab-button>
-      <ion-tab-button (click)="navigateToTab('cameras')">
+      <ion-tab-button class = "icon" (click)="navigateToTab('cameras')">
         <ion-icon name="camera-outline"></ion-icon> Cameras
       </ion-tab-button>
-      <ion-tab-button (click)="navigateToTab('notifications')">
+      <ion-tab-button class = "icon" (click)="navigateToTab('notifications')">
         <ion-icon name="notifications-outline"></ion-icon> Notifications
         <ion-badge *ngIf="!onNotification && !noNotifs"  color ='danger'>{{this.unOpened}}</ion-badge> 
+      </ion-tab-button>
+      <ion-tab-button class = "icon" (click)="navigateToTab('users')">
+        <ion-icon name="person-outline"></ion-icon> User
       </ion-tab-button>
     </ion-tab-bar> 
     <div slot="top">
