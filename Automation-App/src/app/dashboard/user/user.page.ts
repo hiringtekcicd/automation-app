@@ -59,7 +59,7 @@ export class UserPage implements OnInit {
       console.log(this.darkMode);
       location.reload();
     }
-    console.log(this.darkMode);
+    
     
   }
 

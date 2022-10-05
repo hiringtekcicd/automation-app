@@ -149,7 +149,7 @@ export class NotificationsPage implements OnInit {
       console.log('Async operation has ended');
       this.refreshed = true;
       event.target.complete();
-    }, 5000);
+    }, 3000);
   }
 
   updateDisplayedNotifications(notifArray: Notification[]){
